@@ -1,0 +1,24 @@
+type: string
+x-stoplight:
+  id: 9hy72mp4q0xqf
+title: currency
+default: USD
+enum:
+  - USD
+  - COP
+  - CLP
+  - UF
+  - PEN
+  - MXN
+examples:
+  - USD
+description: |-
+  Below, you can find the currencies available for each country
+
+  | **COUNTRY** | **USD** | **PEN** | **COP** | **MXN** | **CLP** | **UF** | 
+  |---|:---:|:---:|:---:|:---:|:---:|:---:|
+  | **Ecuador** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+  | **Perú** | ❌  | ✅ | ❌ | ❌ | ❌ | ❌ |
+  | **Colombia** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+  | **México** | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
+  | **Chile** | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |

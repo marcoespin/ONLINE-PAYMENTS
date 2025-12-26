@@ -1,0 +1,76 @@
+{
+  "title": "Submerchant",
+  "x-stoplight": {
+    "id": "8kc01os55dl5h"
+  },
+  "type": "object",
+  "properties": {
+    "address": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "1ddbj6ultaz66"
+      }
+    },
+    "city": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "vobrmav34fvhy"
+      }
+    },
+    "cityCode": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "02u0lmdi6cs6g"
+      }
+    },
+    "code": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "z5k6n8rgfna28"
+      }
+    },
+    "countryAns": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "g2249vaovk6tv"
+      }
+    },
+    "idAffiliation": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "2aw3q57o849d3"
+      }
+    },
+    "mcc": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "k8jar1s8uvxpd"
+      }
+    },
+    "socialReason": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "h03ocreshjt4e"
+      }
+    },
+    "softDescriptor": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "etpdv20wao1gj"
+      }
+    },
+    "zipCode": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "eygmry2ggrjhr"
+      }
+    },
+    " is_crypto_currency ": {
+      "type": "boolean",
+      "x-stoplight": {
+        "id": "2sqdbvkbae0pc"
+      },
+      "default": false
+    }
+  }
+}

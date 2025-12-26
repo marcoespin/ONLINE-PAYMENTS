@@ -1,0 +1,11 @@
+type: string
+title: Channel
+enum:
+  - PRESTASHOP
+  - WOOCOMMERCE
+  - MAGENTO
+  - WEBCHECKOUTPLUS
+  - WEBCHECKOUT
+  - POS
+examples:
+  - PRESTASHOP

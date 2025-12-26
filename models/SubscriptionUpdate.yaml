@@ -1,0 +1,131 @@
+description: ''
+type: object
+x-examples:
+  example-1:
+    planName: Premium
+    periodicity: daily
+    contactDetails:
+      firstName: John
+      lastName: Doe
+      secondLastName: string
+      email: user@example.com
+      documentType: CC
+      documentNumber: string
+      phoneNumber: '+593988734644'
+    amount:
+      currency: USD
+      subtotalIva: 0
+      subtotalIva0: 0
+      iva: 0
+      ice: 0
+      extraTaxes:
+        iac: 0
+        tasaAeroportuaria: 0
+        agenciaDeViaje: 0
+    startDate: '2018-09-29'
+    endDate: '2018-09-29'
+    language: es
+    metadata:
+      key0: value0
+      key1: value1
+      key2: value2
+    retryConfiguration: Three days in a row starting at startDate
+examples:
+  - planName: Premium
+    periodicity: daily
+    contactDetails:
+      firstName: John
+      lastName: Doe
+      secondLastName: string
+      email: user@example.com
+      documentType: CC
+      documentNumber: string
+      phoneNumber: '+593988734644'
+    amount:
+      currency: USD
+      subtotalIva: 0
+      subtotalIva0: 0
+      iva: 0
+      ice: 0
+      extraTaxes:
+        iac: 0
+        tasaAeroportuaria: 0
+        agenciaDeViaje: 0
+    startDate: '2018-09-29'
+    endDate: '2018-09-29'
+    language: es
+    metadata:
+      key0: value0
+      key1: value1
+      key2: value2
+    retryConfiguration: Three days in a row starting at startDate
+properties:
+  planName:
+    type: string
+    example: Premium
+  periodicity:
+    type: string
+    enum:
+      - daily
+      - weekly
+      - biweekly
+      - monthly
+      - quarterly
+      - halfYearly
+      - yearly
+      - custom
+    example: monthly
+    description: Use `custom` for one-click subscriptions
+  contactDetails:
+    $ref: ./ContactDetails.yaml
+  amount:
+    $ref: ./Amount.yaml
+  startDate:
+    type: string
+    description: |-
+      `YYYY-MM-DD`
+
+      **Note:** Use future date
+    format: date
+    example: '2018-09-29'
+  endDate:
+    type: string
+    description: |-
+      `YYYY-MM-DD`
+
+      **Note:** Use future date
+    format: date
+    example: '2023-09-29'
+  language:
+    $ref: ./Language.yaml
+  metadata:
+    $ref: ./Metadata.yaml
+  retryConfiguration:
+    type: object
+    description: Use this object if you want to configure retries different than default
+    properties:
+      retryType:
+        type: string
+        description: |-
+          **Schedule:** Number of days to retry starting at `startDate`. **Ex.** 5 days in a row.
+
+          **Fixed:** Specific days of the month to retry. **Ex.** 10th, 20th, 30th.
+        enum:
+          - scheduled
+          - fixed
+        default: schedule
+      value:
+        type: array
+        description: |-
+          **Examples:**
+
+          * "schedule": [5]
+          * "fixed": [10,20,30]
+        uniqueItems: true
+        minItems: 1
+        items:
+          type: integer
+          minimum: 1
+          maximum: 31
+          default: 3
+title: SubscriptionUpdate

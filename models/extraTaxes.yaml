@@ -1,0 +1,43 @@
+type: object
+x-examples:
+  example-1:
+    iac: 0
+    tasaAeroportuaria: 0
+    agenciaDeViaje: 0
+examples:
+  - iac: 0
+    tasaAeroportuaria: 0
+    agenciaDeViaje: 0
+properties:
+  iac:
+    type: number
+  tasaAeroportuaria:
+    type: number
+    description: It's commonly used in airlines.
+  agenciaDeViaje:
+    type: number
+    description: It's commonly used in airlines.
+  IVAagenciaDeViaje:
+    type: number
+    description: It's commonly used in airlines in Colombia.
+  propina:
+    type: number
+    x-stoplight:
+      id: t6erhchmqop5f
+    description: It's commonly used in restaurants.
+  tip:
+    type: number
+    x-stoplight:
+      id: utsbo1e3f2pwb
+  stateTax:
+    type: number
+    x-stoplight:
+      id: 2hwk0l9wjl0yl
+  municipalTax:
+    type: number
+    x-stoplight:
+      id: xe2xr4vojoryt
+  reducedStateTax:
+    type: number
+    x-stoplight:
+      id: jiqwacazj8xiw

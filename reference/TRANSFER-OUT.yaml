@@ -1,0 +1,3639 @@
+swagger: '2.0'
+x-stoplight:
+  id: 4a789c50648a0
+info:
+  version: 1.1.3
+  title: TRANSFER OUT
+  description: |
+    ### Follow this step-by-step guide to learn how payment distribution by wire transfer works on the internet.
+
+    The funds or money distribution by wire transfer is a service that simplifies financial management. By using it, you will be able to make payments from a single bank account to the accounts of your users.
+
+    <!-- theme: warning -->
+    > #### To keep in mind
+    >Due to our risk policies, the available payment methods and the integration type may vary once you complete the affiliation. We will tell you how to proceed if this process applies to your merchant.
+
+    > This feature is only available in Colombia, México, Chile and Peru.
+
+    ## The payment process
+
+    ![Proceso de dispersión con transferencia](//images.ctfassets.net/mmjbm94f6iyd/61KDNemDCoE0y5x0mNiFaM/8bc2f16394fda15377499eff667f31b7/Payout__Transfer_out__M__xico.png)
+
+    ## Stages of the payment process
+
+    A funds' distribution process usually consists of 7 stages:
+
+    ### 1. Funds top-up on the Kushki distribution account
+
+    It is necessary to check the funds of your merchant in Kushki, because if you do not have funds, the distribution process cannot be carried out. We recommend you to top up your account in order to distribute the money to the different accounts of your customers without any complications.
+
+    ### 2. Data request
+
+    At this stage, the bank account details and name of the user who will receive the money are collected. These are submitted to Kushki to be validated and processed.
+
+    ### 3. Verification of funds
+
+    Kushki receives the data that you submitted and validates that your business account has enough funds to process the payment distribution. The balance will be immediately deducted from your Kushki distribution account.
+
+    ### 4. Authorization
+
+    Once we have verified that you have sufficient funds in your distribution account, we provide a transaction reference. At this stage, the distribution process is initiated and will be credited in a few minutes to the user's bank account. 
+
+    ### 5. Delivery of funds
+
+    All transactions generated will be sent in real time to the bank and the bank will deliver the funds to the users' accounts.
+
+    ### 6. Notification to the merchant
+
+    The bank will notify us of the results of each transaction, and we will notify you immediately.
+
+    ### 7. Notification to the user
+
+    __This step is optional, but very useful__, since, once we notify you the result of the transaction, you can share it with your users.
+
+    Read more on our [documentation page](https://docs.kushkipagos.com/).
+
+    ## Using the API
+
+    To use the API you must ask for your Kushki Sandbox, composed of a `Public-Merchant-Id` and a `Private-Merchant-Id`.
+
+    * The current version of the Kushki API rests at: `https://api.kushkipagos.com/`
+    * The testing version rests at: `https://api-uat.kushkipagos.com/`
+
+
+    ## Endpoints
+
+    We dispose various endpoints to start your payment flows, find our products available:
+
+    * [Get Bank List](https://api-docs.kushkipagos.com/docs/online-payments/transfer-out/operations/get-a-payout-transfer-v-1-bank-list)
+    * [Get Bank List V2](https://api-docs.kushkipagos.com/docs/online-payments/transfer-out/operations/get-a-payout-transfer-v-2-bank-list)
+    * [Request a Transfer Out token](https://api-docs.kushkipagos.com/docs/online-payments/transfer-out/operations/create-a-payout-transfer-v-1-token)
+    * [Init Transaction](https://api-docs.kushkipagos.com/docs/online-payments/transfer-out/operations/create-a-payout-transfer-v-1-init)
+    * [Get Status](https://api-docs.kushkipagos.com/docs/online-payments/transfer-out/operations/get-a-payout-transfer-v-1-transaction)
+    * [Balance for Payouts](https://api-docs.kushkipagos.com/docs/online-payments/transfer-out/operations/get-a-wallet-v-1-merchant-balance)
+
+
+
+    [Return Home](/)
+
+    > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+host: api-uat.kushkipagos.com
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    scopes: {}
+    authorizationUrl: ''
+paths:
+  /payouts/transfer/v1/bankList:
+    get:
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                code:
+                  type: string
+                name:
+                  type: string
+              required:
+                - code
+                - name
+          examples:
+            MX:
+              - name: ABC CAPITAL
+                code: '0001'
+              - name: ACTINVER
+                code: '0002'
+              - name: AFIRME
+                code: '0003'
+              - name: AKALA
+                code: '0004'
+              - name: ARCUS
+                code: '0005'
+              - name: ASP INTEGRA OPC
+                code: '0006'
+              - name: AUTOFIN
+                code: '0007'
+              - name: AZTECA
+                code: '0008'
+              - name: BAJIO
+                code: '0009'
+              - name: BANAMEX
+                code: '0010'
+              - name: BANCO FINTERRA
+                code: '0011'
+              - name: BANCOMEXT
+                code: '0013'
+              - name: BANCOPPEL
+                code: '0014'
+              - name: BANCREA
+                code: '0015'
+              - name: BANJERCITO
+                code: '0016'
+              - name: BANK OF AMERICA
+                code: '0017'
+              - name: BANKAOOL
+                code: '0018'
+              - name: BANOBRAS
+                code: '0019'
+              - name: BANORTE
+                code: '0020'
+              - name: BANREGIO
+                code: '0021'
+              - name: BANSEFI
+                code: '0022'
+              - name: BANSI
+                code: '0023'
+              - name: BANXICO
+                code: '0024'
+              - name: BARCLAYS
+                code: '0025'
+              - name: BBASE
+                code: '0026'
+              - name: BBVA MEXICO
+                code: '0027'
+              - name: BMONEX
+                code: '0028'
+              - name: CAJA POP MEXICA
+                code: '0029'
+              - name: CAJA TELEFONIST
+                code: '0030'
+              - name: CB INTERCAM
+                code: '0031'
+              - name: CI BOLSA
+                code: '0032'
+              - name: CIBANCO
+                code: '0033'
+              - name: COMPARTAMOS
+                code: '0034'
+              - name: CONSUBANCO
+                code: '0035'
+              - name: CREDICAPITAL
+                code: '0036'
+              - name: CREDIT SUISSE
+                code: '0037'
+              - name: CRISTOBAL COLON
+                code: '0038'
+              - name: CoDi Valida
+                code: '0039'
+              - name: DONDE
+                code: '0040'
+              - name: EVERCORE
+                code: '0041'
+              - name: FINAMEX
+                code: '0042'
+              - name: FINCOMUN
+                code: '0043'
+              - name: FOMPED
+                code: '0044'
+              - name: FONDO (FIRA)
+                code: '0045'
+              - name: GBM
+                code: '0046'
+              - name: GEM - STP
+                code: '0090'
+              - name: HIPOTECARIA FED
+                code: '0047'
+              - name: HSBC
+                code: '0048'
+              - name: ICBC
+                code: '0049'
+              - name: INBURSA
+                code: '0050'
+              - name: INDEVAL
+                code: '0051'
+              - name: INMOBILIARIO
+                code: '0052'
+              - name: INTERCAM BANCO
+                code: '0053'
+              - name: INVERCAP
+                code: '0054'
+              - name: INVEX
+                code: '0055'
+              - name: JP MORGAN
+                code: '0056'
+              - name: KUSPIT
+                code: '0057'
+              - name: LIBERTAD
+                code: '0058'
+              - name: MASARI
+                code: '0059'
+              - name: MIFEL
+                code: '0060'
+              - name: MIZUHO BANK
+                code: '0061'
+              - name: MONEXCB
+                code: '0062'
+              - name: MUFG
+                code: '0063'
+              - name: MULTIVA BANCO
+                code: '0064'
+              - name: MULTIVA CBOLSA
+                code: '0065'
+              - name: NAFIN
+                code: '0066'
+              - name: PAGATODO
+                code: '0067'
+              - name: PROFUTURO
+                code: '0068'
+              - name: REFORMA
+                code: '0069'
+              - name: SABADELL
+                code: '0070'
+              - name: SANTANDER
+                code: '0071'
+              - name: SCOTIABANK
+                code: '0072'
+              - name: SHINHAN
+                code: '0073'
+              - name: STP
+                code: '0074'
+              - name: TRANSFER
+                code: '0075'
+              - name: UNAGRA
+                code: '0076'
+              - name: VALMEX
+                code: '0077'
+              - name: VALUE
+                code: '0078'
+              - name: VE POR MAS
+                code: '0079'
+              - name: VECTOR
+                code: '0080'
+              - name: VOLKSWAGEN
+                code: '0081'
+            CL:
+              - code: '0052'
+                name: DEUTSCHE BANK
+              - code: '0042'
+                name: AMERICAN EXPRESS BANK LTD.
+              - code: '0051'
+                name: BANCO FALABELLA
+              - code: '0009'
+                name: BANCO INTERNACIONAL
+              - code: '0043'
+                name: BANCO DE LA NACION ARGENTINA
+              - code: '0301'
+                name: CREDICHILE
+              - code: '0027'
+                name: CORPBANCA
+              - code: '0014'
+                name: SCOTIABANK CHILE
+              - code: '0031'
+                name: HSBC BANK (CHILE)
+              - code: '0032'
+                name: BANK OF AMERICA N.T and S.A.
+              - code: '0018'
+                name: BANCO CENTRAL DE CHILE
+              - code: '0055'
+                name: BANCO CONSORCIO
+              - code: '0010'
+                name: BANCO OSORNO Y LA UNION
+              - code: '0302'
+                name: BANEFE
+              - code: '0733'
+                name: FINANCIERA CONDELL S.A.
+              - code: '0033'
+                name: CITIBANK N.A.
+              - code: '0012'
+                name: BANCO DEL ESTADO DE CHILE
+              - code: '0034'
+                name: BANCO REAL S.A.
+              - code: '0045'
+                name: 'MUFG, LTD.'
+              - code: '0053'
+                name: BANCO RIPLEY
+              - code: '0672'
+                name: COOPEUCH
+              - code: '0001'
+                name: BANCO DE CHILE
+              - code: '0039'
+                name: ITAU CORPBANCA
+              - code: '0056'
+                name: BANCO PENTA
+              - code: '0059'
+                name: BANCO BTG PACTUAL CHILE
+              - code: '0011'
+                name: DRESDNER BANK LATEINAMERICA
+              - code: '0016'
+                name: BANCO DE CREDITO E INVERSIONES
+              - code: '0734'
+                name: FINANCIERA CONOSUR
+              - code: '0329'
+                name: FINANDES
+              - code: '0029'
+                name: BANCO DE A. EDWARDS
+              - code: '0731'
+                name: BANCO CONOSUR
+              - code: '0504'
+                name: BBVA CHILE
+              - code: '0049'
+                name: BANCO SECURITY
+              - code: '0054'
+                name: BANCO RABOBANK
+              - code: '0046'
+                name: ABN AMRO BANK (CHILE)
+              - code: '0037'
+                name: BANCO SANTANDER-CHILE
+              - code: '0040'
+                name: BANCO SUDAMERIS
+              - code: '0716'
+                name: CORPORACION FINANCIERA ATLAS
+              - code: '0041'
+                name: JP MORGAN CHASE BANK
+              - code: '0028'
+                name: BANCO BICE
+              - code: '0008'
+                name: BANCO O'HIGGINS
+              - code: '0036'
+                name: BANCO DO ESTADO DE SAO PAULO
+              - code: '0017'
+                name: BANCO DO BRASIL S.A.
+              - code: '0507'
+                name: BANCO DEL DESARROLLO
+              - code: '0038'
+                name: BANCO EXTERIOR (CHILE)
+              - code: '0057'
+                name: BANCO PARIS
+            PE:
+              - code: '093'
+                name: FINANCIERA QAPAQ
+              - code: '023'
+                name: BANCO DE COMERCIO
+              - code: '011'
+                name: BBVA PERÚ
+              - code: '007'
+                name: CITIBANK DEL PERÚ S.A.
+              - code: '058'
+                name: ALFIN BANCO S.A.
+              - code: '808'
+                name: CMAC HUANCAYO
+              - code: '038'
+                name: BANCO INTERAMERICANO DE FINANZAS
+              - code: '096'
+                name: FINANCIERA EFECTIVA
+              - code: '094'
+                name: FINANCIERA OH
+              - code: '003'
+                name: INTERBANK
+              - code: '009'
+                name: SCOTIABANK PERÚ S.A.A.
+              - code: '803'
+                name: CMAC AREQUIPA
+              - code: '809'
+                name: CMAC ICA
+              - code: '836'
+                name: CAJA RAIZ
+              - code: '091'
+                name: COMPARTAMOS FINANCIERA S.A.
+              - code: '056'
+                name: BANCO SANTANDER PERU
+              - code: '055'
+                name: BANCO RIPLEY
+              - code: '062'
+                name: BANK OF CHINA
+              - code: '805'
+                name: CMAC SULLANA
+              - code: '049'
+                name: 'MIBANCO, BANCO DE LA MICROEMPRESA S.A.'
+              - code: '002'
+                name: BANCO DE CRÉDITO DEL PERÚ
+              - code: '800'
+                name: CAJA METROPOLITANA
+              - code: '060'
+                name: ICBC PERÚ BANK
+              - code: '813'
+                name: CMAC TACNA
+              - code: '801'
+                name: CMAC PIURA
+              - code: '806'
+                name: CMAC CUSCO
+              - code: '035'
+                name: BANCO PICHINCHA
+              - code: '099'
+                name: FINANCIERA CONFIANZA
+              - code: '802'
+                name: CMAC TRUJILLO
+              - code: '811'
+                name: CMAC MAYNAS
+              - code: '043'
+                name: CREDISCOTIA FINANCIERA S.A.
+              - code: '053'
+                name: BANCO GNB PERU
+              - code: '018'
+                name: BANCO DE LA NACIÓN
+              - code: '054'
+                name: BANCO FALABELLA PERÙ S.A.
+              - code: '063'
+                name: BANCO BCI PERU S.A.
+            CO- DAVIVIENDA:
+              - code: '000001'
+                name: BANCO DE BOGOTA
+              - code: '000002'
+                name: BANCO POPULAR
+              - code: '000006'
+                name: BANCO CORPBANCA
+              - code: '000007'
+                name: BANCOLOMBIA S.A.
+              - code: '000009'
+                name: CITIBANK COLOMBIA
+              - code: '000012'
+                name: BANCO GNB SUDAMERIS
+              - code: '000013'
+                name: BBVA COLOMBIA
+              - code: '000014'
+                name: ITAU
+              - code: '000019'
+                name: BANCO COLPATRIA
+              - code: '000023'
+                name: BANCO DE OCCIDENTE
+              - code: '000031'
+                name: BANCO BANCOLDEX
+              - code: '000032'
+                name: BANCO CAJA SOCIAL
+              - code: '000040'
+                name: BANCO AGRARIO DE COLOMBIA
+              - code: '000042'
+                name: BNP PARIBAS
+              - code: '000051'
+                name: BANCO DAVIVIENDA S.A
+              - code: '002567'
+                name: BANCO DAVIPLATA
+              - code: '000052'
+                name: BANCO AV VILLAS
+              - code: '000053'
+                name: BANCO W S.A
+              - code: '000058'
+                name: BANCO PROCREDIT
+              - code: '000059'
+                name: BANCAMIA
+              - code: '000060'
+                name: BANCO PICHINCHA S.A.
+              - code: '000061'
+                name: BANCOOMEVA
+              - code: '000062'
+                name: BANCO FALABELLA S.A.
+              - code: '000063'
+                name: BANCO FINANDINA S.A.
+              - code: '000064'
+                name: BANCO MULTIBANK
+              - code: '000065'
+                name: BANCO SANTANDER DE NEGOCIOS COLOMBIA S.A.
+              - code: '000066'
+                name: BANCO COOPERATIVO COOPCENTRAL
+              - code: '000067'
+                name: BANCO COMPARTIR S.A
+              - code: '000069'
+                name: BANCO SERFINANZA S.A
+              - code: '000090'
+                name: CORFICOLOMBIANA
+              - code: '000121'
+                name: FINANCIERA JURIDISCOOP
+              - code: '000283'
+                name: COOPERATIVA FINANCIERA DE ANTIOQUIA
+              - code: '000289'
+                name: COTRAFA COOPERATIVA FINANCIERA
+              - code: '000292'
+                name: CONFIAR S.A
+              - code: '000370'
+                name: COLTEFINANCIERA
+              - code: '000507'
+                name: NEQUI
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+            required:
+              - message
+              - code
+          examples:
+            application/json:
+              message: ID de comercio no válido
+              code: K004
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+          examples:
+            application/json:
+              message: Internal server error
+      operationId: transferOutBankList
+      parameters:
+        - in: header
+          name: Public-key
+          type: string
+          required: true
+      description: "Before requesting a `token` for a Transfer Out transaction, you first need to load the banks, so that the final client can select from the list. You only need to consume this endpoint.\n\nThe response you will get, is an array of the banks with its name and code.\n\n>In the case of Colombia \U0001F1E8\U0001F1F4, if the transaction is by phone number, you don't need to use this endpoint. For the transactions by account number, the bank list will depend on the secure rules configured for your customer.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Colombia, México, Chile and Peru.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)"
+      summary: Get Bank List
+      x-stoplight:
+        id: nmnasmk6mqohz
+  /payouts/transfer/v2/bankList:
+    get:
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                code:
+                  type: string
+                internationalCodes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      code:
+                        type:
+                          - 'null'
+                          - string
+                name:
+                  type: string
+            x-examples:
+              Example 1:
+                - code: '1292'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Confiar Cooperativa Financiera
+                - code: '1370'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CLTECOBMXXX
+                  name: Coltefinanciera S.A.
+                - code: '1801'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: MOVii
+                - code: '1151'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CAFECOBBXXX
+                  name: Rappipay DAVIplata
+                - code: '1031'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BCEXCOBB
+                  name: Bancoldex
+                - code: '1069'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: SERZCOBB
+                  name: Banco Serfinanza
+                - code: '1023'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: OCCICOBCADZ
+                  name: Banco de Occidente
+                - code: '1009'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CITICOBBXXX
+                  name: Banco Citibank
+                - code: '1802'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: DING Tecnipagos S.A.
+                - code: '1071'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CHASCOBBXXX
+                  name: Banco JP Morgan
+                - code: '1558'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Credifinanciera
+                - code: '1012'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BSUDCOBBXXX
+                  name: Banco GNB Sudameris
+                - code: '1013'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: FBBVCOBB
+                  name: BBVA Colombia
+                - code: '1032'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CASOCOBBXXX
+                  name: Banco Caja Social
+                - code: '1066'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Banco Coopcentral
+                - code: '1507'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: NEQQCOBM
+                  name: NEQUI
+                - code: '1040'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CCAICOBB
+                  name: Banco Agrario
+                - code: '1070'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Lulo Bank
+                - code: '1007'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: COLOCOBM
+                  name: Bancolombia
+                - code: '1002'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BPOPCOBB
+                  name: Banco Popular
+                - code: '1060'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: PICHCOBB
+                  name: Banco Pichincha S.A.
+                - code: '1053'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Banco W S.A.
+                - code: '1804'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: UALÁ
+                - code: '1303'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: GYDVCOBCXXX
+                  name: Giros y Finanzas
+                - code: '1019'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: COLPCOBB
+                  name: Scotiabank Colpatria
+                - code: '1805'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BPABCOBB
+                  name: Banco BTG Pactual
+                - code: '1551'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CAFECOBBXXX
+                  name: Daviplata
+                - code: '1001'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BBOGCOBB
+                  name: Banco de Bogotá
+                - code: '1062'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: FALACOBB
+                  name: Banco Falabella
+                - code: '1051'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CAFECOBB
+                  name: Banco Davivienda
+                - code: '1637'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: IRCICOBBXXX
+                  name: Iris
+                - code: '1061'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Bancoomeva
+                - code: '1059'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Bancamia S.A.
+                - code: '1014'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BCTOCOBB
+                  name: Itaú
+                - code: '1052'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BAVICOBB
+                  name: Banco AV Villas
+                - code: '1006'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BCTOCOBB
+                  name: Itaú antes Corpbanca
+                - code: '1065'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: SANTCOBB
+                  name: Banco Santander de Negocios
+          examples:
+            CO:
+              - code: '000001'
+                internationalCodes:
+                  - code: BBOGCOBB
+                    type: SWIFT
+                name: BANCO DE BOGOTA
+              - code: '000002'
+                internationalCodes:
+                  - code: BPOPCOBB
+                    type: SWIFT
+                name: BANCO POPULAR
+              - code: '000006'
+                internationalCodes:
+                  - code: BCTOCOBBMD1
+                    type: SWIFT
+                name: BANCO CORPBANCA
+              - code: '000007'
+                internationalCodes:
+                  - code: COLOCOBM
+                    type: SWIFT
+                name: BANCOLOMBIA S.A.
+              - code: '000009'
+                internationalCodes:
+                  - code: CITICOBB
+                    type: SWIFT
+                name: CITIBANK COLOMBIA
+              - code: '000012'
+                internationalCodes:
+                  - code: BSUDCOBB
+                    type: SWIFT
+                name: BANCO GNB SUDAMERIS
+              - code: '000013'
+                internationalCodes:
+                  - code: FBBVCOBB
+                    type: SWIFT
+                name: BBVA COLOMBIA
+              - code: '000014'
+                internationalCodes:
+                  - code: BCTOCOBB
+                    type: SWIFT
+                name: ITAU
+              - code: '000019'
+                internationalCodes:
+                  - code: COLPCOBB
+                    type: SWIFT
+                name: BANCO COLPATRIA
+              - code: '000023'
+                internationalCodes:
+                  - code: OCCICOBC
+                    type: SWIFT
+                name: BANCO DE OCCIDENTE
+              - code: '000031'
+                internationalCodes:
+                  - code: BCEXCOBB
+                    type: SWIFT
+                name: BANCO BANCOLDEX
+              - code: '000032'
+                internationalCodes:
+                  - code: CASOCOBB
+                    type: SWIFT
+                name: BANCO CAJA SOCIAL
+              - code: '000040'
+                internationalCodes:
+                  - code: CCAICOBB
+                    type: SWIFT
+                name: BANCO AGRARIO DE COLOMBIA
+              - code: '000042'
+                internationalCodes:
+                  - code: BNPACOBB
+                    type: SWIFT
+                name: BNP PARIBAS
+              - code: '000051'
+                internationalCodes:
+                  - code: CAFECOBB
+                    type: SWIFT
+                name: BANCO DAVIVIENDA S.A
+              - code: '000051'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCO DAVIPLATA
+              - code: '000052'
+                internationalCodes:
+                  - code: BAVICOBB
+                    type: SWIFT
+                name: BANCO AV VILLAS
+              - code: '000053'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCO W S.A
+              - code: '000058'
+                internationalCodes:
+                  - code: PRCBCOBB
+                    type: SWIFT
+                name: BANCO PROCREDIT
+              - code: '000059'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCAMIA
+              - code: '000060'
+                internationalCodes:
+                  - code: PICHCOBB
+                    type: SWIFT
+                name: BANCO PICHINCHA S.A.
+              - code: '000061'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCOOMEVA
+              - code: '000062'
+                internationalCodes:
+                  - code: FALACOBB
+                    type: SWIFT
+                name: BANCO FALABELLA S.A.
+              - code: '000063'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCO FINANDINA S.A.
+              - code: '000064'
+                internationalCodes:
+                  - code: MCTBCOBB
+                    type: SWIFT
+                name: BANCO MULTIBANK
+              - code: '000065'
+                internationalCodes:
+                  - code: SANTCOBB
+                    type: SWIFT
+                name: BANCO SANTANDER DE NEGOCIOS COLOMBIA S.A.
+              - code: '000066'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCO COOPERATIVO COOPCENTRAL
+              - code: '000067'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCO COMPARTIR S.A
+              - code: '000069'
+                internationalCodes:
+                  - code: SERZCOBB
+                    type: SWIFT
+                name: BANCO SERFINANZA S.A
+              - code: '000090'
+                internationalCodes:
+                  - code: FCOICOBB
+                    type: SWIFT
+                name: CORFICOLOMBIANA
+              - code: '000121'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: FINANCIERA JURIDISCOOP
+              - code: '000283'
+                internationalCodes:
+                  - code: FIACCOB1
+                    type: SWIFT
+                name: COOPERATIVA FINANCIERA DE ANTIOQUIA
+              - code: '000289'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: COTRAFA COOPERATIVA FINANCIERA
+              - code: '000292'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: CONFIAR S.A
+              - code: '000370'
+                internationalCodes:
+                  - code: CLTECOBM
+                    type: SWIFT
+                name: COLTEFINANCIERA
+              - code: '000507'
+                internationalCodes:
+                  - code: NEQQCOBM
+                    type: SWIFT
+                name: NEQUI
+            MX:
+              - code: '0001'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: ABC CAPITAL
+              - code: '0002'
+                internationalCodes:
+                  - type: SWIFT
+                    code: ACIOMXMMACB
+                name: ACTINVER
+              - code: '0003'
+                internationalCodes:
+                  - type: SWIFT
+                    code: AFIRMXMTXXX
+                name: AFIRME
+              - code: '0004'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: AKALA
+              - code: '0091'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: ALTERNATIVOS
+              - code: '0005'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: ARCUS
+              - code: '0006'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: ASP INTEGRA OPC
+              - code: '0007'
+                internationalCodes:
+                  - type: SWIFT
+                    code: AUMCMXMMXXX
+                name: AUTOFIN
+              - code: '0008'
+                internationalCodes:
+                  - type: SWIFT
+                    code: AZTKMXMMXXX
+                name: AZTECA
+              - code: '0009'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BJIOMXMLXXX
+                name: BAJIO
+              - code: '0010'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BNMXMXMM
+                name: BANAMEX
+              - code: '0011'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANCO FINTERRA
+              - code: '0012'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BSMXMXMMXXX
+                name: BANCO S3
+              - code: '0013'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BNCEMXMM
+                name: BANCOMEXT
+              - code: '0014'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANCOPPEL
+              - code: '0015'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BIBPMXMMXXX
+                name: BANCREA
+              - code: '0016'
+                internationalCodes:
+                  - type: SWIFT
+                    code: EJERMXMM
+                name: BANJERCITO
+              - code: '0017'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BOFAMXMXXXX
+                name: BANK OF AMERICA
+              - code: '0018'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANKAOOL
+              - code: '0019'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANOBRAS
+              - code: '0020'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MENOMXMTXXX
+                name: BANORTE
+              - code: '0021'
+                internationalCodes:
+                  - type: SWIFT
+                    code: RGIOMXMTXXX
+                name: BANREGIO
+              - code: '0022'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANSEFI
+              - code: '0023'
+                internationalCodes:
+                  - type: SWIFT
+                    code: SNABMXM1XXX
+                name: BANSI
+              - code: '0024'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANXICO
+              - code: '0025'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BARCMXMMXXX
+                name: BARCLAYS
+              - code: '0026'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BBSEMXMXXXX
+                name: BBASE
+              - code: '0027'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BCMRMXMMXXX
+                name: BBVA MEXICO
+              - code: '0028'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MONXMXMM
+                name: BMONEX
+              - code: '0029'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CAJA POP MEXICA
+              - code: '0030'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CAJA TELEFONIST
+              - code: '0031'
+                internationalCodes:
+                  - type: SWIFT
+                    code: INTEMXMMXXX
+                name: CB INTERCAM
+              - code: '0032'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CI BOLSA
+              - code: '0033'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CIMXMXMMFID
+                name: CIBANCO
+              - code: '0034'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: COMPARTAMOS
+              - code: '0035'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CONSUBANCO
+              - code: '0036'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CREDICAPITAL
+              - code: '0037'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CREDIT SUISSE
+              - code: '0038'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CRISTOBAL COLON
+              - code: '0039'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CoDi Valida
+              - code: '0040'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: DONDE
+              - code: '0041'
+                internationalCodes:
+                  - type: SWIFT
+                    code: EVCBMXMMXXX
+                name: EVERCORE
+              - code: '0042'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CBFAMXM1XXX
+                name: FINAMEX
+              - code: '0043'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: FINCOMUN
+              - code: '0044'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: FOMPED
+              - code: '0045'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: FONDO (FIRA)
+              - code: '0046'
+                internationalCodes:
+                  - type: SWIFT
+                    code: GBMSMXM1XXX
+                name: GBM
+              - code: '0090'
+                internationalCodes:
+                  - type: SWIFT
+                    code: TESRMXMMXXX
+                name: GEM - STP
+              - code: '0047'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: HIPOTECARIA FED
+              - code: '0048'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BIMEMXMMXXX
+                name: HSBC
+              - code: '0049'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: ICBC
+              - code: '0050'
+                internationalCodes:
+                  - type: SWIFT
+                    code: INBUMXMMXXX
+                name: INBURSA
+              - code: '0051'
+                internationalCodes:
+                  - type: SWIFT
+                    code: INDEMXM3XXX
+                name: INDEVAL
+              - code: '0052'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: INMOBILIARIO
+              - code: '0053'
+                internationalCodes:
+                  - type: SWIFT
+                    code: INTEMXMMXXX
+                name: INTERCAM BANCO
+              - code: '0054'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: INVERCAP
+              - code: '0055'
+                internationalCodes:
+                  - type: SWIFT
+                    code: INXXMXMM
+                name: INVEX
+              - code: '0056'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CHASMXMXGTS
+                name: JP MORGAN
+              - code: '0057'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: KUSPIT
+              - code: '0058'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: LIBERTAD
+              - code: '0059'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: MASARI
+              - code: '0060'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MIFEMXMMXXX
+                name: MIFEL
+              - code: '0061'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MHBMMXMMXXX
+                name: MIZUHO BANK
+              - code: '0062'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MONXMXMMXXX
+                name: MONEXCB
+              - code: '0063'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BOTKMXMXXXX
+                name: MUFG
+              - code: '0064'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MIMMMXMXXXX
+                name: MULTIVA BANCO
+              - code: '0065'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MIMMMXM1XXX
+                name: MULTIVA CBOLSA
+              - code: '0066'
+                internationalCodes:
+                  - type: SWIFT
+                    code: NFSAMXMMXXX
+                name: NAFIN
+              - code: '0067'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: PAGATODO
+              - code: '0068'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: PROFUTURO
+              - code: '0069'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: REFORMA
+              - code: '0070'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BSABMXMMXXX
+                name: SABADELL
+              - code: '0071'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BMSXMXMMXXX
+                name: SANTANDER
+              - code: '0072'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MBCOMXMMFXA
+                name: SCOTIABANK
+              - code: '0073'
+                internationalCodes:
+                  - type: SWIFT
+                    code: SHBKMXMMXXX
+                name: SHINHAN
+              - code: '0074'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: STP
+              - code: '0075'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: TRANSFER
+              - code: '0076'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: UNAGRA
+              - code: '0077'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: VALMEX
+              - code: '0078'
+                internationalCodes:
+                  - type: SWIFT
+                    code: VACBMXM1XXX
+                name: VALUE
+              - code: '0079'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CBAKMXM1XXX
+                name: VE POR MAS
+              - code: '0080'
+                internationalCodes:
+                  - type: SWIFT
+                    code: VECRMXMMXXX
+                name: VECTOR
+              - code: '0081'
+                internationalCodes:
+                  - type: SWIFT
+                    code: VWAGMXMMXXX
+                name: VOLKSWAGEN
+            CL:
+              - code: '1292'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: Confiar Cooperativa Financiera
+              - code: '1370'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CLTECOBMXXX
+                name: Coltefinanciera S.A.
+              - code: '1801'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: MOVii
+              - code: '1151'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CAFECOBBXXX
+                name: Rappipay DAVIplata
+              - code: '1031'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BCEXCOBB
+                name: Bancoldex
+              - code: '1069'
+                internationalCodes:
+                  - type: SWIFT
+                    code: SERZCOBB
+                name: Banco Serfinanza
+              - code: '1023'
+                internationalCodes:
+                  - type: SWIFT
+                    code: OCCICOBCADZ
+                name: Banco de Occidente
+              - code: '1009'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CITICOBBXXX
+                name: Banco Citibank
+              - code: '1802'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: DING Tecnipagos S.A.
+              - code: '1071'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CHASCOBBXXX
+                name: Banco JP Morgan
+              - code: '1558'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: Credifinanciera
+              - code: '1012'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BSUDCOBBXXX
+                name: Banco GNB Sudameris
+              - code: '1013'
+                internationalCodes:
+                  - type: SWIFT
+                    code: FBBVCOBB
+                name: BBVA Colombia
+              - code: '1032'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CASOCOBBXXX
+                name: Banco Caja Social
+              - code: '1066'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: Banco Coopcentral
+              - code: '1507'
+                internationalCodes:
+                  - type: SWIFT
+                    code: NEQQCOBM
+                name: NEQUI
+              - code: '1040'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CCAICOBB
+                name: Banco Agrario
+              - code: '1070'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: Lulo Bank
+              - code: '1007'
+                internationalCodes:
+                  - type: SWIFT
+                    code: COLOCOBM
+                name: Bancolombia
+              - code: '1002'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BPOPCOBB
+                name: Banco Popular
+              - code: '1060'
+                internationalCodes:
+                  - type: SWIFT
+                    code: PICHCOBB
+                name: Banco Pichincha S.A.
+              - code: '1053'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: Banco W S.A.
+              - code: '1804'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: UALÁ
+              - code: '1303'
+                internationalCodes:
+                  - type: SWIFT
+                    code: GYDVCOBCXXX
+                name: Giros y Finanzas
+              - code: '1019'
+                internationalCodes:
+                  - type: SWIFT
+                    code: COLPCOBB
+                name: Scotiabank Colpatria
+              - code: '1805'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BPABCOBB
+                name: Banco BTG Pactual
+              - code: '1551'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CAFECOBBXXX
+                name: Daviplata
+              - code: '1001'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BBOGCOBB
+                name: Banco de Bogotá
+              - code: '1062'
+                internationalCodes:
+                  - type: SWIFT
+                    code: FALACOBB
+                name: Banco Falabella
+              - code: '1051'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CAFECOBB
+                name: Banco Davivienda
+              - code: '1637'
+                internationalCodes:
+                  - type: SWIFT
+                    code: IRCICOBBXXX
+                name: Iris
+              - code: '1061'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: Bancoomeva
+              - code: '1059'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: Bancamia S.A.
+              - code: '1014'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BCTOCOBB
+                name: Itaú
+              - code: '1052'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BAVICOBB
+                name: Banco AV Villas
+              - code: '1006'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BCTOCOBB
+                name: Itaú antes Corpbanca
+              - code: '1065'
+                internationalCodes:
+                  - type: SWIFT
+                    code: SANTCOBB
+                name: Banco Santander de Negocios
+            PE:
+              - code: '093'
+                internationalCodes: []
+                name: FINANCIERA QAPAQ
+              - code: '023'
+                internationalCodes: []
+                name: BANCO DE COMERCIO
+              - code: '011'
+                internationalCodes: []
+                name: BBVA PERÚ
+              - code: '007'
+                internationalCodes: []
+                name: CITIBANK DEL PERÚ S.A.
+              - code: '058'
+                internationalCodes: []
+                name: ALFIN BANCO S.A.
+              - code: '808'
+                internationalCodes: []
+                name: CMAC HUANCAYO
+              - code: '038'
+                internationalCodes: []
+                name: BANCO INTERAMERICANO DE FINANZAS
+              - code: '096'
+                internationalCodes: []
+                name: FINANCIERA EFECTIVA
+              - code: '094'
+                internationalCodes: []
+                name: FINANCIERA OH
+              - code: '003'
+                internationalCodes: []
+                name: INTERBANK
+              - code: '009'
+                internationalCodes: []
+                name: SCOTIABANK PERÚ S.A.A.
+              - code: '803'
+                internationalCodes: []
+                name: CMAC AREQUIPA
+              - code: '809'
+                internationalCodes: []
+                name: CMAC ICA
+              - code: '836'
+                internationalCodes: []
+                name: CAJA RAIZ
+              - code: '091'
+                internationalCodes: []
+                name: COMPARTAMOS FINANCIERA S.A.
+              - code: '056'
+                internationalCodes: []
+                name: BANCO SANTANDER PERU
+              - code: '055'
+                internationalCodes: []
+                name: BANCO RIPLEY
+              - code: '062'
+                internationalCodes: []
+                name: BANK OF CHINA
+              - code: '805'
+                internationalCodes: []
+                name: CMAC SULLANA
+              - code: '049'
+                internationalCodes: []
+                name: 'MIBANCO, BANCO DE LA MICROEMPRESA S.A.'
+              - code: '002'
+                internationalCodes: []
+                name: BANCO DE CRÉDITO DEL PERÚ
+              - code: '800'
+                internationalCodes: []
+                name: CAJA METROPOLITANA
+              - code: '060'
+                internationalCodes: []
+                name: ICBC PERÚ BANK
+              - code: '813'
+                internationalCodes: []
+                name: CMAC TACNA
+              - code: '801'
+                internationalCodes: []
+                name: CMAC PIURA
+              - code: '806'
+                internationalCodes: []
+                name: CMAC CUSCO
+              - code: '035'
+                internationalCodes: []
+                name: BANCO PICHINCHA
+              - code: '099'
+                internationalCodes: []
+                name: FINANCIERA CONFIANZA
+              - code: '802'
+                internationalCodes: []
+                name: CMAC TRUJILLO
+              - code: '811'
+                internationalCodes: []
+                name: CMAC MAYNAS
+              - code: '043'
+                internationalCodes: []
+                name: CREDISCOTIA FINANCIERA S.A.
+              - code: '053'
+                internationalCodes: []
+                name: BANCO GNB PERU
+              - code: '018'
+                internationalCodes: []
+                name: BANCO DE LA NACIÓN
+              - code: '054'
+                internationalCodes: []
+                name: BANCO FALABELLA PERÙ S.A.
+              - code: '063'
+                internationalCodes: []
+                name: BANCO BCI PERU S.A.
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+            required:
+              - message
+              - code
+          examples:
+            application/json:
+              message: ID de comercio o credencial no válido
+              code: K004
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+          examples:
+            application/json:
+              message: Internal server error
+        '':
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                code:
+                  type: string
+                internationalCodes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      code:
+                        type:
+                          - 'null'
+                          - string
+                name:
+                  type: string
+            x-examples:
+              Example 1:
+                - code: '1292'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Confiar Cooperativa Financiera
+                - code: '1370'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CLTECOBMXXX
+                  name: Coltefinanciera S.A.
+                - code: '1801'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: MOVii
+                - code: '1151'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CAFECOBBXXX
+                  name: Rappipay DAVIplata
+                - code: '1031'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BCEXCOBB
+                  name: Bancoldex
+                - code: '1069'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: SERZCOBB
+                  name: Banco Serfinanza
+                - code: '1023'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: OCCICOBCADZ
+                  name: Banco de Occidente
+                - code: '1009'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CITICOBBXXX
+                  name: Banco Citibank
+                - code: '1802'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: DING Tecnipagos S.A.
+                - code: '1071'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CHASCOBBXXX
+                  name: Banco JP Morgan
+                - code: '1558'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Credifinanciera
+                - code: '1012'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BSUDCOBBXXX
+                  name: Banco GNB Sudameris
+                - code: '1013'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: FBBVCOBB
+                  name: BBVA Colombia
+                - code: '1032'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CASOCOBBXXX
+                  name: Banco Caja Social
+                - code: '1066'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Banco Coopcentral
+                - code: '1507'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: NEQQCOBM
+                  name: NEQUI
+                - code: '1040'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CCAICOBB
+                  name: Banco Agrario
+                - code: '1070'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Lulo Bank
+                - code: '1007'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: COLOCOBM
+                  name: Bancolombia
+                - code: '1002'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BPOPCOBB
+                  name: Banco Popular
+                - code: '1060'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: PICHCOBB
+                  name: Banco Pichincha S.A.
+                - code: '1053'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Banco W S.A.
+                - code: '1804'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: UALÁ
+                - code: '1303'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: GYDVCOBCXXX
+                  name: Giros y Finanzas
+                - code: '1019'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: COLPCOBB
+                  name: Scotiabank Colpatria
+                - code: '1805'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BPABCOBB
+                  name: Banco BTG Pactual
+                - code: '1551'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CAFECOBBXXX
+                  name: Daviplata
+                - code: '1001'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BBOGCOBB
+                  name: Banco de Bogotá
+                - code: '1062'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: FALACOBB
+                  name: Banco Falabella
+                - code: '1051'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: CAFECOBB
+                  name: Banco Davivienda
+                - code: '1637'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: IRCICOBBXXX
+                  name: Iris
+                - code: '1061'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Bancoomeva
+                - code: '1059'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: null
+                  name: Bancamia S.A.
+                - code: '1014'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BCTOCOBB
+                  name: Itaú
+                - code: '1052'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BAVICOBB
+                  name: Banco AV Villas
+                - code: '1006'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: BCTOCOBB
+                  name: Itaú antes Corpbanca
+                - code: '1065'
+                  internationalCodes:
+                    - type: SWIFT
+                      code: SANTCOBB
+                  name: Banco Santander de Negocios
+          examples:
+            CO:
+              - code: '000001'
+                internationalCodes:
+                  - code: BBOGCOBB
+                    type: SWIFT
+                name: BANCO DE BOGOTA
+              - code: '000002'
+                internationalCodes:
+                  - code: BPOPCOBB
+                    type: SWIFT
+                name: BANCO POPULAR
+              - code: '000006'
+                internationalCodes:
+                  - code: BCTOCOBBMD1
+                    type: SWIFT
+                name: BANCO CORPBANCA
+              - code: '000007'
+                internationalCodes:
+                  - code: COLOCOBM
+                    type: SWIFT
+                name: BANCOLOMBIA S.A.
+              - code: '000009'
+                internationalCodes:
+                  - code: CITICOBB
+                    type: SWIFT
+                name: CITIBANK COLOMBIA
+              - code: '000012'
+                internationalCodes:
+                  - code: BSUDCOBB
+                    type: SWIFT
+                name: BANCO GNB SUDAMERIS
+              - code: '000013'
+                internationalCodes:
+                  - code: FBBVCOBB
+                    type: SWIFT
+                name: BBVA COLOMBIA
+              - code: '000014'
+                internationalCodes:
+                  - code: BCTOCOBB
+                    type: SWIFT
+                name: ITAU
+              - code: '000019'
+                internationalCodes:
+                  - code: COLPCOBB
+                    type: SWIFT
+                name: BANCO COLPATRIA
+              - code: '000023'
+                internationalCodes:
+                  - code: OCCICOBC
+                    type: SWIFT
+                name: BANCO DE OCCIDENTE
+              - code: '000031'
+                internationalCodes:
+                  - code: BCEXCOBB
+                    type: SWIFT
+                name: BANCO BANCOLDEX
+              - code: '000032'
+                internationalCodes:
+                  - code: CASOCOBB
+                    type: SWIFT
+                name: BANCO CAJA SOCIAL
+              - code: '000040'
+                internationalCodes:
+                  - code: CCAICOBB
+                    type: SWIFT
+                name: BANCO AGRARIO DE COLOMBIA
+              - code: '000042'
+                internationalCodes:
+                  - code: BNPACOBB
+                    type: SWIFT
+                name: BNP PARIBAS
+              - code: '000051'
+                internationalCodes:
+                  - code: CAFECOBB
+                    type: SWIFT
+                name: BANCO DAVIVIENDA S.A
+              - code: '000052'
+                internationalCodes:
+                  - code: BAVICOBB
+                    type: SWIFT
+                name: BANCO AV VILLAS
+              - code: '000053'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCO W S.A
+              - code: '000058'
+                internationalCodes:
+                  - code: PRCBCOBB
+                    type: SWIFT
+                name: BANCO PROCREDIT
+              - code: '000059'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCAMIA
+              - code: '000060'
+                internationalCodes:
+                  - code: PICHCOBB
+                    type: SWIFT
+                name: BANCO PICHINCHA S.A.
+              - code: '000061'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCOOMEVA
+              - code: '000062'
+                internationalCodes:
+                  - code: FALACOBB
+                    type: SWIFT
+                name: BANCO FALABELLA S.A.
+              - code: '000063'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCO FINANDINA S.A.
+              - code: '000064'
+                internationalCodes:
+                  - code: MCTBCOBB
+                    type: SWIFT
+                name: BANCO MULTIBANK
+              - code: '000065'
+                internationalCodes:
+                  - code: SANTCOBB
+                    type: SWIFT
+                name: BANCO SANTANDER DE NEGOCIOS COLOMBIA S.A.
+              - code: '000066'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCO COOPERATIVO COOPCENTRAL
+              - code: '000067'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: BANCO COMPARTIR S.A
+              - code: '000069'
+                internationalCodes:
+                  - code: SERZCOBB
+                    type: SWIFT
+                name: BANCO SERFINANZA S.A
+              - code: '000090'
+                internationalCodes:
+                  - code: FCOICOBB
+                    type: SWIFT
+                name: CORFICOLOMBIANA
+              - code: '000121'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: FINANCIERA JURIDISCOOP
+              - code: '000283'
+                internationalCodes:
+                  - code: FIACCOB1
+                    type: SWIFT
+                name: COOPERATIVA FINANCIERA DE ANTIOQUIA
+              - code: '000289'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: COTRAFA COOPERATIVA FINANCIERA
+              - code: '000292'
+                internationalCodes:
+                  - code: null
+                    type: SWIFT
+                name: CONFIAR S.A
+              - code: '000370'
+                internationalCodes:
+                  - code: CLTECOBM
+                    type: SWIFT
+                name: COLTEFINANCIERA
+              - code: '000507'
+                internationalCodes:
+                  - code: NEQQCOBM
+                    type: SWIFT
+                name: NEQUI
+            MX:
+              - code: '0001'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: ABC CAPITAL
+              - code: '0002'
+                internationalCodes:
+                  - type: SWIFT
+                    code: ACIOMXMMACB
+                name: ACTINVER
+              - code: '0003'
+                internationalCodes:
+                  - type: SWIFT
+                    code: AFIRMXMTXXX
+                name: AFIRME
+              - code: '0004'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: AKALA
+              - code: '0091'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: ALTERNATIVOS
+              - code: '0005'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: ARCUS
+              - code: '0006'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: ASP INTEGRA OPC
+              - code: '0007'
+                internationalCodes:
+                  - type: SWIFT
+                    code: AUMCMXMMXXX
+                name: AUTOFIN
+              - code: '0008'
+                internationalCodes:
+                  - type: SWIFT
+                    code: AZTKMXMMXXX
+                name: AZTECA
+              - code: '0009'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BJIOMXMLXXX
+                name: BAJIO
+              - code: '0010'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BNMXMXMM
+                name: BANAMEX
+              - code: '0011'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANCO FINTERRA
+              - code: '0012'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BSMXMXMMXXX
+                name: BANCO S3
+              - code: '0013'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BNCEMXMM
+                name: BANCOMEXT
+              - code: '0014'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANCOPPEL
+              - code: '0015'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BIBPMXMMXXX
+                name: BANCREA
+              - code: '0016'
+                internationalCodes:
+                  - type: SWIFT
+                    code: EJERMXMM
+                name: BANJERCITO
+              - code: '0017'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BOFAMXMXXXX
+                name: BANK OF AMERICA
+              - code: '0018'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANKAOOL
+              - code: '0019'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANOBRAS
+              - code: '0020'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MENOMXMTXXX
+                name: BANORTE
+              - code: '0021'
+                internationalCodes:
+                  - type: SWIFT
+                    code: RGIOMXMTXXX
+                name: BANREGIO
+              - code: '0022'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANSEFI
+              - code: '0023'
+                internationalCodes:
+                  - type: SWIFT
+                    code: SNABMXM1XXX
+                name: BANSI
+              - code: '0024'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: BANXICO
+              - code: '0025'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BARCMXMMXXX
+                name: BARCLAYS
+              - code: '0026'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BBSEMXMXXXX
+                name: BBASE
+              - code: '0027'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BCMRMXMMXXX
+                name: BBVA MEXICO
+              - code: '0028'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MONXMXMM
+                name: BMONEX
+              - code: '0029'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CAJA POP MEXICA
+              - code: '0030'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CAJA TELEFONIST
+              - code: '0031'
+                internationalCodes:
+                  - type: SWIFT
+                    code: INTEMXMMXXX
+                name: CB INTERCAM
+              - code: '0032'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CI BOLSA
+              - code: '0033'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CIMXMXMMFID
+                name: CIBANCO
+              - code: '0034'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: COMPARTAMOS
+              - code: '0035'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CONSUBANCO
+              - code: '0036'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CREDICAPITAL
+              - code: '0037'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CREDIT SUISSE
+              - code: '0038'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CRISTOBAL COLON
+              - code: '0039'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: CoDi Valida
+              - code: '0040'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: DONDE
+              - code: '0041'
+                internationalCodes:
+                  - type: SWIFT
+                    code: EVCBMXMMXXX
+                name: EVERCORE
+              - code: '0042'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CBFAMXM1XXX
+                name: FINAMEX
+              - code: '0043'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: FINCOMUN
+              - code: '0044'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: FOMPED
+              - code: '0045'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: FONDO (FIRA)
+              - code: '0046'
+                internationalCodes:
+                  - type: SWIFT
+                    code: GBMSMXM1XXX
+                name: GBM
+              - code: '0090'
+                internationalCodes:
+                  - type: SWIFT
+                    code: TESRMXMMXXX
+                name: GEM - STP
+              - code: '0047'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: HIPOTECARIA FED
+              - code: '0048'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BIMEMXMMXXX
+                name: HSBC
+              - code: '0049'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: ICBC
+              - code: '0050'
+                internationalCodes:
+                  - type: SWIFT
+                    code: INBUMXMMXXX
+                name: INBURSA
+              - code: '0051'
+                internationalCodes:
+                  - type: SWIFT
+                    code: INDEMXM3XXX
+                name: INDEVAL
+              - code: '0052'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: INMOBILIARIO
+              - code: '0053'
+                internationalCodes:
+                  - type: SWIFT
+                    code: INTEMXMMXXX
+                name: INTERCAM BANCO
+              - code: '0054'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: INVERCAP
+              - code: '0055'
+                internationalCodes:
+                  - type: SWIFT
+                    code: INXXMXMM
+                name: INVEX
+              - code: '0056'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CHASMXMXGTS
+                name: JP MORGAN
+              - code: '0057'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: KUSPIT
+              - code: '0058'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: LIBERTAD
+              - code: '0059'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: MASARI
+              - code: '0060'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MIFEMXMMXXX
+                name: MIFEL
+              - code: '0061'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MHBMMXMMXXX
+                name: MIZUHO BANK
+              - code: '0062'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MONXMXMMXXX
+                name: MONEXCB
+              - code: '0063'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BOTKMXMXXXX
+                name: MUFG
+              - code: '0064'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MIMMMXMXXXX
+                name: MULTIVA BANCO
+              - code: '0065'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MIMMMXM1XXX
+                name: MULTIVA CBOLSA
+              - code: '0066'
+                internationalCodes:
+                  - type: SWIFT
+                    code: NFSAMXMMXXX
+                name: NAFIN
+              - code: '0067'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: PAGATODO
+              - code: '0068'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: PROFUTURO
+              - code: '0069'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: REFORMA
+              - code: '0070'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BSABMXMMXXX
+                name: SABADELL
+              - code: '0071'
+                internationalCodes:
+                  - type: SWIFT
+                    code: BMSXMXMMXXX
+                name: SANTANDER
+              - code: '0072'
+                internationalCodes:
+                  - type: SWIFT
+                    code: MBCOMXMMFXA
+                name: SCOTIABANK
+              - code: '0073'
+                internationalCodes:
+                  - type: SWIFT
+                    code: SHBKMXMMXXX
+                name: SHINHAN
+              - code: '0074'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: STP
+              - code: '0075'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: TRANSFER
+              - code: '0076'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: UNAGRA
+              - code: '0077'
+                internationalCodes:
+                  - type: SWIFT
+                    code: null
+                name: VALMEX
+              - code: '0078'
+                internationalCodes:
+                  - type: SWIFT
+                    code: VACBMXM1XXX
+                name: VALUE
+              - code: '0079'
+                internationalCodes:
+                  - type: SWIFT
+                    code: CBAKMXM1XXX
+                name: VE POR MAS
+              - code: '0080'
+                internationalCodes:
+                  - type: SWIFT
+                    code: VECRMXMMXXX
+                name: VECTOR
+              - code: '0081'
+                internationalCodes:
+                  - type: SWIFT
+                    code: VWAGMXMMXXX
+                name: VOLKSWAGEN
+            CL:
+              - code: '001'
+                internationalCodes: []
+                name: BANCO DE CHILE
+              - code: '009'
+                internationalCodes: []
+                name: BANCO INTERNACIONAL
+              - code: '014'
+                internationalCodes: []
+                name: SCOTIABANK CHILE
+              - code: '016'
+                internationalCodes: []
+                name: BANCO DE CREDITO E INVERSIONES
+              - code: '028'
+                internationalCodes: []
+                name: BANCO BICE
+              - code: '031'
+                internationalCodes: []
+                name: HSBC BANK
+              - code: '037'
+                internationalCodes: []
+                name: BANCO SANTANDER
+              - code: '039'
+                internationalCodes: []
+                name: ITAÚ CORPBANCA
+              - code: '049'
+                internationalCodes: []
+                name: BANCO SECURITY
+              - code: '051'
+                internationalCodes: []
+                name: BANCO FALABELLA
+              - code: '053'
+                internationalCodes: []
+                name: BANCO RIPLEY
+              - code: '055'
+                internationalCodes: []
+                name: BANCO CONSORCIO
+              - code: '054'
+                internationalCodes: []
+                name: SCOTIABANK AZUL (ex BBVA)
+              - code: '059'
+                internationalCodes: []
+                name: BANCO BTG PACTUAL CHILE
+      operationId: transferOutBankListV2
+      parameters:
+        - in: header
+          name: Public-key
+          type: string
+          required: true
+      description: "Before requesting a `token` for a Transfer Out transaction, you first need to load the banks, so that the final client can select from the list. You only need to consume this endpoint.\n\nThe response you will get, is an array of the banks with its name, code and type.\n\n>In the case of Colombia \U0001F1E8\U0001F1F4, if the transaction is by phone number, you don't need to use this endpoint. For the transactions by account number, the bank list will depend on the secure rules configured for your customer.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Colombia, México, Chile and Peru.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)"
+      summary: Get Bank List V2
+      x-stoplight:
+        id: m7wkrwi5jdkkb
+    parameters: []
+  /payouts/transfer/v1/tokens:
+    post:
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+          examples:
+            application/json:
+              token: V0OzRB100000xhxQB8035251pHLBQsq5
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+            required:
+              - message
+              - code
+          examples:
+            GL - K004 - ID de comercio no válido:
+              message: ID de comercio no válido
+              code: K004
+            GL - PT001 - Invalid request body.:
+              code: PT001
+              message: Cuerpo de la petición inválido.
+            GL - PT057 - La moneda enviada es diferente a la definida por el procesador.:
+              code: PT057
+              message: La moneda enviada es diferente a la definida por el procesador.
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+          examples:
+            application/json:
+              message: Internal server error
+      summary: Request a Transfer Out token
+      parameters:
+        - in: body
+          name: body
+          schema:
+            title: TokenRequest
+            additionalProperties: false
+            type: object
+            required:
+              - documentType
+              - documentNumber
+              - accountType
+              - accountNumber
+              - bankId
+              - totalAmount
+              - currency
+            properties:
+              documentType:
+                example: RUT
+                description: |-
+                  * CC: Identity Document in Colombia
+                  * NIT: Tax Id number in Colombia
+                  * CE: Foreign resident card in Colombia and Peru. For Peru max. length `12` characters. 
+                  * TI: Identity Card in Colombia
+                  * PP: Passport in México and Colombia
+                  * CURP: Unique Population Registry Code in Mexico
+                  * RFC: Tax Id number in Mexico
+                  * RUT: Tax ID Number in Chile
+                  * DNI: Identity Document in Peru. Max. length `8` characters 
+                  * PAS: Passport in Peru
+                  * RUC: Tax Id number in Peru. Max. length `11` characters 
+                enum:
+                  - CC
+                  - NIT
+                  - CE
+                  - TI
+                  - PP
+                  - CURP
+                  - RFC
+                  - RUT
+                  - DNI
+                  - PAS
+                  - RUC
+              documentNumber:
+                type: string
+                description: |-
+                  - For Mexico, enter `ND` or in case you don't know it. <br>
+                  - For `RUT` in **Chile** if the check digit is a **K** letter, send it in **upper case**.
+                  - For `DNI` in Peru, it must be **8** characters in length.
+                  - For `RUC` in Peru, it must be **11** characters  in length.
+                  - For `CE` in Peru, the max. length is **12** characters.
+                  - For `PAS` in Peru, the max. length is **12** characters.
+              accountType:
+                type: string
+                enum:
+                  - CC
+                  - CA
+                  - CB
+                  - CV
+                  - CM
+                  - TD
+                description: |-
+                  * CC = Cuenta Corriente in Colombia, Chile and Peru.
+                  * CA = Cuenta Ahorros in Colombia, Chile and Peru.
+                  * CB = Cuenta CLABE. Only for Mexico.
+                  * TD = Tarjeta Débito. Only for Mexico.
+                  * NC = Número Celular. Only for Mexico (The recipient must associate their cell phone number to their deposit account).
+                  * CV =  Cuenta Vista or RUT account in Chile.
+                  * CM = Cuenta maestra in Peru.
+              accountNumber:
+                type: string
+                description: |
+                  - For Peru, if the `BankId` is `002` (BCP) and the accountType is `CC`, it must be **13** digits in length.
+                  - For Peru, if the `BankId` is `002` (BCP) and the accountType is `CA`,  it must be **14** digits in length.
+                  - For Peru, if the `BankId` is **different** than `002`, you must send the **CCI** (Código de cuenta interbancaria). This must contain exactly **20 digits** and be presented without spaces, hyphens, or special characters.
+                  - For Colombia, if the `accountType` is `NC`, In Colombia, when the accountType is NC, the mobile number should typically be prefixed with 57. However, for Nequi accounts, there is a known inconsistency: some transfers work with the 57 prefix, while others only work without it. This is a particular behavior of Nequi and is beyond Kushki’s control.
+                  - If the accountType is `CV`(Chile): For Banco Estado, send the RUT number **without** the check digit.
+                  - If the accountType is `CV`(Chile): For banks other than Banco Estado, send the bank account number (different from the RUT).
+                maxLength: 50
+                minLength: 1
+              bankId:
+                type: string
+                description: "Optional in Colombia \U0001F1E8\U0001F1F4 if the transfer is by cellphone number (accountType=`NC`) \n> __Banco S3__ México, S.A. \U0001F1F2\U0001F1FD is not available for disbursement via bank transfers.\n"
+              totalAmount:
+                type: number
+                minimum: 0
+              currency:
+                type: string
+                enum:
+                  - COP
+                  - MXN
+                  - CLP
+                  - PEN
+                description: |-
+                  * México: `MXN`
+                  * Colombia: `COP`
+                  * Chile: `CLP` 
+                  * Perú: `PEN`
+              paymentDescription:
+                type: string
+                description: ⚠️ It does not allow special characters in Chile and Peru.
+              name:
+                type: string
+                description: Full name. ⚠️ It does not allow special characters in Peru.
+              mail:
+                type: string
+                x-stoplight:
+                  id: z34ecxph7t0xq
+                description: '**Required for Peru.**'
+          x-examples:
+            CO - Request a Transfer Out token:
+              documentNumber: '12345678'
+              accountNumber: '123456'
+              accountType: CA
+              bankId: '000051'
+              totalAmount: 10000
+              documentType: CC
+              currency: COP
+              paymentDescription: A short description of the payment
+            MX - Request a Transfer Out token:
+              name: John Doe
+              documentNumber: KUSHKI12345
+              accountNumber: '646180110400000007'
+              accountType: CB
+              bankId: '0074'
+              totalAmount: 96.6
+              documentType: RFC
+              currency: MXN
+              paymentDescription: A short description of the payment
+            CL - Request a Transfer Out token:
+              name: John Doe
+              documentNumber: 19.998.005-K
+              accountNumber: '1200000000'
+              accountType: CV
+              bankId: '001'
+              totalAmount: 1000
+              documentType: RUT
+              currency: CLP
+              paymentDescription: A short description of the payment
+            PE - Request a Transfer Out token:
+              documentNumber: '70274647'
+              accountNumber: '00230513322677808816'
+              accountType: CA
+              bankId: '002'
+              totalAmount: 30
+              documentType: DNI
+              currency: PEN
+              paymentDescription: A short description of the payment
+              name: Prueba Peru
+              mail: user@example.com
+          description: ''
+        - in: header
+          name: Public-key
+          type: string
+          required: true
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+      description: |-
+        A Transfer Out `token` is the first step to start a transaction. 
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Colombia, México, Chile and Peru.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        <!-- theme: danger -->
+        > #### Token expiration
+        >
+        >Tokens will expire in 30 minutes and can be used only for a single transaction (even if the transaction was wrong). You will need to request a new token when it expires.
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: transferOutToken
+      x-stoplight:
+        id: 9m6pmmf4dcxn2
+  /payouts/transfer/v1/init:
+    post:
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            x-examples:
+              example-1:
+                details:
+                  amount:
+                    subtotalIva: 0
+                    iva: 0
+                    subtotalIva0: 10000
+                    extraTaxes:
+                      tasaAeroportuaria: 0
+                      agenciaDeViajes: 0
+                      iac: 0
+                    currency: COP
+                  bankId: '0001'
+                  created: 1658349968134
+                  documentNumber: '12345678'
+                  documentType: CC
+                  maskedAccountNumber: '123456'
+                  merchantId: '20000000104111374000'
+                  merchantName: Merchant MX
+                  status: INITIALIZED
+                  transactionId: 7ab7b486-43b1-42eb-9095-122f15aa46af
+                  transactionType: PAYOUT
+                status: INITIALIZED
+                ticketNumber: '1658350433176477'
+                transactionReference: 7ab7b486-43b1-42eb-9095-122f15aa46af
+            properties:
+              details:
+                type: object
+                properties:
+                  amount:
+                    type: object
+                    properties:
+                      subtotalIva:
+                        type: integer
+                      iva:
+                        type: integer
+                      subtotalIva0:
+                        type: integer
+                      extraTaxes:
+                        type: object
+                        properties:
+                          tasaAeroportuaria:
+                            type: integer
+                          agenciaDeViajes:
+                            type: integer
+                          iac:
+                            type: integer
+                      currency:
+                        type: string
+                  bankId:
+                    type: string
+                  created:
+                    type: integer
+                  documentNumber:
+                    type: string
+                  documentType:
+                    type: string
+                    description: |-
+                      * CC: Identity Document in Colombia
+                      * NIT: Tax Id number in Colombia
+                      * CE: Foreign resident card in Colombia and Peru
+                      * TI: Identity Card in Colombia
+                      * PP: Passport in México and Colombia
+                      * CURP: Unique Population Registry Code in Mexico
+                      * RFC: Tax Id number in Mexico
+                      * RUT: Tax ID Number in Chile
+                      * DNI: Identity Document in Peru
+                      * PAS: Passport in Peru
+                      * RUC: Tax Id number in Peru
+                  maskedAccountNumber:
+                    type: string
+                  merchantId:
+                    type: string
+                  merchantName:
+                    type: string
+                  status:
+                    type: string
+                  transactionId:
+                    type: string
+                  transactionType:
+                    type: string
+              status:
+                type: string
+                enum:
+                  - INITIALIZED
+              ticketNumber:
+                type: string
+              transactionReference:
+                type: string
+          examples:
+            short response:
+              status: INITIALIZED
+              ticketNumber: '1574298975417951'
+              transactionReference: aef8884f-cd4d-4b9b-9efa-ad582629e4f2
+            fullResponse v2:
+              details:
+                amount:
+                  subtotalIva: 0
+                  iva: 0
+                  subtotalIva0: 10000
+                  extraTaxes:
+                    tasaAeroportuaria: 0
+                    agenciaDeViajes: 0
+                    iac: 0
+                  currency: COP
+                bankId: '0001'
+                created: 1658349968134
+                documentNumber: '12345678'
+                documentType: CC
+                maskedAccountNumber: '123456'
+                merchantId: '20000000104111374000'
+                merchantName: Merchant
+                status: INITIALIZED
+                transactionId: 7ab7b486-43b1-42eb-9095-122f15aa46af
+                transactionType: PAYOUT
+              status: INITIALIZED
+              ticketNumber: '1658350433176477'
+              transactionReference: 7ab7b486-43b1-42eb-9095-122f15aa46af
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+          examples:
+            application/json:
+              message: ID de comercio no válido
+              code: K004
+            GL - PT008 - El comercio no existe:
+              code: PT008
+              message: El comercio no existe
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          examples:
+            application/json:
+              message: Internal server error
+      summary: Init Transaction
+      operationId: transferOutInit
+      description: |-
+        Init the transaction with a Transfer Out `token` provided by Kushki which represents the customer's payment.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Colombia, México, Chile and Peru.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: body
+          name: body
+          schema:
+            title: InitRequest
+            type: object
+            properties:
+              token:
+                type: string
+              amount:
+                type: object
+                additionalProperties: false
+                required:
+                  - subtotalIva
+                  - subtotalIva0
+                  - iva
+                properties:
+                  subtotalIva:
+                    type: number
+                    minimum: 0
+                    description: Set it to `0` in case the transaction has no taxes
+                  subtotalIva0:
+                    type: number
+                    minimum: 0
+                    description: 'Set the total amount of the transaction here in case it has no taxes. Otherwise, set it to `0`'
+                  iva:
+                    type: number
+                    minimum: 0
+                    description: Set it to `0` in case the transaction has no taxes
+                  extraTaxes:
+                    $ref: ../models/extraTaxes.yaml
+              metadata:
+                $ref: ../models/Metadata.yaml
+              webhooks:
+                $ref: ../models/webhooks.yaml
+              fullResponse:
+                type: string
+                enum:
+                  - v2
+            required:
+              - token
+              - amount
+          x-examples:
+            webhooks:
+              token: s5c786b972ad54ab39b0aad0774434c4d
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 4000
+                iva: 0
+              metadata:
+                key0: value0
+                key1: value1
+              webhooks:
+                - events:
+                    - approvedTransaction
+                    - declinedTransaction
+                  headers:
+                    - label: json
+                      value: '12'
+                  urls:
+                    - 'https://eof2hhkrta4ooo1.m.pipedream.net'
+            application/json:
+              token: V0OzRB100000xhxQB8035251pHLBQsq5
+              amount:
+                subtotalIva: 0
+                iva: 0
+                subtotalIva0: 10000
+                extraTaxes:
+                  tasaAeroportuaria: 0
+                  agenciaDeViajes: 0
+                  iac: 0
+              metadata:
+                contractID: AB123
+            PE - Init:
+              token: f514382a15494a0881e96eb638cfd91d
+              amount:
+                subtotalIva: 30
+                subtotalIva0: 0
+                iva: 0
+              metadata:
+                userId: IB344
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+      x-stoplight:
+        id: fnatn557b9lo1
+  '/payouts/transfer/v1/transaction/{ticketNumber}':
+    get:
+      responses:
+        '200':
+          description: ''
+          schema:
+            title: TransactionResponse
+            additionalProperties: false
+            type: object
+            properties:
+              transactionId:
+                type: string
+              bankId:
+                type: string
+              amount:
+                type: object
+                properties:
+                  subtotalIva:
+                    type: integer
+                  subtotalIva0:
+                    type: integer
+                  iva:
+                    type: integer
+                  extraTaxes:
+                    $ref: ../models/extraTaxes.yaml
+              totalAmount:
+                type: number
+              documentType:
+                $ref: ../models/documentType.yaml
+              documentNumber:
+                type: string
+              created:
+                type: number
+              transactionStatus:
+                type: string
+                enum:
+                  - INITIALIZED
+                  - APPROVAL
+                  - PROCESSING
+                  - DECLINED
+              transactionType:
+                type: string
+              merchantId:
+                type: string
+              merchantName:
+                type: string
+              ticketNumber:
+                type: string
+              currency:
+                type: string
+                enum:
+                  - COP
+                  - MXN
+              paymentDescription:
+                type: string
+              metadata:
+                type: object
+                properties:
+                  ref1:
+                    type: string
+                  ref2:
+                    type: string
+                  ref3:
+                    type: string
+              transactionReference:
+                type: string
+              responseCode:
+                type: string
+                example: '560'
+              responseText:
+                type: string
+                example: Monto ingresado supera límite
+          examples:
+            CO - Declined transaction:
+              amount:
+                extraTaxes:
+                  agenciaDeViajes: 0
+                  iac: 0
+                  propina: 0
+                  tasaAeroportuaria: 0
+                subtotalIva0: 10000
+                iva: 0
+                subtotalIva: 0
+              bankId: '000051'
+              created: 1672247630069
+              currency: COP
+              documentNumber: '12345678'
+              documentType: CE
+              merchantId: '20000000101874380000'
+              merchantName: WEBCENTRAL
+              metadata: {}
+              responseCode: '086'
+              responseText: Solo permite abonos a cuenta AFC
+              ticketNumber: '1570509309787943'
+              totalAmount: 10000
+              transactionId: '14'
+              transactionReference: '14'
+              transactionStatus: DECLINED
+              transactionType: PAYOUT
+            CO - Approved transaction:
+              amount:
+                iva: 0
+                subtotalIva: 0
+                subtotalIva0: 10000
+              bankId: '000002'
+              created: 1614967169917
+              currency: COP
+              documentNumber: '123456789'
+              documentType: CC
+              merchantId: '20000000100338110000'
+              merchantName: TAT Colombia
+              ticketNumber: '1614967182970211'
+              totalAmount: 10000
+              transactionId: ac734de6-976f-4eec-957a-d7a3ad66ab90
+              transactionReference: ac734de6-976f-4eec-957a-d7a3ad66ab90
+              transactionStatus: APPROVAL
+              transactionType: PAYOUT
+            MX - Initialized transaction:
+              amount:
+                extraTaxes:
+                  agenciaDeViajes: 0
+                  iac: 0
+                  tasaAeroportuaria: 0
+                subtotalIva0: 0.6
+                iva: 0
+                subtotalIva: 0
+              bankId: '0074'
+              created: 1648243850330
+              currency: MXN
+              documentNumber: KUSHKI12345
+              documentType: RFC
+              merchantId: '20000000104096510000'
+              merchantName: Tu Comercio
+              metadata:
+                contractID: AB123
+              ticketNumber: '1648243866052576'
+              totalAmount: 0.6
+              transactionId: d5836a93-c7d2-4deb-9b12-1d6a1592cf76
+              transactionReference: d5836a93-c7d2-4deb-9b12-1d6a1592cf76
+              transactionStatus: INITIALIZED
+              transactionType: PAYOUT
+            CL - Initialized transaction:
+              amount:
+                extraTaxes:
+                  agenciaDeViajes: 0
+                  propina: 0
+                  iac: 0
+                  tasaAeroportuaria: 0
+                subtotalIva0: 1
+                iva: 0
+                subtotalIva: 0
+              bankId: '001'
+              created: 1662059725558
+              currency: CLP
+              documentNumber: '19885521'
+              documentType: RUT
+              merchantId: '20000000108297093000'
+              merchantName: Merchant CL
+              metadata:
+                contractID: AB123
+              ticketNumber: '1662059748606276'
+              totalAmount: 1
+              transactionId: db71c3b0-df45-4f5b-8a6f-c589c76d0fb1
+              transactionReference: db71c3b0-df45-4f5b-8a6f-c589c76d0fb1
+              transactionStatus: INITIALIZED
+              transactionType: PAYOUT
+            PE - Initialized transaction:
+              amount:
+                iva: 0
+                subtotalIva: 30
+                subtotalIva0: 0
+              bankId: '002'
+              created: 1687371390900
+              currency: PEN
+              documentNumber: '70274111'
+              documentType: DNI
+              merchantId: '20000000107455970000'
+              merchantName: Comercio Test
+              metadata:
+                userId: IB344
+              responseCode: ''
+              responseText: ''
+              ticketNumber: '1687371461822490'
+              totalAmount: 30
+              transactionId: 414693fb-43fc-467a-950c-1d55ea31d9fa
+              transactionReference: 414693fb-43fc-467a-950c-1d55ea31d9fa
+              transactionStatus: INITIALIZED
+              transactionType: PAYOUT
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+          examples:
+            application/json:
+              code: K005
+              message: Transacción no puede procesarse.
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          examples:
+            application/json:
+              message: Internal server error
+      summary: Get Status
+      operationId: transferOutStatus
+      parameters:
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: path
+          name: ticketNumber
+          type: string
+          required: true
+      description: |-
+        Get the status of a transaction created in the `Init Transaction` step.
+
+        Use  the `ticketNumber` as a path parameter in the url to obtain the information.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Colombia, México, Chile and Peru.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      x-stoplight:
+        id: 1gw6cj05xjckg
+    parameters:
+      - name: ticketNumber
+        in: path
+        type: string
+        required: true
+    delete:
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              ticketNumber:
+                type: string
+          examples:
+            application/json:
+              status: APPROVAL
+              ticketNumber: '685093519293749991'
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+          examples:
+            Invalid Merchant ID:
+              message: ID de comercio no válido
+              code: K004
+            transaction does not exist:
+              code: PT003
+              message: Transacción no existe.
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          examples:
+            application/json:
+              message: Internal server error
+      parameters:
+        - in: path
+          name: ticketNumber
+          type: string
+          required: true
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+      summary: Void a transaction
+      operationId: transferOutVoid
+      description: |-
+        Void a transaction identified by its `ticketNumber`. The `ticketNumber` is provided when the `Init request` is successful. 
+
+        You can void a transaction only when its status is `INITIALIZED`.
+
+        **NOTE: Void only works for Colombia.**
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Colombia, México.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      deprecated: true
+      x-internal: true
+      x-stoplight:
+        id: dm3cf5relllco
+  /wallet/v1/merchant/balance:
+    get:
+      summary: Balance for Payouts
+      tags: []
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              balanceDate:
+                type: string
+                description: '`UNIX` Format'
+              currency:
+                type: string
+              currentBalance:
+                type: string
+          examples:
+            CL:
+              balanceDate: 1675874081783
+              currency: CLP
+              currentBalance: 24600
+            PE:
+              balanceDate: 1687371952224
+              currency: PEN
+              currentBalance: 717169.22
+        '403':
+          description: Forbidden
+          schema:
+            type: object
+            properties:
+              Message:
+                type: string
+          examples:
+            '403':
+              Message: User is not authorized to access this resource
+      operationId: get-wallet-v1-merchant-balance
+      description: |-
+        Get the updated balance for disbursement within your Kushki account
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Colombia, México, Chile and Peru.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/api-reference/services-by-country)
+
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - type: string
+          in: header
+          name: Private-key
+      x-stoplight:
+        id: zn5vspyxfwjcd
+responses:
+  'trait:invalidBin:402':
+    description: Invalid Bin
+    schema:
+      $ref: '#/definitions/InvalidBinResponse'
+  'trait:badRequest:400':
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/BadRequestResponse'
+  'trait:fetchedList:200':
+    description: Fetch a transactions list
+    schema:
+      type: object
+      required:
+        - has_more
+        - data
+      properties:
+        has_more:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            required:
+              - subtotalIVA0
+              - date
+              - lastFourDigitsOfCard
+              - transactionStatus
+              - transactionId
+              - voidedBy
+              - merchantName
+              - cardHolderName
+              - approvedTransactionAmount
+              - numberOfMonths
+              - extraTaxes
+              - saleTicketNumber
+              - ivaValue
+              - isDeferred
+              - ticketNumber
+              - id
+              - dateAndTimeTransaction
+              - cardType
+              - subtotalIVA
+              - requestAmount
+              - currencyCode
+              - transactionType
+              - processorName
+              - iceValue
+              - merchantId
+              - processorBankName
+              - approvalCode
+            properties:
+              subtotalIVA0:
+                type: number
+                example: 10
+              date:
+                type: string
+                example: '2017-03-24T18:52:34.000Z'
+              lastFourDigitsOfCard:
+                type: string
+                example: 1234
+              transactionStatus:
+                type: string
+                example: APPROVAL
+              transactionId:
+                type: string
+                example: 1234567890987654
+              voidedBy:
+                type: string
+                example: 10334120439012934
+              merchantName:
+                type: string
+                example: Some_Merchant_Name
+              cardHolderName:
+                type: string
+                example: John Doe
+              approvedTransactionAmount:
+                type: string
+                example: 135.5
+              numberOfMonths:
+                type: string
+                example: 0
+              ExtraTaxes:
+                type: array
+                items:
+                  required:
+                    - tasaAeroportuaria
+                    - agenciaDeViaje
+                    - iac
+                  properties:
+                    tasaAeroportuaria:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '4'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_AERO
+                    iac:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '5'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: IAC
+                    agenciaDeViaje:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '6'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_ADMIN_AGEN_COD
+              saleTicketNumber:
+                type: string
+                example: 1204493249523
+              ivaValue:
+                type: integer
+                example: 15.5
+              isDeferred:
+                type: string
+                example: 'Y'
+              ticketNumber:
+                type: string
+                example: 1234567890987654
+              id:
+                type: string
+                example: '123456'
+              dateAndTimeTransaction:
+                type: string
+                example: 12345012469
+              cardType:
+                type: string
+                example: Master Card
+              subtotalIVA:
+                type: number
+                example: 10
+              requestAmount:
+                type: string
+                example: 130
+              currencyCode:
+                type: string
+                example: USD
+              transactionType:
+                type: string
+                example: SALE
+              processorName:
+                type: string
+                example: Some_Processor_Name
+              iceValue:
+                type: number
+                example: 10
+              merchantId:
+                type: string
+                example: 1200000432450023
+              processorBankName:
+                type: string
+                example: Some_Bank_Name
+              approvalCode:
+                type: string
+                example: 342347
+              Metadata:
+                type: object
+                properties:
+                  key1:
+                    type: string
+                    example: value1
+              subscription_metadata:
+                type: object
+                properties:
+                  key2:
+                    type: string
+                    example: value2
+    examples:
+      example-1:
+        has_more: true
+        data:
+          - subtotalIVA0: 10
+            date: '2017-03-24T18:52:34.000Z'
+            lastFourDigitsOfCard: 1234
+            transactionStatus: APPROVAL
+            transactionId: 1234567890987654
+            voidedBy: 10334120439012934
+            merchantName: Some_Merchant_Name
+            cardHolderName: John Doe
+            approvedTransactionAmount: 135.5
+            numberOfMonths: 0
+            ExtraTaxes:
+              - tasaAeroportuaria:
+                  taxid: '4'
+                  taxAmount: 2
+                  taxName: TASA_AERO
+                iac:
+                  taxid: '5'
+                  taxAmount: 2
+                  taxName: IAC
+                agenciaDeViaje:
+                  taxid: '6'
+                  taxAmount: 2
+                  taxName: TASA_ADMIN_AGEN_COD
+            saleTicketNumber: 1204493249523
+            ivaValue: 15.5
+            isDeferred: 'Y'
+            ticketNumber: 1234567890987654
+            id: '123456'
+            dateAndTimeTransaction: 12345012469
+            cardType: Master Card
+            subtotalIVA: 10
+            requestAmount: 130
+            currencyCode: USD
+            transactionType: SALE
+            processorName: Some_Processor_Name
+            iceValue: 10
+            merchantId: 1200000432450023
+            processorBankName: Some_Bank_Name
+            approvalCode: 342347
+            Metadata:
+              key1: value1
+            subscription_metadata:
+              key2: value2
+  'trait:created:201':
+    description: Created
+    schema:
+      type: object
+      required:
+        - ticketNumber
+      properties:
+        ticketNumber:
+          type: string
+          example: '123456789012345678'
+    examples:
+      example-1:
+        ticketNumber: '123456789012345678'
+  'trait:unexpectedError:500':
+    description: Unexpected Error
+    schema:
+      $ref: '#/definitions/UnexpectedErrorResponse'
+  'trait:tokenCreated:201':
+    description: TokenCreated
+    schema:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: AbCDef123456Z7Ghi8901234jkLMNopQ
+definitions: {}

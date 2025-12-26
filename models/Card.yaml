@@ -1,0 +1,39 @@
+type: object
+x-examples:
+  example-1:
+    name: John Doe
+    number: '5451951574925480'
+    expiryMonth: '08'
+    expiryYear: '23'
+    cvv: '121'
+examples:
+  - name: John Doe
+    number: '5451951574925480'
+    expiryMonth: '08'
+    expiryYear: '23'
+    cvv: '121'
+required:
+  - name
+  - cvv
+  - number
+  - expiryMonth
+  - expiryYear
+properties:
+  name:
+    type: string
+  cvv:
+    type: string
+    pattern: '^[0-9]{3,4}$'
+    description: 'It could be optional to process external subscriptions (only PCI compliance merchants) in Mexico, Colombia, Perú and Chile. Only if the `subsequentRecurrence` value is sent in the `transactionMode` field.'
+  number:
+    type: string
+    pattern: '^[0-9]{14,19}$'
+  expiryMonth:
+    type: string
+  expiryYear:
+    type: string
+  cryptogram:
+    type: string
+    x-stoplight:
+      id: wi33gw4gb0gd2
+    description: "<b style=\"background-color:#0366d6; color:white; border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 600;\">BETA</b>Only available in Chile \U0001F1E8\U0001F1F1 and Peru \U0001F1F5\U0001F1EA.\n\nCryptogram required when using a network token, obtained from digital wallets or issuer token services.\n\n- It does not replace the CVV; sending the CVV is still recommended.\n- If only the cryptogram is provided without CVV, the acceptance rate may vary."

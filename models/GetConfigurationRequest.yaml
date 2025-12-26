@@ -1,0 +1,20 @@
+description: The properties that are shared amongst all versions of the Multi-Merchant model.
+type: object
+x-examples:
+  example-1:
+    totalAmount: 0
+    currency: USD
+properties:
+  totalAmount:
+    type: number
+  currency:
+    type: string
+    enum:
+      - USD
+      - COP
+      - CLP
+      - UF
+      - PEN
+required:
+  - totalAmount
+  - currency

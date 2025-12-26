@@ -1,0 +1,19 @@
+description: ''
+type: object
+x-examples:
+  example-1:
+    code: K003
+    message: Tarjeta no habilitada por el emisor
+examples:
+  - code: K003
+    message: Tarjeta no habilitada por el emisor
+properties:
+  code:
+    type: string
+    example: K003
+  message:
+    type: string
+    example: Tarjeta no habilitada por el emisor
+required:
+  - code
+  - message

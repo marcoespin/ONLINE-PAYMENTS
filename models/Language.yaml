@@ -1,0 +1,7 @@
+type: string
+title: Language
+enum:
+  - es
+  - en
+examples:
+  - es

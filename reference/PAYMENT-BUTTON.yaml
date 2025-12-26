@@ -1,0 +1,586 @@
+swagger: '2.0'
+x-stoplight:
+  id: 916be02a7c714
+info:
+  version: 1.1.3
+  title: PAYMENT BUTTON
+  description: |
+    ## Introduction
+
+    The payment button (or Webcheckout) is a simple and secure way to accept online payments with credit or debit cards, transfers and cash. Since it is a payment form hosted on Kushki's servers, you and your customers have total security when making a transaction.
+
+    <!-- theme: warning -->
+    > #### To keep in mind
+    >Due to our risk policies, the available payment methods and the integration type may vary once you complete the affiliation. We will tell you how to proceed if this process applies to your merchant.
+
+    ## Payment Button Example
+    ![Payment-button_EN](//images.ctfassets.net/mmjbm94f6iyd/4alpjphR3GrhS5cOuSA4of/4ad9a08c6e1e08fe7f73fd2f47cca3bc/Screen_Shot_2021-12-01_at_2.40.42_PM.png)
+
+    ## Features
+
+    The Kushki payment button has the following features:
+
+    - It is customizable from the Console.
+    - Available in Spanish (ES), English (EN) and Portuguese (PT).
+    - It is available for various payment methods.
+    - Easy integration.
+    - It accepts payments from different devices
+    - It offers secure payments, as it is a payment experience controlled by Kushki.
+    - It comes integrated with security validation services, such as OTP and Sift.
+    - You can preview the appearance of your payment button as you create or edit them.
+    - It has a default timer to encourage conversions.
+    - You can set up a customized subdomain with the name of your merchant.
+    - Compatible with Chrome, Safari, Microsoft Edge and Firefox.
+
+    ## Using the API
+
+    To use the API you must ask for your Kushki Sandbox, composed of a `Public-Merchant-Id` and a `Private-Merchant-Id`.
+
+    * The current version of the Kushki API rests at: `https://api.kushkipagos.com/`
+    * The testing version rests at: `https://api-uat.kushkipagos.com/`
+
+
+    ## Endpoints
+
+    We dispose various endpoints to start your payment flows, find our products available:
+
+    * [Create a payment button](https://api-docs.kushkipagos.com/docs/online-payments/payment-button/operations/create-a-smartlink-v-1-webcheckout)
+
+    [Return Home](/)
+
+    > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+host: api-uat.kushkipagos.com
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    scopes: {}
+    authorizationUrl: ''
+paths:
+  /smartlink/v1/webcheckout:
+    post:
+      summary: Create a payment button
+      responses:
+        '200':
+          description: ''
+          schema:
+            description: ''
+            type: object
+            x-examples:
+              example-1:
+                webcheckoutId: T3iDy0G4E
+                webcheckoutUrl: 'https://webcheckout-qa.kushkipagos.net/webcheckout/T3iDy0G4E'
+            properties:
+              webcheckoutId:
+                type: string
+                example: mpEtCyMJV
+              webcheckoutUrl:
+                type: string
+                example: 'https://uat-webcheckout.kushkipagos.com/webcheckout/mpEtCyMJV'
+            required:
+              - webcheckoutId
+              - webcheckoutUrl
+          examples:
+            example-1:
+              webcheckoutId: T3iDy0G4I
+              webcheckoutUrl: 'https://webcheckout-qa.kushkipagos.net/webcheckout/T3iDy0G4E'
+        '400':
+          description: Bad Request
+          schema:
+            description: ''
+            type: object
+            x-examples:
+              example-1:
+                message: ID de comercio o credencial no válido
+                code: K004
+            properties:
+              message:
+                type: string
+                example: Cuerpo de la petición inválido
+              code:
+                type: string
+                example: WCH001
+          examples:
+            Invalid merchant ID or credential:
+              message: ID de comercio o credencial no válido
+              code: K004
+            Invalid request body:
+              code: WCH001
+              message: Cuerpo de la petición inválido.
+      operationId: post-smartlink-v1-webcheckout
+      description: |-
+        Create a URL to redirect your user to a Kushki webcheckout.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - type: string
+          in: header
+          name: Private-key
+          required: true
+        - type: string
+          in: header
+          name: Content-Type
+          required: true
+          default: application/json
+        - in: body
+          name: body
+          schema:
+            type: object
+            x-examples:
+              example-1:
+                kind: webcheckout
+                contactDetail:
+                  email: tucliente@test.com
+                  name: Tu cliente
+                redirectURL: 'https://www.tucomercio.com'
+                products:
+                  - description: Tenis
+                    name: trekking pro
+                    quantity: 20
+                    unitPrice: 1000
+                paymentConfig:
+                  amount:
+                    subtotalIva0: 10
+                    currency: USD
+                    iva: 2
+                    subtotalIva: 2
+                  paymentMethod:
+                    - credit-card
+                    - cash
+                    - transfer
+                additionalInformation: {}
+            required:
+              - kind
+              - redirectURL
+              - products
+              - paymentConfig
+            properties:
+              kind:
+                type: string
+                description: 'Allowed value: `webcheckout`'
+              contactDetail:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  name:
+                    type: string
+              redirectURL:
+                type: string
+              products:
+                type: array
+                uniqueItems: true
+                items:
+                  type: object
+                  required:
+                    - description
+                    - name
+                    - quantity
+                    - unitPrice
+                  properties:
+                    description:
+                      type: string
+                    name:
+                      type: string
+                    quantity:
+                      type: number
+                    unitPrice:
+                      type: number
+              paymentConfig:
+                type: object
+                required:
+                  - amount
+                  - paymentMethod
+                properties:
+                  amount:
+                    type: object
+                    required:
+                      - subtotalIva0
+                      - currency
+                      - iva
+                      - subtotalIva
+                    properties:
+                      subtotalIva0:
+                        type: number
+                      currency:
+                        $ref: ../models/currency.yaml
+                      iva:
+                        type: number
+                      subtotalIva:
+                        type: number
+                  paymentMethod:
+                    type: array
+                    description: |-
+                      * `cash`: For cash transactions
+                      * `transfer`: For transfer transactions
+                      * `credit-card`: For credit card transactions
+                      * `card-async`: For debit cards only with Transbank in Chile
+                      * `card-dynamic`: For debit and credit cards with Transbank in Chile
+                    items:
+                      type: string
+                      enum:
+                        - cash
+                        - transfer
+                        - card-async
+                        - credit-card
+                        - card-dynamic
+              transactionType:
+                type: string
+                description: 'Allowed value: `PRE_AUTH`(Only required for authorization and capture)'
+              additionalInformation:
+                type: object
+                description: 'You can send additional information that will be shown in the purchase summary. The fields sent as attributes will appear in the webhook metadata object. Click [here](https://docs.kushki.com/co/en/payment-forms-and-buttons/payment-button/create-payment-button#311-additional-information) for more information.'
+          x-examples:
+            Single charge:
+              kind: webcheckout
+              contactDetail:
+                name: John Doe
+              redirectURL: 'https://www.kushki.com'
+              products:
+                - description: Tenis
+                  name: runners
+                  quantity: 2
+                  unitPrice: 100000
+              paymentConfig:
+                amount:
+                  subtotalIva: 238000
+                  subtotalIva0: 0
+                  iva: 19000
+                  currency: COP
+                paymentMethod: credit-card
+            Authorization and capture:
+              kind: webcheckout
+              contactDetail:
+                name: Tu usuario
+              redirectURL: 'https://www.kushki.com'
+              products:
+                - description: Aguacates
+                  name: avocado
+                  quantity: 20
+                  unitPrice: 10
+              paymentConfig:
+                amount:
+                  subtotalIva: 19
+                  subtotalIva0: 100
+                  iva: 19
+                  currency: CLP
+                paymentMethod: credit-card
+              transactionType: PRE_AUTH
+            Additional information:
+              kind: webcheckout
+              contactDetail:
+                email: john.doe@store.com
+                name: John Doe
+              redirectURL: 'https://www.tucomercio.com'
+              products:
+                - description: Tenis
+                  name: trekking pro
+                  quantity: 20
+                  unitPrice: 1000
+              paymentConfig:
+                amount:
+                  subtotalIva0: 10
+                  currency: USD
+                  iva: 2
+                  subtotalIva: 2
+                paymentMethod:
+                  - credit-card
+                  - cash
+                  - transfer
+              additionalInformation:
+                address: 'centro #123'
+                shipping: 2 days
+            Chile debit card:
+              kind: webcheckout
+              contactDetail:
+                name: John Doe
+              redirectURL: 'https://www.kushki.com'
+              products:
+                - description: Aguacates
+                  name: avocado
+                  quantity: 20
+                  unitPrice: 10
+              paymentConfig:
+                amount:
+                  subtotalIva: 19
+                  subtotalIva0: 100
+                  iva: 19
+                  currency: CLP
+                paymentMethod: card-async
+          description: ''
+      x-internal: false
+      x-stoplight:
+        id: kw818a8hco7pb
+responses:
+  'trait:invalidBin:402':
+    description: Invalid Bin
+    schema:
+      $ref: '#/definitions/InvalidBinResponse'
+  'trait:badRequest:400':
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/BadRequestResponse'
+  'trait:fetchedList:200':
+    description: Fetch a transactions list
+    schema:
+      type: object
+      required:
+        - has_more
+        - data
+      properties:
+        has_more:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            required:
+              - subtotalIVA0
+              - date
+              - lastFourDigitsOfCard
+              - transactionStatus
+              - transactionId
+              - voidedBy
+              - merchantName
+              - cardHolderName
+              - approvedTransactionAmount
+              - numberOfMonths
+              - extraTaxes
+              - saleTicketNumber
+              - ivaValue
+              - isDeferred
+              - ticketNumber
+              - id
+              - dateAndTimeTransaction
+              - cardType
+              - subtotalIVA
+              - requestAmount
+              - currencyCode
+              - transactionType
+              - processorName
+              - iceValue
+              - merchantId
+              - processorBankName
+              - approvalCode
+            properties:
+              subtotalIVA0:
+                type: number
+                example: 10
+              date:
+                type: string
+                example: '2017-03-24T18:52:34.000Z'
+              lastFourDigitsOfCard:
+                type: string
+                example: 1234
+              transactionStatus:
+                type: string
+                example: APPROVAL
+              transactionId:
+                type: string
+                example: 1234567890987654
+              voidedBy:
+                type: string
+                example: 10334120439012934
+              merchantName:
+                type: string
+                example: Some_Merchant_Name
+              cardHolderName:
+                type: string
+                example: John Doe
+              approvedTransactionAmount:
+                type: string
+                example: 135.5
+              numberOfMonths:
+                type: string
+                example: 0
+              ExtraTaxes:
+                type: array
+                items:
+                  required:
+                    - tasaAeroportuaria
+                    - agenciaDeViaje
+                    - iac
+                  properties:
+                    tasaAeroportuaria:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '4'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_AERO
+                    iac:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '5'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: IAC
+                    agenciaDeViaje:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '6'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_ADMIN_AGEN_COD
+              saleTicketNumber:
+                type: string
+                example: 1204493249523
+              ivaValue:
+                type: integer
+                example: 15.5
+              isDeferred:
+                type: string
+                example: 'Y'
+              ticketNumber:
+                type: string
+                example: 1234567890987654
+              id:
+                type: string
+                example: '123456'
+              dateAndTimeTransaction:
+                type: string
+                example: 12345012469
+              cardType:
+                type: string
+                example: Master Card
+              subtotalIVA:
+                type: number
+                example: 10
+              requestAmount:
+                type: string
+                example: 130
+              currencyCode:
+                type: string
+                example: USD
+              transactionType:
+                type: string
+                example: SALE
+              processorName:
+                type: string
+                example: Some_Processor_Name
+              iceValue:
+                type: number
+                example: 10
+              merchantId:
+                type: string
+                example: 1200000432450023
+              processorBankName:
+                type: string
+                example: Some_Bank_Name
+              approvalCode:
+                type: string
+                example: 342347
+              Metadata:
+                type: object
+                properties:
+                  key1:
+                    type: string
+                    example: value1
+              subscription_metadata:
+                type: object
+                properties:
+                  key2:
+                    type: string
+                    example: value2
+    examples:
+      example-1:
+        has_more: true
+        data:
+          - subtotalIVA0: 10
+            date: '2017-03-24T18:52:34.000Z'
+            lastFourDigitsOfCard: 1234
+            transactionStatus: APPROVAL
+            transactionId: 1234567890987654
+            voidedBy: 10334120439012934
+            merchantName: Some_Merchant_Name
+            cardHolderName: John Doe
+            approvedTransactionAmount: 135.5
+            numberOfMonths: 0
+            ExtraTaxes:
+              - tasaAeroportuaria:
+                  taxid: '4'
+                  taxAmount: 2
+                  taxName: TASA_AERO
+                iac:
+                  taxid: '5'
+                  taxAmount: 2
+                  taxName: IAC
+                agenciaDeViaje:
+                  taxid: '6'
+                  taxAmount: 2
+                  taxName: TASA_ADMIN_AGEN_COD
+            saleTicketNumber: 1204493249523
+            ivaValue: 15.5
+            isDeferred: 'Y'
+            ticketNumber: 1234567890987654
+            id: '123456'
+            dateAndTimeTransaction: 12345012469
+            cardType: Master Card
+            subtotalIVA: 10
+            requestAmount: 130
+            currencyCode: USD
+            transactionType: SALE
+            processorName: Some_Processor_Name
+            iceValue: 10
+            merchantId: 1200000432450023
+            processorBankName: Some_Bank_Name
+            approvalCode: 342347
+            Metadata:
+              key1: value1
+            subscription_metadata:
+              key2: value2
+  'trait:created:201':
+    description: Created
+    schema:
+      type: object
+      required:
+        - ticketNumber
+      properties:
+        ticketNumber:
+          type: string
+          example: '123456789012345678'
+    examples:
+      example-1:
+        ticketNumber: '123456789012345678'
+  'trait:unexpectedError:500':
+    description: Unexpected Error
+    schema:
+      $ref: '#/definitions/UnexpectedErrorResponse'
+  'trait:tokenCreated:201':
+    description: TokenCreated
+    schema:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: AbCDef123456Z7Ghi8901234jkLMNopQ
+definitions: {}

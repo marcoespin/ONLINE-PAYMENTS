@@ -1,0 +1,326 @@
+{
+  "items": [
+    {
+      "type": "item",
+      "title": "Services by country",
+      "uri": "docs/services-by-country.md",
+      "slug": "services-by-country"
+    },
+    {
+      "type": "divider",
+      "title": "Kushki API reference"
+    },
+        {
+      "type": "item",
+      "title": "CARD",
+      "uri": "reference/CARD.yaml",
+      "slug": "CARD"
+    },
+      {
+      "type": "item",
+      "title": "ONE-CLICK & SCHEDULED PAYMENTS",
+      "uri": "reference/ONE-CLICK & SCHEDULED PAYMENTS.yaml",
+      "slug": "ONE-CLICK-AND-SCHEDULED-PAYMENTS"
+    },
+    {
+      "type": "item",
+      "title": "CARD OUT",
+      "uri": "reference/CARD-OUTS.yaml",
+      "slug": "CARD-OUTS"
+    },
+    {
+      "type": "item",
+      "title": "TRANSFER IN",
+      "uri": "reference/TRANSFER-IN.yaml",
+      "slug": "TRANSFER-IN"
+    },
+    {
+      "type": "item",
+      "title": "TRANSFER OUT",
+      "uri": "reference/TRANSFER-OUT.yaml",
+      "slug": "TRANSFER-OUT"
+    },
+    {
+      "type": "item",
+      "title": "CASH IN",
+      "uri": "reference/CASH-IN.yaml",
+      "slug": "CASH-IN"
+    },
+    {
+      "type": "item",
+      "title": "CASH OUT",
+      "uri": "reference/CASH-OUT.yaml",
+      "slug": "CASH-OUT"
+    },
+    {
+      "type": "item",
+      "title": "CARD ASYNC",
+      "uri": "reference/CARD-ASYNC.yaml",
+      "slug": "CARD-ASYNC"
+    },
+    {
+      "type": "item",
+      "title": "ASYNC CARD RECURRING CHARGES",
+      "uri": "reference/ASYNC-CARD-RECURRING-CHARGES.yaml",
+      "slug": "ASYNC-CARD-RECURRING-CHARGES"
+    },
+    {
+      "type": "item",
+      "title": "SMARTLINKS V2",
+      "uri": "reference/SMARTLINKS-V2.yaml",
+      "slug": "SMARTLINKS-V2"
+    },
+    {
+      "type": "item",
+      "title": "ANALYTICS",
+      "uri": "reference/ANALYTICS.yaml",
+      "slug": "ANALYTICS"
+    },
+    {
+      "type": "item",
+      "title": "GATEWAY STATUS",
+      "uri": "/reference/GATEWAY-STATUS.yaml",
+      "slug": "GATEWAY-STATUS"
+    },
+    {
+      "type": "item",
+      "title": "COMMISSIONS",
+      "uri": "reference/COMMISSIONS.yaml",
+      "slug": "COMMISSIONS"
+    },
+    {
+      "type": "item",
+      "title": "PAYMENT CREDENTIALS",
+      "uri": "reference/PAYMENT-CREDENTIALS.yaml",
+      "slug": "PAYMENT-CREDENTIALS"
+    },
+    {
+      "type": "item",
+      "title": "CHARGEBACKS",
+      "uri": "reference/CHARGEBACKS.yaml",
+      "slug": "CHARGEBACKS"
+    },
+    {
+      "type": "item",
+      "title": "PAYMENT BUTTON",
+      "uri": "reference/PAYMENT-BUTTON.yaml",
+      "slug": "PAYMENT-BUTTON"
+    },
+    {
+      "type": "item",
+      "title": "BRANCH OFFICES",
+      "uri": "reference/BRANCH-OFFICES.json",
+      "slug": "BRANCH-OFFICES"
+    },
+    {
+      "type": "divider",
+      "title": "Schemas"
+    },
+    {
+      "type": "item",
+      "title": "Amount",
+      "uri": "models/Amount.yaml",
+      "slug": "schemas/Amount"
+    },
+    {
+      "type": "item",
+      "title": "BadRequestResponse",
+      "uri": "models/BadRequestResponse.yaml",
+      "slug": "schemas/BadRequestResponse"
+    },
+    {
+      "type": "item",
+      "title": "Billing Address",
+      "uri": "models/Billing-Address.yaml",
+      "slug": "schemas/Billing-Address"
+    },
+    {
+      "type": "item",
+      "title": "binInfo",
+      "uri": "models/binInfo.yaml",
+      "slug": "schemas/binInfo"
+    },
+    {
+      "type": "item",
+      "title": "Card",
+      "uri": "models/Card.yaml",
+      "slug": "schemas/Card"
+    },
+    {
+      "type": "item",
+      "title": "Channel",
+      "uri": "models/Channel.yaml",
+      "slug": "schemas/Channel"
+    },
+    {
+      "type": "item",
+      "title": "ChargesVoidCardResponse",
+      "uri": "models/ChargesVoidCardResponse.yaml",
+      "slug": "schemas/ChargesVoidCardResponse"
+    },
+    {
+      "type": "item",
+      "title": "ContactDetails",
+      "uri": "models/ContactDetails.yaml",
+      "slug": "schemas/ContactDetails"
+    },
+    {
+      "type": "item",
+      "title": "Country",
+      "uri": "models/Country.yaml",
+      "slug": "schemas/Country"
+    },
+    {
+      "type": "item",
+      "title": "currency",
+      "uri": "models/currency.yaml",
+      "slug": "schemas/currency"
+    },
+    {
+      "type": "item",
+      "title": "Deferred",
+      "uri": "models/Deferred.yaml",
+      "slug": "schemas/Deferred"
+    },
+    {
+      "type": "item",
+      "title": "documentType",
+      "uri": "models/documentType.yaml",
+      "slug": "schemas/documentType"
+    },
+    {
+      "type": "item",
+      "title": "ErrorResponse",
+      "uri": "models/ErrorResponse.yaml",
+      "slug": "schemas/ErrorResponse"
+    },
+    {
+      "type": "item",
+      "title": "extraTaxes",
+      "uri": "models/extraTaxes.yaml",
+      "slug": "schemas/extraTaxes"
+    },
+    {
+      "type": "item",
+      "title": "GetConfigurationRequest",
+      "uri": "models/GetConfigurationRequest.yaml",
+      "slug": "schemas/GetConfigurationRequest"
+    },
+    {
+      "type": "item",
+      "title": "InvalidBinResponse",
+      "uri": "models/InvalidBinResponse.yaml",
+      "slug": "schemas/InvalidBinResponse"
+    },
+    {
+      "type": "item",
+      "title": "Language",
+      "uri": "models/Language.yaml",
+      "slug": "schemas/Language"
+    },
+    {
+      "type": "item",
+      "title": "Metadata",
+      "uri": "models/Metadata.yaml",
+      "slug": "schemas/Metadata"
+    },
+    {
+      "type": "item",
+      "title": "orderDetails",
+      "uri": "models/orderDetails.yaml",
+      "slug": "schemas/orderDetails"
+    },
+    {
+      "type": "item",
+      "title": "paymentMethod",
+      "uri": "models/paymentMethod.yaml",
+      "slug": "schemas/paymentMethod"
+    },
+    {
+      "type": "item",
+      "title": "product",
+      "uri": "models/product.yaml",
+      "slug": "schemas/product"
+    },
+    {
+      "type": "item",
+      "title": "Promotions",
+      "uri": "/models/Promotions.yaml",
+      "slug": "schemas/Promotions"
+    },
+    {
+      "type": "item",
+      "title": "Shipping Address",
+      "uri": "models/Shipping-Address.yaml",
+      "slug": "schemas/Shipping-Address"
+    },
+    {
+      "type": "item",
+      "title": "Subscription",
+      "uri": "models/Subscription.yaml",
+      "slug": "schemas/Subscription"
+    },
+    {
+      "type": "item",
+      "title": "SubscriptionAdjustmentRequest",
+      "uri": "models/SubscriptionAdjustmentRequest.yaml",
+      "slug": "schemas/SubscriptionAdjustmentRequest"
+    },
+    {
+      "type": "item",
+      "title": "SubscriptionUpdate",
+      "uri": "models/SubscriptionUpdate.yaml",
+      "slug": "schemas/SubscriptionUpdate"
+    },
+    {
+      "type": "item",
+      "title": "threeDomainSecure",
+      "uri": "models/threeDomainSecure.yaml",
+      "slug": "schemas/threeDomainSecure"
+    },
+    {
+      "type": "item",
+      "title": "UnexpectedErrorResponse",
+      "uri": "models/UnexpectedErrorResponse.yaml",
+      "slug": "schemas/UnexpectedErrorResponse"
+    },
+    {
+      "type": "item",
+      "title": "webhooks",
+      "uri": "models/webhooks.yaml",
+      "slug": "schemas/webhooks"
+    },
+    {
+      "type": "item",
+      "title": "webhooksChargeback",
+      "uri": "models/webhooksChargeback.yaml",
+      "slug": "schemas/webhooksChargeback"
+    },
+    {
+      "type": "divider",
+      "title": "Errors"
+    },
+    {
+      "type": "item",
+      "title": "Kushki API errors",
+      "uri": "docs/error-catalog/Error-Catalog.md",
+      "slug": "error-catalog"
+    },
+    {
+      "type": "item",
+      "title": "ISO errors",
+      "uri": "docs/error-catalog/iso-error-codes.md",
+      "slug": "iso-error-codes"
+    },
+    {
+      "type": "divider",
+      "title": "What's new "
+    },
+    {
+      "type": "item",
+      "title": "Release notes",
+      "uri": "docs/release-notes/new.md",
+      "slug": "new"
+    }
+  ]
+}

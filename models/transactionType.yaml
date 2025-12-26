@@ -1,0 +1,11 @@
+title: transactionType
+x-stoplight:
+  id: ibn4kzkykt9go
+type: string
+enum:
+  - SALE
+  - PREAUTHORIZATION
+  - CAPTURE
+  - VOID
+  - REFUND
+  - DEFERRED

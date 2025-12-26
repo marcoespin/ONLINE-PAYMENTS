@@ -1,0 +1,19 @@
+description: ''
+type: object
+x-examples:
+  example-1:
+    code: K002
+    message: Ha ocurrido un error inesperado
+examples:
+  - code: K002
+    message: Ha ocurrido un error inesperado
+properties:
+  code:
+    type: string
+    example: K002
+  message:
+    type: string
+    example: Ha ocurrido un error inesperado
+required:
+  - code
+  - message

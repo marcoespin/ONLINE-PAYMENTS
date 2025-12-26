@@ -1,0 +1,1128 @@
+openapi: 3.1.0
+x-stoplight:
+  id: mlp2bhf8kwqjy
+info:
+  title: Request a card payout token
+  version: '1.0'
+  description: "# Card Payouts  \n\n**Card Payouts** is a service that allows you to send funds to Visa (Chile) or Visa and Mastercard (Peru) debit and credit cards. \n\n<!-- theme: warning -->\n> #### Product in beta version in Perú \U0001F1F5\U0001F1EA and Chile. \U0001F1E8\U0001F1F1 \U0001F510\U0001F468‍\U0001F4BB\n>\n> We are working on our beta version. Stay tuned for its official release! You can also contact your account manager for more information.\n\n## How It Works  \n\nCard Payouts involves multiple services that handle tokenization, fund transfers, subscription management, and transaction status retrieval.  \n\n### 1. Tokenizing Card Information  \n\nBefore sending funds, you must tokenize the card details. There are two options:  \n\n- **[Get Card Payout Token](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/create-a-payout-card-v-1-token)**: Generates a one-time token for a single payout transaction.  \n- **[Get Subscription Token](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/create-a-payout-card-v-1-subscription-token)**: Permite almacenar una tarjeta. It generates a subscription ID.  \n\n> **Non-PCI Compliance Alternative:**  \n> If your business is not PCI compliant, use **[Kushki JS Hosted Fields](https://api-docs.kushkipagos.com/docs/libraries/branches/CARD-PAYOUTS/kushkijs-hosted-fields#card-payouts)** to obtain a token from the front-end securely.\n\n### 2. Sending Funds to a Card  \n\nOnce the card is tokenized, you can proceed with the fund transfer:  \n\n- **[Push Funds](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/create-a-payout-card-v-1-push-fund)**: Sends funds to a card using a one-time payout token.  \n- **[Push Funds in Subscriptions](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/create-a-payout-card-v-1-subscription-push-fund)**: Allows sending funds to a stored card.\n\n### 3. Managing Transactions  \n\nYou can monitor and manage transactions using the following services:  \n\n- **[Get Transaction Status](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/get-a-payout-card-v-1-transaction)**: Retrieves the status of a payout transaction.  \n- **[Delete Subscription](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/delete-a-payout-card-v-1-token)**: Removes a subscribed card to prevent future payouts.\n\n## Overview of Card Payout Services  \n\n| Service | Description |  \n|---------|------------|  \n| [Get Card Payout Token](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/create-a-payout-card-v-1-token) | Generates a token for one-time payouts. |  \n| [Get Subscription Token](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/create-a-payout-card-v-1-subscription-token) | Generates a subscription ID for multiple payouts. |  \n| [Push Funds](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/create-a-payout-card-v-1-push-fund) | Transfers funds to a card using a one-time token. |  \n| [Push Funds in Subscriptions](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/create-a-payout-card-v-1-subscription-push-fund) | Transfers funds to a subscribed card. |  \n| [Get Transaction Status](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/get-a-payout-card-v-1-transaction) | Retrieves the status of a transaction. |  \n| [Delete Subscription](https://api-docs.kushkipagos.com/docs/online-payments/card-outs/operations/delete-a-payout-card-v-1-token) | Deletes a subscription to prevent further payouts. |  \n\n## Card Payouts Flow  \n\nBelow is a high-level representation of how Card Payouts work:  \n\n\n```mermaid\ngraph TD;\n    A[Start] -->|Card details| B(Get Card Payout Token);\n    A -->|Card details| C(Get Subscription Token);\n    B -->|Payout Token| D(Push Funds);\n    C -->|SubscriptionId| E(Push Funds in Subscriptions);\n    D -->|Transaction Sent| F(Get Transaction Status);\n    E -->|Transaction Sent| F;\n    C -->|Unsubscribe| G(Delete Subscription);\n    G -->|Subscription Removed| H[End];\n    F -->|Transaction Confirmed| H;\n"
+servers:
+  - url: api-uat.kushkipagos.com
+    description: ''
+paths:
+  /payouts/card/v1/tokens:
+    post:
+      summary: Get Card Payout Token
+      tags: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  maskedPan:
+                    type: string
+                  brand:
+                    type: string
+                x-examples:
+                  Example 1:
+                    token: 8122eb4bda29476f8dc71b6426a7fd5d
+                    maskedPan: 495703XXXXXX0454
+                    brand: VISA
+              examples:
+                Token Generated:
+                  value:
+                    token: 8122eb4bda29476f8dc71b6426a7fd5d
+                    maskedPan: 495703XXXXXX0454
+                    brand: VISA
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  details:
+                    type: object
+                    properties:
+                      Origin:
+                        type: string
+                      Message:
+                        type: string
+                  message:
+                    type: string
+                x-examples:
+                  Example 1:
+                    code: E025
+                    details:
+                      Origin: TokensService
+                      Message: 25 - Unable to locate record in file
+                    message: Tarjeta inválida.
+              examples:
+                Tarjeta inválida:
+                  value:
+                    code: E025
+                    details:
+                      Origin: TokensService
+                      Message: 25 - Unable to locate record in file
+                    message: Tarjeta inválida.
+      operationId: post-payouts-card-v1-tokens
+      x-stoplight:
+        id: vs0p7deqzn0h4
+      description: "The Get Card Payout Token service allows you to generate a token by providing the cardholder and card details. This token can then be used in the Push Funds service to complete the payout transaction.\n<!-- theme: warning -->\n> #### Important!\n>\n> If you are not PCI compliant, you must obtain the token from the front end using the [Kushki Hosted Fields](https://api-docs.kushkipagos.com/docs/libraries/branches/CARD-PAYOUTS/kushkijs-hosted-fields#card-payouts) library.\n\n<!-- theme: warning -->\n> #### Product in beta version \U0001F1F5\U0001F1EA \U0001F1E8\U0001F1F1 \U0001F510\U0001F468‍\U0001F4BB\n>\n> We are working on our beta version. Stay tuned for its official release! You can also contact your account manager for more information.\n\n\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Perú \U0001F1F5\U0001F1EA, and Chile \U0001F1E8\U0001F1F1.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n"
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+        - schema:
+            type: string
+          in: header
+          name: Public-key
+          required: true
+          description: Public-Credential-Id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  card:
+                    name: John Doe
+                    number: '4104920120500001'
+                  paymentType: FD
+              required:
+                - card
+              properties:
+                card:
+                  type: object
+                  required:
+                    - name
+                    - number
+                    - expiryMonth
+                    - expiryYear
+                  properties:
+                    name:
+                      type: string
+                      pattern: Firstname Lastname
+                      example: Juan Hernández
+                    number:
+                      type: string
+                      description: Credit or debit Card Number
+                    expiryMonth:
+                      type: string
+                      x-stoplight:
+                        id: d3b2h7x72znb4
+                      maxLength: 2
+                      minLength: 2
+                      example: '08'
+                    expiryYear:
+                      type: string
+                      x-stoplight:
+                        id: 3f7ywtzvzfhw6
+                      maxLength: 2
+                      minLength: 2
+                      example: '29'
+                paymentType:
+                  enum:
+                    - FD
+                    - OG
+                  description: "Allowed values in Peru \U0001F1F5\U0001F1EA:<br>\n- `FD` => Funds Disbursement <br>\n- `OG` => Online Gambling\n\nAllowed values in Chile \U0001F1E8\U0001F1F1: <br>\n- `FD` => Funds Disbursement\n"
+            examples:
+              Example 1:
+                value:
+                  card:
+                    name: Juan Hernández
+                    number: '4111111111111111'
+                    expiryMonth: '12'
+                    expiryYear: '29'
+                  paymentType: FD
+  /payouts/card/v1/subscriptions/tokens:
+    post:
+      summary: Get Subscription Token
+      tags: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscriptionId:
+                    type: string
+                  maskedPan:
+                    type: string
+                  brand:
+                    type: string
+                x-examples:
+                  Example 1:
+                    subscriptionId: 256a8eb60eea4993b378e34488610e7f
+                    maskedPan: 495703XXXXXX0454
+                    brand: VISA
+              examples:
+                Suscription Generated:
+                  value:
+                    subscriptionId: 956a8eb60epa4993b378e34488610e7f
+                    maskedPan: 495703XXXXXX0454
+                    brand: VISA
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  details:
+                    type: object
+                    properties:
+                      Origin:
+                        type: string
+                      Message:
+                        type: string
+                  message:
+                    type: string
+                x-examples:
+                  Example 1:
+                    code: E025
+                    details:
+                      Origin: TokensService
+                      Message: 25 - Unable to locate record in file
+                    message: Tarjeta inválida.
+              examples:
+                ID de comercio o credencial no válido:
+                  value:
+                    message: ID de comercio o credencial no válido
+                    code: K004
+                Tarjeta inválida:
+                  value:
+                    code: E025
+                    details:
+                      Origin: TokensService
+                      Message: 25 - Unable to locate record in file
+                    message: Tarjeta inválida.
+      operationId: post-payouts-card-v1-subscriptions-tokens
+      x-stoplight:
+        id: 7lyehw2ubzqkb
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+        - schema:
+            type: string
+          in: header
+          name: Public-key
+          description: Public-Merchant-Id
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  card:
+                    name: John Doe
+                    number: '5102589999999913'
+                  paymentType: OG
+              required:
+                - card
+              properties:
+                card:
+                  type: object
+                  required:
+                    - name
+                    - number
+                    - expiryMonth
+                    - expiryYear
+                  properties:
+                    name:
+                      type: string
+                      example: Juan Hernández
+                      pattern: Firstname Lastname
+                    number:
+                      type: string
+                      description: Credit or debit Card Number
+                    expiryMonth:
+                      type: string
+                      x-stoplight:
+                        id: 63j67r6bapaip
+                      example: '03'
+                      minLength: 2
+                      maxLength: 2
+                    expiryYear:
+                      type: string
+                      x-stoplight:
+                        id: bkmrnyfdpi6nx
+                      example: '27'
+                      minLength: 2
+                      maxLength: 2
+                paymentType:
+                  enum:
+                    - FD
+                    - OG
+                  description: "Allowed values in Peru \U0001F1F5\U0001F1EA:<br>\n- `FD` => Funds Disbursement <br>\n- `OG` => Online Gambling\n\nAllowed values in Chile \U0001F1E8\U0001F1F1: <br>\n- `FD` => Funds Disbursement"
+            examples:
+              Subscription Generated:
+                value:
+                  card:
+                    name: Juan Hernández
+                    number: '4111111111111111'
+                    expiryMonth: '03'
+                    expiryYear: '27'
+                  paymentType: FD
+      description: "The Get Subscription Token service generates a `subscriptionId` by providing the cardholder and card details. Unlike the Get Payout Token service, which is intended for one-time payouts, this service allows you to send funds multiple times to a valid card using the Push Funds service.\n\n<!-- theme: warning -->\n> #### Product in beta version \U0001F1F5\U0001F1EA \U0001F1E8\U0001F1F1 \U0001F510\U0001F468‍\U0001F4BB\n>\n> We are working on our beta version. Stay tuned for its official release! You can also contact your account manager for more information.\n\n<!-- theme: warning -->\n> #### Important!\n>\n> If you are not PCI compliant, you must obtain the token from the front end using the [Kushki Hosted Fields](https://api-docs.kushkipagos.com/docs/libraries/branches/CARD-PAYOUTS/kushkijs-hosted-fields#card-payouts) library.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Perú \U0001F1F5\U0001F1EA, and Chile \U0001F1E8\U0001F1F1.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)"
+  /payouts/card/v1/pushFunds:
+    post:
+      summary: Push funds
+      tags: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  Example 1:
+                    details:
+                      amount:
+                        currency: PEN
+                        totalAmount: 13
+                      approvalCode: NANANA
+                      approvedTransactionAmount: 13
+                      binInfo:
+                        bank: 'CITIBANK (SOUTH DAKOTA), N.A.'
+                        bin: '41049201'
+                        brand: VISA
+                        brandProductCode: ''
+                        country: USA
+                        type: credit
+                        prepaid: false
+                      created: 1738255645225
+                      merchantId: '20000000100400157000'
+                      merchantName: ORIZABA PAYOUTS CARD BRANCH
+                      paymentBrand: VISA
+                      responseCode: '00'
+                      responseText: Approved and completed successfully
+                      transactionId: '951738255645225913'
+                      transactionReference: 5a05e47a-e772-4f94-9df4-54871cdcccc7
+                      transactionStatus: APPROVAL
+                      transactionType: PAYOUT
+                    ticketNumber: '951738255645225913'
+                    transactionReference: 5a05e47a-e772-4f94-9df4-54871cdcccc7
+                properties:
+                  details:
+                    type: object
+                    properties:
+                      amount:
+                        type: object
+                        properties:
+                          currency:
+                            type: string
+                          totalAmount:
+                            type: integer
+                      approvalCode:
+                        type: string
+                      approvedTransactionAmount:
+                        type: integer
+                      binInfo:
+                        type: object
+                        properties:
+                          bank:
+                            type: string
+                          bin:
+                            type: string
+                          brand:
+                            enum:
+                              - VISA
+                              - MASTERCARD
+                          brandProductCode:
+                            type: string
+                          country:
+                            type: string
+                          type:
+                            type: string
+                          prepaid:
+                            type: boolean
+                      created:
+                        type: integer
+                      merchantId:
+                        type: string
+                      merchantName:
+                        type: string
+                      paymentBrand:
+                        enum:
+                          - VISA
+                          - MASTERCARD
+                      responseCode:
+                        type: string
+                      responseText:
+                        type: string
+                      transactionId:
+                        type: string
+                      transactionReference:
+                        type: string
+                      transactionStatus:
+                        type: string
+                      transactionType:
+                        type: string
+                  ticketNumber:
+                    type: string
+                  transactionReference:
+                    type: string
+              examples:
+                FullResponse v2:
+                  value:
+                    details:
+                      amount:
+                        currency: PEN
+                        totalAmount: 250
+                      approvalCode: 21324K
+                      approvedTransactionAmount: 250
+                      binInfo:
+                        bank: PICHINCHA
+                        bin: '495703'
+                        brand: VISA
+                        brandProductCode: ''
+                        country: USA
+                        type: credit
+                        prepaid: false
+                      clientTransactionId: '7474849895'
+                      created: 1740693164307
+                      merchantId: '20000000100400157000'
+                      merchantName: ORIZABA PAYOUTS CARD BRANCH
+                      paymentBrand: VISA
+                      responseCode: '00'
+                      responseText: Approved and completed successfully
+                      transactionId: '951740693164307311'
+                      transactionReference: c5a95370-31b4-4d47-8c36-6d187107b7da
+                      transactionStatus: APPROVAL
+                      transactionType: PAYOUT
+                    ticketNumber: '951740693164307311'
+                    transactionReference: c5a95370-31b4-4d47-8c36-6d187107b7da
+                Without FullResponse:
+                  value:
+                    ticketNumber: '951740693213294586'
+                    transactionReference: 52f6cfc2-425f-44c3-9d2a-fbe3b9d18ac1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  details:
+                    type: object
+                    properties:
+                      Origin:
+                        type: string
+                      Message:
+                        type: string
+                  message:
+                    type: string
+                x-examples:
+                  Example 1:
+                    code: E057
+                    details:
+                      Origin: PushFundsService
+                      Message: The currency received is different from the currency configured in the processor
+                    message: La moneda enviada es diferente a la definida por el procesador.
+              examples:
+                Moneda no soportada:
+                  value:
+                    code: E057
+                    details:
+                      Origin: PushFundsService
+                      Message: The currency received is different from the currency configured in the processor
+                    message: La moneda enviada es diferente a la definida por el procesador.
+                Token incorrecto:
+                  value:
+                    code: E008
+                    details:
+                      Origin: CommonService | getTokenInfo
+                      Message: token not found
+                    message: Token incorrecto.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  details:
+                    type: object
+                    properties:
+                      Origin:
+                        type: string
+                      Message:
+                        type: string
+                  message:
+                    type: string
+                x-examples:
+                  Example 1:
+                    code: E708
+                    details:
+                      Origin: Mastercard Gateway | processValidateCardMCResponse response
+                      Message: validate card failed with status code 400
+                    message: Ocurrió un error al consultar el servicio de validación de tarjeta.
+              examples:
+                Internal server error:
+                  value:
+                    code: E708
+                    details:
+                      Origin: Mastercard Gateway | processValidateCardMCResponse response
+                      Message: validate card failed with status code 400
+                    message: Ocurrió un error al consultar el servicio de validación de tarjeta.
+      operationId: post-payouts-card-v1-pushFunds
+      x-stoplight:
+        id: p8ectu9bdrw14
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  card:
+                    name: John Doe
+                    number: '5102589999999913'
+                  clientTransactionId: '{{$guid}}'
+                  amount:
+                    currency: CLP
+                    totalAmount: 0.25
+                  fullResponse: v2
+                  paymentType: GMR
+                  metadata:
+                    key1: key1
+                  webhooks:
+                    - events:
+                        - approvedTransaction
+                        - declinedTransaction
+                      urls:
+                        - 'https://demo2347289.mockable.io/testing'
+                      headers:
+                        - label: labelTest
+                          value: valueTest
+                  recipient:
+                    address: Lima Callse S/N
+                    city: Chicago
+                    country: PER
+                    zipCode: '63368'
+              required:
+                - card
+                - clientTransactionId
+                - amount
+                - paymentType
+                - recipient
+              properties:
+                card:
+                  type: object
+                  required:
+                    - name
+                    - number
+                    - expiryMonth
+                    - expiryYear
+                  properties:
+                    name:
+                      type: string
+                      example: Juan Gomez
+                      pattern: Firstname Lastname
+                    number:
+                      type: string
+                    expiryMonth:
+                      type: string
+                      x-stoplight:
+                        id: 3vazyl078kkjw
+                      example: '02'
+                      minLength: 2
+                      maxLength: 2
+                    expiryYear:
+                      type: string
+                      x-stoplight:
+                        id: 8lf1nqa7l739b
+                      example: '28'
+                      minLength: 2
+                      maxLength: 2
+                token:
+                  type: string
+                  x-stoplight:
+                    id: an09s2rnqrarg
+                  description: 'A unique identifier obtained through integration via the Hosted Fields library or the get card payout token service. If the token is sent, the card object is no longer required.'
+                clientTransactionId:
+                  type: string
+                  description: A Universally Unique Identifier (UUID)
+                amount:
+                  type: object
+                  required:
+                    - currency
+                    - totalAmount
+                  properties:
+                    currency:
+                      enum:
+                        - PEN
+                        - CLP
+                    totalAmount:
+                      type: number
+                fullResponse:
+                  type: string
+                paymentType:
+                  enum:
+                    - FD
+                    - OG
+                  description: "Allowed values in Peru \U0001F1F5\U0001F1EA:<br>\n- `FD` => Funds Disbursement <br>\n- `OG` => Online Gambling\n\nAllowed values in Chile \U0001F1E8\U0001F1F1: <br>\n- `FD` => Funds Disbursement"
+                metadata:
+                  type: object
+                  properties:
+                    key1:
+                      type: string
+                webhooks:
+                  $ref: ../models/webhooks.yaml
+                recipient:
+                  type: object
+                  required:
+                    - address
+                    - city
+                    - country
+                    - zipCode
+                  properties:
+                    address:
+                      type: string
+                    city:
+                      type: string
+                    country:
+                      type: string
+                      description: Required only for mastercard
+                    zipCode:
+                      type: string
+            examples:
+              Push funds Mastercard:
+                value:
+                  card:
+                    name: John Doe
+                    number: '5102589999999913'
+                    expiryMonth: '08'
+                    expiryYear: '23'
+                  clientTransactionId: '{{$guid}}'
+                  amount:
+                    currency: CLP
+                    totalAmount: 0.25
+                  fullResponse: v2
+                  paymentType: FD
+                  metadata:
+                    key1: key1
+                  recipient:
+                    address: Lima Callse S/N
+                    city: Chicago
+                    country: PER
+                    zipCode: '63368'
+              Push funds Visa:
+                value:
+                  card:
+                    name: John Doe
+                    number: '4957030420210470'
+                    expiryMonth: '08'
+                    expiryYear: '29'
+                  amount:
+                    currency: PEN
+                    totalAmount: 13
+                  clientTransactionId: '{{$randomUUID}}'
+                  paymentType: OG
+                  metadata:
+                    test1: test1
+                    test2: test2
+                    test3: test3
+                  recipient:
+                    address: Lima Callse S/N
+                    city: Ambato
+                    zipCode: '123456'
+                  fullResponse: v2
+              Push funds with webhook:
+                value:
+                  card:
+                    name: John Doe
+                    number: '4957030420210470'
+                    expiryMonth: '08'
+                    expiryYear: '27'
+                  amount:
+                    currency: PEN
+                    totalAmount: 30
+                  clientTransactionId: '{{$randomUUID}}'
+                  paymentType: OG
+                  metadata:
+                    key1: key1
+                  recipient:
+                    address: Lima Callse S/N
+                    city: Ambato
+                    zipCode: '123456'
+                  fullResponse: v2
+                  webhooks:
+                    - events:
+                        - approvedTransaction
+                        - declinedTransaction
+                      urls:
+                        - 'https://demo2347289.mockable.io/testing'
+                      headers:
+                        - label: labelTest
+                          value: valueTest
+              Push funds with token (hosted fields library):
+                value:
+                  token: 74378g3yg4387437878387
+                  amount:
+                    currency: PEN
+                    totalAmount: 19
+                  clientTransactionId: '{{$randomUUID}}'
+                  paymentType: OG
+                  metadata:
+                    key1: key1
+                  recipient:
+                    address: Lima Callse S/N
+                    city: Ambato
+                    zipCode: '123456'
+                  fullResponse: v2
+                  webhooks:
+                    - events:
+                        - approvedTransaction
+                      urls:
+                        - 'https://webhook.site/3aa8868d-43c8-4fc0-bcbf-a96f7e89a371'
+                      headers:
+                        - label: foo
+                          value: bar
+        description: ''
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+        - schema:
+            type: string
+          in: header
+          name: Private-key
+          required: true
+      description: "The **Card Push Funds Service** enables users to send funds directly to a card by providing essential transaction details. The request should also contain card details, the transaction amount, and the `paymentType`.\n\n<!-- theme: warning -->\n> #### Product in beta version \U0001F1F5\U0001F1EA \U0001F1E8\U0001F1F1 \U0001F510\U0001F468‍\U0001F4BB\n>\n> We are working on our beta version. Stay tuned for its official release! You can also contact your account manager for more information.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Perú \U0001F1F5\U0001F1EA, and Chile \U0001F1E8\U0001F1F1.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\nThe **Push Funds** service offers two integration options based on your PCI compliance level:\n\n1. **Without token**: Merchants with PCI compliance can send the `card` object directly and omit the token.\n2. **With token**: Available for both PCI-compliant and non-PCI-compliant merchants. Non-PCI-compliant merchants must obtain the token using the **hosted fields** library.\n\nChoose the option that best suits your business needs while ensuring compliance with security standards.\n\n\n### Fields and description\n\n| **Field**                     | **Required**              | **Type**         | **Description** |\n|--------------------------------|--------------------------|------------------|----------------|\n| `clientTransactionId`         | ✅ Required               | `string`         | a valid Universally Unique Identifier (UUID) |\n| `card`                        | ✅ Required (if you don't provide a token)               | `object`         | Contains cardholder details. |\n| `card.name`                   | ✅ Required (if you don't provide a token)               | `string`         | Cardholder's full name. |\n| `card.number`                 | ✅ Required  (if you don't provide a token)              | `string`         | Card number for the payout transaction. |\n| `card.expiryMonth` | ✅ Required (if you don't provide a token) | `string` | Card's expiry month (2-digit format). |\n| `card.expiryYear` | ✅ Required (if you don't provide a token) | `string` | Card's expiry year (2-digit format). |\n| `amount`                      | ✅ Required               | `object`         | Transaction amount details. |\n| `amount.currency`             | ✅ Required               | `string`         | The currency of the transaction (Allowed values:`PEN`,`CLP` ). |\n| `amount.totalAmount`          | ✅ Required               | `numeric`        | The total amount to be transferred. |\n| `paymentType`                 | ✅ Required               | `string`         | Defines the type of payment (`\"OG\"` (Online Gambling) or `\"FD\"`(Funds Disbursement ). For Chile, only `\"FD\"` is allowed  |\n| `fullResponse`                | ⛔️ Optional               | `string`         | If sent, it must be set to `\"v2\"`. |\n| `metadata`                    | ⛔️ Optional               | `object`         | Additional key-value data related to the transaction. |\n| `metadata.key1`               | ⛔️ Optional   | `string`         | Single key for metadata  |\n| `recipient`                   | ✅ Required | `object`         | Contains recipient details. |\n| `recipient.address`           | ✅ Required   | `string`         | The recipient’s street address. |\n| `recipient.city`              | ✅ Required   | `string`         | The recipient’s city. |\n| `recipient.zipCode`           | ✅ Required  | `string`         | The recipient’s zip code. |\n| `recipient.country`           | ✅ Required | `string` | The recipient’s country. |\n| `webhooks`                    | ⛔️ Optional               | `array`          | List of webhook configurations to receive transaction updates. |\n| `webhooks[].events`           | ⛔️ Optional               | `array`          | Keep in mind to use the events associated with the payment method. If you send this object empty, the information created in the transaction request will be taken.(`approvedTransaction`, `declinedTransaction`). |\n| `webhooks[].urls`             | ⛔️ Optional               | `array`          | List of URLs to receive webhook callbacks. |\n| `webhooks[].headers`          | ⛔️ Optional               | `array`          | Custom headers for webhook requests. |\n| `webhooks[].headers[].label`  | ⛔️ Optional               | `string`         | Label for the custom header. |\n| `webhooks[].headers[].value`  | ⛔️ Optional               | `string`         | Value for the custom header. |\n| `token`  | ⛔️ Optional               | `string`         | It can be obtained via the Hosted Fields library or the [Get Card Payout Token](https://api-docs.kushkipagos.com/docs/online-payments/branches/1.16.0/card-outs/operations/create-a-payout-card-v-1-token) method. If you are not PCI compliance, this token is obtained through the [requestCardPayoutToken](https://api-docs.kushkipagos.com/docs/libraries/branches/CARD-PAYOUTS/kushkijs-hosted-fields/CardPayouts/CardPayoutsInterface/ICardPayout#requestcardpayouttoken) method and is essential for securely processing payments. If the token is sent, the card object is no longer required. |\n\n---\n"
+  '/payouts/card/v1/subscriptions/pushFunds/{subscriptionId}':
+    post:
+      summary: Push Funds in subscriptions
+      tags: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  details:
+                    type: object
+                    properties:
+                      amount:
+                        type: object
+                        properties:
+                          currency:
+                            type: string
+                          totalAmount:
+                            type: integer
+                      approvalCode:
+                        type: string
+                      approvedTransactionAmount:
+                        type: integer
+                      binInfo:
+                        type: object
+                        properties:
+                          bank:
+                            type: string
+                          bin:
+                            type: string
+                          brand:
+                            type: string
+                          brandProductCode:
+                            type: string
+                          country:
+                            type: string
+                          type:
+                            type: string
+                          prepaid:
+                            type: boolean
+                      clientTransactionId:
+                        type: string
+                      created:
+                        type: integer
+                      merchantId:
+                        type: string
+                      merchantName:
+                        type: string
+                      paymentBrand:
+                        type: string
+                      responseCode:
+                        type: string
+                      responseText:
+                        type: string
+                      transactionId:
+                        type: string
+                      transactionReference:
+                        type: string
+                      transactionStatus:
+                        type: string
+                      transactionType:
+                        type: string
+                  ticketNumber:
+                    type: string
+                  transactionReference:
+                    type: string
+                x-examples:
+                  Example 1:
+                    details:
+                      amount:
+                        currency: PEN
+                        totalAmount: 250
+                      approvalCode: 21324K
+                      approvedTransactionAmount: 250
+                      binInfo:
+                        bank: PICHINCHA
+                        bin: '495703'
+                        brand: VISA
+                        brandProductCode: ''
+                        country: USA
+                        type: credit
+                        prepaid: false
+                      clientTransactionId: '7474849895'
+                      created: 1740693164307
+                      merchantId: '20000000100400157000'
+                      merchantName: ORIZABA PAYOUTS CARD BRANCH
+                      paymentBrand: VISA
+                      responseCode: '00'
+                      responseText: Approved and completed successfully
+                      transactionId: '951740693164307311'
+                      transactionReference: c5a95370-31b4-4d47-8c36-6d187107b7da
+                      transactionStatus: APPROVAL
+                      transactionType: PAYOUT
+                    ticketNumber: '951740693164307311'
+                    transactionReference: c5a95370-31b4-4d47-8c36-6d187107b7da
+              examples:
+                Funds sucessfully sent:
+                  value:
+                    details:
+                      amount:
+                        currency: PEN
+                        totalAmount: 250
+                      approvalCode: 21324K
+                      approvedTransactionAmount: 250
+                      binInfo:
+                        bank: PICHINCHA
+                        bin: '495703'
+                        brand: VISA
+                        brandProductCode: ''
+                        country: USA
+                        type: credit
+                        prepaid: false
+                      clientTransactionId: '7474849895'
+                      created: 1740693164307
+                      merchantId: '20000000100400157000'
+                      merchantName: ORIZABA PAYOUTS CARD BRANCH
+                      paymentBrand: VISA
+                      responseCode: '00'
+                      responseText: Approved and completed successfully
+                      transactionId: '951740693164307311'
+                      transactionReference: c5a95370-31b4-4d47-8c36-6d187107b7da
+                      transactionStatus: APPROVAL
+                      transactionType: PAYOUT
+                    ticketNumber: '951740693164307311'
+                    transactionReference: c5a95370-31b4-4d47-8c36-6d187107b7da
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  details:
+                    type: object
+                    properties:
+                      Origin:
+                        type: string
+                      Message:
+                        type: string
+                  message:
+                    type: string
+                x-examples:
+                  Example 1:
+                    code: E008
+                    details:
+                      Origin: CommonService | getTokenInfo
+                      Message: token not found
+                    message: Token incorrecto.
+              examples:
+                E049 Token already used:
+                  value:
+                    code: E049
+                    details:
+                      Origin: CommonService | getTokenInfo
+                      Message: token already processed
+                    message: Token utilizado anteriormente.
+      operationId: post-payouts-card-v1-subscriptions-pushFunds-subscriptionId
+      x-stoplight:
+        id: n883lr8a42cpc
+      description: "The Push Funds in subscriptions service allows you to send payments to a previously registered card using a subscription-based model. To initiate a transaction, you must provide the `subscriptionId` as a path parameter. This `subscriptionId` is obtained from the front end using [Kushki.js Hosted Fields](https://api-docs.kushkipagos.com/docs/libraries/branches/CARD-PAYOUTS/kushkijs-hosted-fields/CardPayouts/Methods/initCardPayoutToken) or from the Get Subscription Token service, which securely collects and tokenizes card details.\n\n<!-- theme: warning -->\n> #### Product in beta version \U0001F1F5\U0001F1EA \U0001F1E8\U0001F1F1 \U0001F510\U0001F468‍\U0001F4BB\n>\n> We are working on our beta version. Stay tuned for its official release! You can also contact your account manager for more information.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Perú \U0001F1F5\U0001F1EA, and Chile \U0001F1E8\U0001F1F1.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  amount:
+                    currency: PEN
+                    totalAmount: 0.1
+                  clientTransactionId: '{{$randomUUID}}'
+                  paymentType: OG
+                  metadata:
+                    key1: key1
+                  recipient:
+                    address: Lima Callse S/N
+                    city: Ambato
+                    zipCode: '123456'
+                  fullResponse: v2
+                  webhooks:
+                    - events:
+                        - approvedTransaction
+                      urls:
+                        - 'https://webhook.site/3aa8868d-43c8-4fc0-bcbf-a96f7e89a371'
+                      headers:
+                        - label: foo
+                          value: bar
+              required:
+                - amount
+                - clientTransactionId
+                - paymentType
+                - recipient
+              properties:
+                amount:
+                  type: object
+                  required:
+                    - currency
+                    - totalAmount
+                  properties:
+                    currency:
+                      enum:
+                        - PEN
+                        - CLP
+                    totalAmount:
+                      type: number
+                clientTransactionId:
+                  type: string
+                  description: A Universally Unique Identifier (UUID)
+                paymentType:
+                  enum:
+                    - OG
+                    - FD
+                  description: "Allowed values in Peru \U0001F1F5\U0001F1EA:<br>\n- `FD` => Funds Disbursement <br>\n- `OG` => Online Gambling\n\nAllowed values in Chile \U0001F1E8\U0001F1F1: <br>\n- `FD` => Funds Disbursement"
+                metadata:
+                  type: object
+                  properties:
+                    key1:
+                      type: string
+                recipient:
+                  type: object
+                  required:
+                    - address
+                    - city
+                    - zipCode
+                  properties:
+                    address:
+                      type: string
+                    city:
+                      type: string
+                    zipCode:
+                      type: string
+                fullResponse:
+                  type: string
+                  example: v2
+                webhooks:
+                  $ref: ../models/webhooks.yaml
+            examples:
+              Push funds:
+                value:
+                  clientTransactionId: '{{$guid}}'
+                  amount:
+                    currency: CLP
+                    totalAmount: 0.25
+                  fullResponse: v2
+                  paymentType: FD
+                  metadata:
+                    key1: key1
+                  recipient:
+                    address: Lima Callse S/N
+                    city: Chicago
+                    country: PER
+                    zipCode: '63368'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Private-key
+        - schema:
+            type: string
+          in: query
+          name: subscriptionId
+          description: subscriptionId obtained from hosted fields library or the Get subscription token method
+    parameters:
+      - schema:
+          type: string
+        name: subscriptionId
+        in: path
+        required: true
+      - schema:
+          type: string
+        in: header
+        name: Private-Merchant-Id
+        required: true
+      - schema:
+          type: string
+        in: header
+        name: Content-Type
+        description: application/json
+  '/payouts/card/v1/transaction/{transactionReference}':
+    parameters:
+      - schema:
+          type: string
+        name: transactionReference
+        in: path
+        required: true
+        description: '`transactionReference` obtained in the push funds request. You can also sent the  clientTransactionId'
+      - schema:
+          type: string
+        in: header
+        name: Private-Merchant-Id
+        description: Private-Merchant-Id
+        required: true
+    get:
+      summary: Get transaction status
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  amount:
+                    type: integer
+                  processor:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                  ticketNumber:
+                    type: string
+                  transactionReference:
+                    type: string
+                  transactionStatus:
+                    type: string
+                x-examples:
+                  Example 1:
+                    amount: 13
+                    processor:
+                      code: '00'
+                      message: Approved and completed successfully
+                    ticketNumber: '951738256068368362'
+                    transactionReference: 763274a1-b47b-493f-934f-047801cc04a0
+                    transactionStatus: APPROVAL
+              examples:
+                Approved and completed:
+                  value:
+                    amount: 13
+                    processor:
+                      code: '00'
+                      message: Approved and completed successfully
+                    ticketNumber: '951738256068368362'
+                    transactionReference: 763274a1-b47b-493f-934f-047801cc04a0
+                    transactionStatus: APPROVAL
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                x-examples:
+                  Example 1:
+                    code: E706
+                    message: Transacción no encontrada.
+              examples:
+                Invalid credential:
+                  value:
+                    message: ID de comercio o credencial no válido
+                    code: K004
+      operationId: get-payouts-card-v1-transaction-clientTransactionId
+      x-stoplight:
+        id: zkno1kfzjy007
+      parameters: []
+      description: "The **Get Transaction Status** service allows you to retrieve the status of a **card payout** transaction. To query the transaction, you must include **only one** of the following parameters in the request path:\n\n- **`transactionReference`**: The unique identifier assigned to the transaction by Kushki.  \n- **`clientTransactionId`**: The identifier assigned to the transaction by the merchant.  \n\n<!-- theme: warning -->\n> #### Product in beta version \U0001F1F5\U0001F1EA \U0001F1E8\U0001F1F1  \U0001F510\U0001F468‍\U0001F4BB\n>\n> We are working on our beta version. Stay tuned for its official release! You can also contact your account manager for more information.\n\n<!-- theme: warning -->\n> #### Important!\n>\n> If you receive any of the errors listed in the [error codes table](https://preview.docs.kushki.com/pe/payouts/card/error-codes), you must use the **`clientTransactionId`** to retrieve the transaction status.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Perú \U0001F1F5\U0001F1EA, and Chile \U0001F1E8\U0001F1F1.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n### Alternative: Webhook for Card Payouts\n\nInstead of polling the transaction status, you can use the **card payout webhook**, which automatically notifies your system about transaction status updates in real time. For more details, refer to the [Card Payout Webhook documentation](https://preview.docs.kushki.com/pe/notifications/payment-distribution/webhook-card-payout)."
+  '/payouts/card/v1/token/{subscriptionId}':
+    parameters:
+      - schema:
+          type: string
+        name: subscriptionId
+        in: path
+        required: true
+    delete:
+      summary: Delete Subscription
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                x-examples:
+                  Example 1:
+                    message: Operación exitosa
+              examples:
+                Subscription Deleted:
+                  value:
+                    message: Operación exitosa
+      operationId: delete-payouts-card-v1-token-subscriptionID
+      x-stoplight:
+        id: edn4gbchqdsv6
+      description: "The Delete Subscription service allows you to remove a subscribed card by sending the `subscriptionId` as a path parameter. Once deleted, the card can no longer receive payouts through the Push Funds service.\n\n<!-- theme: warning -->\n> #### Product in beta version \U0001F1F5\U0001F1EA \U0001F1E8\U0001F1F1 \U0001F510\U0001F468‍\U0001F4BB\n>\n> We are working on our beta version. Stay tuned for its official release! You can also contact your account manager for more information.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Perú \U0001F1F5\U0001F1EA, and Chile \U0001F1E8\U0001F1F1.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)"
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Private-key
+          required: true
+          description: Private-Merchant-Id
+components:
+  schemas: {}

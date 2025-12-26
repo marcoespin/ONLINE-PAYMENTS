@@ -1,0 +1,20 @@
+description: ''
+type: object
+x-examples:
+  example-1:
+    code: K001
+    message: El cuerpo de la petición es inválido
+examples:
+  - code: K001
+    message: El cuerpo de la petición es inválido
+properties:
+  code:
+    type: string
+    example: K001
+  message:
+    type: string
+    example: El cuerpo de la petición es inválido
+required:
+  - code
+  - message
+title: BadRequestResponse

@@ -1,0 +1,50 @@
+description: ''
+type: object
+x-examples:
+  example-1:
+    siteDomain: example.com
+    shippingDetails:
+      name: John Doe
+      phone: '+593912345678'
+      address1: Eloy Alfaro 139 y Catalina Aldaz
+      address2: centro 123
+      city: Quito
+      region: Pichincha
+      country: Ecuador
+    billingDetails:
+      name: John Doe
+      phone: '+593912345678'
+      address1: Eloy Alfaro 139 y Catalina Aldaz
+      address2: centro 123
+      city: Quito
+      region: Pichincha
+      country: Ecuador
+examples:
+  - siteDomain: example.com
+    shippingDetails:
+      name: John Doe
+      phone: '+593912345678'
+      address1: Eloy Alfaro 139 y Catalina Aldaz
+      address2: centro 123
+      city: Quito
+      region: Pichincha
+      country: Ecuador
+    billingDetails:
+      name: John Doe
+      phone: '+593912345678'
+      address1: Eloy Alfaro 139 y Catalina Aldaz
+      address2: centro 123
+      city: Quito
+      region: Pichincha
+      country: Ecuador
+properties:
+  siteDomain:
+    type: string
+  shippingDetails:
+    $ref: ./Shipping-Address.yaml
+  billingDetails:
+    $ref: ./Billing-Address.yaml
+required:
+  - siteDomain
+  - shippingDetails
+  - billingDetails

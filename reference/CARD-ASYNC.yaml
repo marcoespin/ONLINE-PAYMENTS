@@ -1,0 +1,1197 @@
+swagger: '2.0'
+x-stoplight:
+  id: 96934e7c6ae41
+info:
+  version: 1.1.3
+  title: CARD ASYNC
+  description: |
+    <!-- theme: warning -->
+    > #### To keep in mind
+    >Due to our risk policies, the available payment methods and the integration type may vary once you complete the affiliation. We will tell you how to proceed if this process applies to your merchant.
+
+    ## Using the API
+
+    To use the API you must ask for your Kushki Sandbox, composed of a `Public-Merchant-Id` and a `Private-Merchant-Id`.
+
+    * The current version of the Kushki API rests at: `https://api.kushkipagos.com/`
+    * The testing version rests at: `https://api-uat.kushkipagos.com/`
+
+
+    ## Endpoints
+
+    We dispose various endpoints to start your payment flows, find our products available:
+
+    * [Request a card async token](https://api-docs.kushkipagos.com/docs/online-payments/card-async/operations/create-a-card-async-v-1-token)
+    * [Init Transaction](https://api-docs.kushkipagos.com/docs/online-payments/card-async/operations/create-a-card-async-v-1-init)
+    * [Authorize payments](https://api-docs.kushkipagos.com/docs/online-payments/card-async/operations/create-a-card-async-v-1-pre-authorization)
+    * [Capture an authorized payment](https://api-docs.kushkipagos.com/docs/online-payments/card-async/operations/create-a-card-async-v-1-capture)
+    * [Get Status](https://api-docs.kushkipagos.com/docs/online-payments/card-async/operations/get-a-card-async-v-1-status)
+
+    [Return Home](/)
+
+    > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+host: api-uat.kushkipagos.com
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    scopes: {}
+    authorizationUrl: ''
+paths:
+  /card-async/v1/tokens:
+    post:
+      responses:
+        '201':
+          description: TokenCreated
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                example: AbCDef123456Z7Ghi8901234jkLMNopQ
+          examples:
+            application/json:
+              token: AbCDef123456Z7Ghi8901234jkLMNopQ
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                example: K001
+              message:
+                type: string
+                example: El cuerpo de la petición es inválido
+          examples:
+            Invalid request body:
+              code: CAS001
+              message: Cuerpo de la petición inválido.
+        '500':
+          description: Unexpected Error
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                example: K002
+              message:
+                type: string
+                example: Ha ocurrido un error inesperado
+          examples:
+            An unexpected error has occurred:
+              code: K002
+              message: Ha ocurrido un error inesperado
+      summary: Request a card async token
+      description: |-
+        Request a card async token that can later be used to init the transaction with the `init`
+        endpoint.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Chile.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        <!-- theme: danger -->
+        > #### Token expiration
+        >
+        >Tokens will expire in 30 minutes and can be used only for a single transaction (even if the transaction was wrong). You will need to request a new token when it expires.
+
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: cardAsyncTokenRequest
+      parameters:
+        - in: header
+          name: Public-key
+          type: string
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - totalAmount
+              - returnUrl
+              - currency
+            properties:
+              totalAmount:
+                type: number
+              returnUrl:
+                type: string
+              currency:
+                type: string
+                enum:
+                  - CLP
+                  - UF
+                example: CLP
+              email:
+                type: string
+                description: We suggest you send the email so that your customer receives notification of the status of the transaction.
+                format: email
+              description:
+                type: string
+          x-examples:
+            application/json:
+              totalAmount: 10000
+              returnUrl: 'https://kushki.com'
+              currency: CLP
+              email: user@example.com
+              description: Description of the payment
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+      x-stoplight:
+        id: 3y4kv8ot1fxoh
+  /card-async/v1/init:
+    post:
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            properties:
+              details:
+                type: object
+                properties:
+                  transactionType:
+                    type: string
+                  created:
+                    type: integer
+                  description:
+                    type: string
+                  email:
+                    type: string
+                  merchantId:
+                    type: string
+                  status:
+                    type: string
+              redirectUrl:
+                type: string
+              transactionReference:
+                type: string
+            x-examples:
+              example-1:
+                details:
+                  transactionType: SALE
+                  created: 1658361339240
+                  description: Description of the payment
+                  email: user@example.com
+                  merchantId: '20000000104111374000'
+                  status: initializedTransaction
+                redirectUrl: 'https://api-uat.kushkipagos.com/card-async/v1/agent/03b585eecdce44b2a90ac0c46b8265b4'
+                transactionReference: a264d5bb-2997-48a8-9944-ece54feccbcb
+          examples:
+            Single response:
+              redirectUrl: 'https://kushkipagos.com/card-async/v1/agent/df825dd6367e4142a24029805e9b4f27'
+              transactionReference: 33c5d084-81bc-4b05-9078-867026a34490
+            fullResponse v2:
+              details:
+                transactionType: SALE
+                created: 1658361339240
+                description: Description of the payment
+                email: user@example.com
+                merchantId: '20000000104111374000'
+                status: initializedTransaction
+              redirectUrl: 'https://api-uat.kushkipagos.com/card-async/v1/agent/03b585eecdce44b2a90ac0c46b8265b4'
+              transactionReference: a264d5bb-2997-48a8-9944-ece54feccbcb
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            Invalid request body:
+              code: CAS001
+              message: Cuerpo de la petición inválido.
+            An unexpected error has occurred:
+              code: CAS006
+              message: TB002 - Ha ocurrido un error inesperado.
+            Transaction does not exist:
+              code: CAS004
+              message: No existe la transacción
+        '500':
+          description: ''
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                example: K002
+              message:
+                type: string
+                example: Ha ocurrido un error inesperado
+      summary: Init Transaction
+      operationId: cardAsyncInit
+      description: |-
+        Init the transaction with a card async `token` provided by Kushki which represents the customer's payment.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Chile.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                pattern: '^[a-zA-Z0-9]{32}$'
+              amount:
+                $ref: ../models/Amount-CL.yaml
+              metadata:
+                $ref: ../models/Metadata.yaml
+              fullResponse:
+                type: string
+                enum:
+                  - v2
+              webhooks:
+                $ref: ../models/webhooks.yaml
+            required:
+              - token
+              - amount
+          x-examples:
+            Webhooks:
+              token: gUpjNVYcmdy9Q87mGQNeOqnSxdLvqqa8
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 10000
+                iva: 0
+              metadata:
+                customerId: IB200
+              webhooks:
+                - events:
+                    - approvedTransaction
+                    - declinedTransaction
+                  headers:
+                    - label: json
+                      value: '12'
+                  urls:
+                    - 'https://eof2hhkrta4ooo1.m.pipedream.net'
+            application/json:
+              token: gUpjNVYcmdy9Q87mGQNeOqnSxdLvqqa8
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 10000
+                iva: 0
+              metadata:
+                customerId: IB200
+              webhooks:
+                - events:
+                    - approvedTransaction
+                    - declinedTransaction
+                  headers:
+                    - label: json
+                      value: '12'
+                  urls:
+                    - 'https://eof2hhkrta4ooo1.m.pipedream.net'
+          description: ''
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+      x-stoplight:
+        id: 52esou2wcjghu
+  /card-async/v1/preAuthorization:
+    post:
+      responses:
+        '200':
+          description: OK
+          schema:
+            description: ''
+            type: object
+            x-examples:
+              example-1:
+                redirectUrl: 'https://kushkipagos.com/card-async/v1/agent/df825dd6367e4142a24029805e9b4f27'
+                transactionReference: 33c5d084-81bc-4b05-9078-867026a34490
+            properties:
+              redirectUrl:
+                type: string
+              transactionReference:
+                type: string
+            required:
+              - redirectUrl
+              - transactionReference
+          examples:
+            Successful transaction:
+              redirectUrl: 'https://kushkipagos.com/card-async/v1/agent/df825dd6367e4142a24029805e9b4f27'
+              transactionReference: 33c5d084-81bc-4b05-9078-867026a34490
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            Not Authorized:
+              code: CAS006
+              message: K006 - Not Authorized
+        '500':
+          description: Unexpected Error
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                example: K002
+              message:
+                type: string
+                example: Ha ocurrido un error inesperado
+          examples:
+            An unexpected error has occurred:
+              code: K002
+              message: Ha ocurrido un error inesperado
+      summary: Authorize payments
+      description: |-
+        > There is a maximum time of 7 calendar days to make the capture. After that time, the amount withheld from the credit card will be released. Transbank does not allow the release of the approved amount if it is not captured within 7 days.
+
+        Use this endpoint to request an authorization using a `token` provided by Kushki. 
+
+        You authorize a card payment when you want to verify that sufficient credit exists on a customer's credit card before processing a sale. The cardholder's credit limit will be reduced by the amount of the authorization until the authorization is captured or expires.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Chile.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: cardAsyncTokenRequest
+      parameters:
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              amount:
+                type: object
+                required:
+                  - subtotalIva
+                  - subtotalIva0
+                  - iva
+                properties:
+                  subtotalIva:
+                    type: number
+                  subtotalIva0:
+                    type: number
+                  iva:
+                    type: number
+              metadata:
+                $ref: ../models/Metadata.yaml
+            required:
+              - token
+              - amount
+          x-examples:
+            application/json:
+              token: 5bd8d89de5ae45acb0f1b26e4fd57858
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 10000
+                iva: 0
+              metadata:
+                customerId: IB200
+          description: ''
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+      x-stoplight:
+        id: yfczpoj1c2rhq
+    parameters: []
+  /card-async/v1/capture:
+    post:
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            x-examples:
+              example-1:
+                ticketNumber: '441571084222882291'
+                details:
+                  currency: CLP
+                  subtotalIva0: 10000
+                  approvalCode: '1213'
+                  approvedTransactionAmount:
+                    iva: 0
+                    subtotalIva: 0
+                    subtotalIva0: 10000
+                  status: approvedTransaction
+                  subtotalIva: 0
+                  email: kushki@kushkipagos.com
+                  transactionType: SALE
+                  ivaValue: 0
+                  lastFourDigits: '6623'
+                  token: 9b4e17addb25408fac07a9a30f2de121
+                  processorName: Transbank Processor
+                  id: 13a4b925-5b63-4be5-8d0e-ecdd023ecf26
+                  totalAmount: 10000
+                  created: 1571084214822
+                  returnUrl: 'https://kushkipagos.com/webpay_return_url_test.html'
+                  description: Description of the payment
+                  processorId: '1000000627459248833815623469252'
+                  merchantId: '20000000106212540000'
+                  requestAmount: 600
+                  preauthTransactionReference: e618e364-1485-4f08-9310-ac2bf3397339
+                  transactionReference: 33c5d084-81bc-4b05-9078-867026a34490
+            properties:
+              ticketNumber:
+                type: string
+                description: Obtain this as a response of the **Get Status** request
+              details:
+                type: object
+                required:
+                  - currency
+                  - subtotalIva0
+                  - approvalCode
+                  - approvedTransactionAmount
+                  - status
+                  - subtotalIva
+                  - email
+                  - transactionType
+                  - ivaValue
+                  - lastFourDigits
+                  - token
+                  - processorName
+                  - id
+                  - totalAmount
+                  - created
+                  - returnUrl
+                  - description
+                  - processorId
+                  - merchantId
+                  - requestAmount
+                  - preauthTransactionReference
+                  - transactionReference
+                properties:
+                  currency:
+                    type: string
+                  subtotalIva0:
+                    type: number
+                  approvalCode:
+                    type: string
+                  approvedTransactionAmount:
+                    type: object
+                    required:
+                      - iva
+                      - subtotalIva
+                      - subtotalIva0
+                    properties:
+                      iva:
+                        type: number
+                      subtotalIva:
+                        type: number
+                      subtotalIva0:
+                        type: number
+                  status:
+                    type: string
+                  subtotalIva:
+                    type: number
+                  email:
+                    type: string
+                  transactionType:
+                    type: string
+                  ivaValue:
+                    type: number
+                  lastFourDigits:
+                    type: string
+                  token:
+                    type: string
+                  processorName:
+                    type: string
+                  id:
+                    type: string
+                  totalAmount:
+                    type: number
+                  created:
+                    type: number
+                  returnUrl:
+                    type: string
+                  description:
+                    type: string
+                  processorId:
+                    type: string
+                  merchantId:
+                    type: string
+                  requestAmount:
+                    type: number
+                  preauthTransactionReference:
+                    type: string
+                  transactionReference:
+                    type: string
+            required:
+              - ticketNumber
+              - details
+          examples:
+            Successful transaction:
+              ticketNumber: '441571084222882291'
+              details:
+                currency: CLP
+                subtotalIva0: 10000
+                approvalCode: '1213'
+                approvedTransactionAmount:
+                  iva: 0
+                  subtotalIva: 0
+                  subtotalIva0: 10000
+                status: approvedTransaction
+                subtotalIva: 0
+                email: user@example.com
+                transactionType: SALE
+                ivaValue: 0
+                lastFourDigits: '6623'
+                token: 9b4e17addb25408fac07a9a30f2de121
+                processorName: Transbank Processor
+                id: 13a4b925-5b63-4be5-8d0e-ecdd023ecf26
+                totalAmount: 10000
+                created: 1571084214822
+                returnUrl: 'https://kushkipagos.com/webpay_return_url_test.html'
+                description: Description of the payment
+                processorId: '1000000627459248833815623469252'
+                merchantId: '20000000106212540000'
+                requestAmount: 600
+                preauthTransactionReference: e618e364-1485-4f08-9310-ac2bf3397339
+                transactionReference: 33c5d084-81bc-4b05-9078-867026a34490
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            Transaction not found:
+              code: CAS004
+              message: No existe la transacción
+        '500':
+          description: Unexpected Error
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                example: K002
+              message:
+                type: string
+                example: Ha ocurrido un error inesperado
+          examples:
+            An unexpected error has occurred:
+              code: K002
+              message: Ha ocurrido un error inesperado
+      summary: Capture an authorized payment
+      description: |-
+        > There is a maximum time of 7 calendar days to make the capture. After that time, the amount withheld from the credit card will be released. Transbank does not allow the release of the approved amount if it is not captured within 7 days.
+
+        Capture an authorized card payment using the `ticketNumber` provided as a response of the `Get status` request.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Chile.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: cardAsyncTokenRequest
+      parameters:
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              ticketNumber:
+                type: string
+                description: Obtain this as a response of the **Get Status** request
+              amount:
+                $ref: ../models/Amount-CL.yaml
+              fullResponse:
+                type: string
+                enum:
+                  - v2
+            required:
+              - ticketNumber
+              - amount
+              - fullResponse
+          x-examples:
+            application/json:
+              ticketNumber: '319228478889680318'
+              amount:
+                currency: CLP
+                subtotalIva: 0
+                iva: 0
+                subtotalIva0: 600
+              fullResponse: v2
+          description: ''
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+          default: application/json
+      x-stoplight:
+        id: mk1qlm3ulv7x9
+    parameters: []
+  '/card-async/v1/status/{token}':
+    get:
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            x-examples:
+              example-1:
+                ticketNumber: '442994231003201088'
+                metadata:
+                  customerId: '21237'
+                currency: CLP
+                processorType: aggregator_formal
+                subtotalIva0: 3000
+                approvalCode: '1213'
+                approvedTransactionAmount: 3000
+                status: approvedTransaction
+                subtotalIva: 0
+                email: kushki@kushkipagos.com
+                transactionType: SALE
+                transactionReference: 1c693c5d-8168-4f3f-ae89-614e08fefe07
+                buyOrder: '20220504210349773'
+                ivaValue: 0
+                lastFourDigits: '6623'
+                integrationMethod: soap
+                token: 6ce7ec3c1302415b9d3eb34948e767b9
+                processorName: Transbank Processor
+                webpayInitTransactionUrl: 'https://webpay3g.transbank.cl:443/webpayserver/initTransaction'
+                id: 1c693c5d-8168-4f3f-ae89-614e08fefe07
+                webpayType: soap
+                totalAmount: 3000
+                created: 1652994570197
+                cardType: debit
+                sandboxEnable: false
+                webpayInitTransactionToken: 01abfddb845d75a4bed4dedefe8b0696c8ec9a0468d48ec0caa2cbc9a38138ea
+                returnUrl: 'https://www.kushki.com'
+                amount:
+                  subtotalIva0: 3000
+                  currency: CLP
+                  iva: 0
+                  subtotalIva: 0
+                description: Description of the payment
+                processorId: '1000001003741554997016481373496'
+                credentialInfo:
+                  alias: Rivera Corp CL
+                  credentialId: 8d4ee2546f984d06907da5dd3738b6c8
+                  publicCredentialId: fc5330baec7248e2b8243745023a635c
+                merchantId: '20000000102800396000'
+            properties:
+              ticketNumber:
+                type: string
+              metadata:
+                type: object
+                properties:
+                  customerId:
+                    type: string
+              currency:
+                type: string
+                enum:
+                  - CLP
+                  - UF
+              processorType:
+                type: string
+              subtotalIva0:
+                type: number
+              approvalCode:
+                type: string
+              approvedTransactionAmount:
+                type: number
+              status:
+                type: string
+                enum:
+                  - initializedTransaction
+                  - approvedTransaction
+                  - declinedTransaction
+                  - requestedToken
+              subtotalIva:
+                type: number
+              email:
+                type: string
+              transactionType:
+                type: string
+              transactionReference:
+                type: string
+              buyOrder:
+                type: string
+              ivaValue:
+                type: number
+              lastFourDigits:
+                type: string
+              integrationMethod:
+                type: string
+              token:
+                type: string
+              processorName:
+                type: string
+              webpayInitTransactionUrl:
+                type: string
+              id:
+                type: string
+              webpayType:
+                type: string
+              totalAmount:
+                type: number
+              created:
+                type: integer
+                description: Timestamp
+              cardType:
+                type: string
+              sandboxEnable:
+                type: boolean
+              webpayInitTransactionToken:
+                type: string
+              returnUrl:
+                type: string
+              amount:
+                type: object
+                properties:
+                  subtotalIva0:
+                    type: number
+                  currency:
+                    type: string
+                  iva:
+                    type: number
+                  subtotalIva:
+                    type: number
+              description:
+                type: string
+              processorId:
+                type: string
+              credentialInfo:
+                type: object
+                properties:
+                  alias:
+                    type: string
+                  credentialId:
+                    type: string
+                  publicCredentialId:
+                    type: string
+              merchantId:
+                type: string
+          examples:
+            application/json:
+              ticketNumber: '442994231003201088'
+              metadata:
+                customerId: '21237'
+              currency: CLP
+              processorType: aggregator_formal
+              subtotalIva0: 3000
+              approvalCode: '1213'
+              approvedTransactionAmount: 3000
+              status: approvedTransaction
+              subtotalIva: 0
+              email: kushki@kushkipagos.com
+              transactionType: SALE
+              transactionReference: 1c693c5d-8168-4f3f-ae89-614e08fefe07
+              buyOrder: '20220504210349773'
+              ivaValue: 0
+              lastFourDigits: '6623'
+              integrationMethod: soap
+              token: 6ce7ec3c1302415b9d3eb34948e767b9
+              processorName: Transbank Processor
+              webpayInitTransactionUrl: 'https://webpay3g.transbank.cl:443/webpayserver/initTransaction'
+              id: 1c693c5d-8168-4f3f-ae89-614e08fefe07
+              webpayType: soap
+              totalAmount: 3000
+              created: 1652994570197
+              cardType: debit
+              sandboxEnable: false
+              webpayInitTransactionToken: 01abfddb845d75a4bed4dedefe8b0696c8ec9a0468d48ec0caa2cbc9a38138ea
+              returnUrl: 'https://www.kushki.com'
+              amount:
+                subtotalIva0: 3000
+                currency: CLP
+                iva: 0
+                subtotalIva: 0
+              description: Description of the payment
+              processorId: '1000001003741554997016481373496'
+              credentialInfo:
+                alias: Rivera Corp CL
+                credentialId: 8d4ee2546f984d06907da5dd3738b6c8
+                publicCredentialId: fc5330baec7248e2b8243745023a635c
+              merchantId: '20000000102800396000'
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+          examples:
+            application/json:
+              message: ID de comercio no válido
+              code: K004
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          examples:
+            application/json:
+              message: Internal server error
+      summary: Get Status
+      description: |-
+        Get the status of a transaction created in the `Init Transaction` step
+
+        Use  the `token` as a path parameter in the url to obtain the information.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Chile.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: cardAsyncStatus
+      parameters:
+        - in: path
+          name: token
+          type: string
+          required: true
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+      x-stoplight:
+        id: 6jvhit48kx3lb
+    parameters:
+      - name: token
+        in: path
+        type: string
+        required: true
+responses:
+  'trait:invalidBin:402':
+    description: Invalid Bin
+    schema:
+      $ref: '#/definitions/InvalidBinResponse'
+  'trait:badRequest:400':
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/BadRequestResponse'
+  'trait:fetchedList:200':
+    description: Fetch a transactions list
+    schema:
+      type: object
+      required:
+        - has_more
+        - data
+      properties:
+        has_more:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            required:
+              - subtotalIVA0
+              - date
+              - lastFourDigitsOfCard
+              - transactionStatus
+              - transactionId
+              - voidedBy
+              - merchantName
+              - cardHolderName
+              - approvedTransactionAmount
+              - numberOfMonths
+              - extraTaxes
+              - saleTicketNumber
+              - ivaValue
+              - isDeferred
+              - ticketNumber
+              - id
+              - dateAndTimeTransaction
+              - cardType
+              - subtotalIVA
+              - requestAmount
+              - currencyCode
+              - transactionType
+              - processorName
+              - iceValue
+              - merchantId
+              - processorBankName
+              - approvalCode
+            properties:
+              subtotalIVA0:
+                type: number
+                example: 10
+              date:
+                type: string
+                example: '2017-03-24T18:52:34.000Z'
+              lastFourDigitsOfCard:
+                type: string
+                example: 1234
+              transactionStatus:
+                type: string
+                example: APPROVAL
+              transactionId:
+                type: string
+                example: 1234567890987654
+              voidedBy:
+                type: string
+                example: 10334120439012934
+              merchantName:
+                type: string
+                example: Some_Merchant_Name
+              cardHolderName:
+                type: string
+                example: John Doe
+              approvedTransactionAmount:
+                type: string
+                example: 135.5
+              numberOfMonths:
+                type: string
+                example: 0
+              ExtraTaxes:
+                type: array
+                items:
+                  required:
+                    - tasaAeroportuaria
+                    - agenciaDeViaje
+                    - iac
+                  properties:
+                    tasaAeroportuaria:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '4'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_AERO
+                    iac:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '5'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: IAC
+                    agenciaDeViaje:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '6'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_ADMIN_AGEN_COD
+              saleTicketNumber:
+                type: string
+                example: 1204493249523
+              ivaValue:
+                type: integer
+                example: 15.5
+              isDeferred:
+                type: string
+                example: 'Y'
+              ticketNumber:
+                type: string
+                example: 1234567890987654
+              id:
+                type: string
+                example: '123456'
+              dateAndTimeTransaction:
+                type: string
+                example: 12345012469
+              cardType:
+                type: string
+                example: Master Card
+              subtotalIVA:
+                type: number
+                example: 10
+              requestAmount:
+                type: string
+                example: 130
+              currencyCode:
+                type: string
+                example: USD
+              transactionType:
+                type: string
+                example: SALE
+              processorName:
+                type: string
+                example: Some_Processor_Name
+              iceValue:
+                type: number
+                example: 10
+              merchantId:
+                type: string
+                example: 1200000432450023
+              processorBankName:
+                type: string
+                example: Some_Bank_Name
+              approvalCode:
+                type: string
+                example: 342347
+              Metadata:
+                type: object
+                properties:
+                  key1:
+                    type: string
+                    example: value1
+              subscription_metadata:
+                type: object
+                properties:
+                  key2:
+                    type: string
+                    example: value2
+    examples:
+      example-1:
+        has_more: true
+        data:
+          - subtotalIVA0: 10
+            date: '2017-03-24T18:52:34.000Z'
+            lastFourDigitsOfCard: 1234
+            transactionStatus: APPROVAL
+            transactionId: 1234567890987654
+            voidedBy: 10334120439012934
+            merchantName: Some_Merchant_Name
+            cardHolderName: John Doe
+            approvedTransactionAmount: 135.5
+            numberOfMonths: 0
+            ExtraTaxes:
+              - tasaAeroportuaria:
+                  taxid: '4'
+                  taxAmount: 2
+                  taxName: TASA_AERO
+                iac:
+                  taxid: '5'
+                  taxAmount: 2
+                  taxName: IAC
+                agenciaDeViaje:
+                  taxid: '6'
+                  taxAmount: 2
+                  taxName: TASA_ADMIN_AGEN_COD
+            saleTicketNumber: 1204493249523
+            ivaValue: 15.5
+            isDeferred: 'Y'
+            ticketNumber: 1234567890987654
+            id: '123456'
+            dateAndTimeTransaction: 12345012469
+            cardType: Master Card
+            subtotalIVA: 10
+            requestAmount: 130
+            currencyCode: USD
+            transactionType: SALE
+            processorName: Some_Processor_Name
+            iceValue: 10
+            merchantId: 1200000432450023
+            processorBankName: Some_Bank_Name
+            approvalCode: 342347
+            Metadata:
+              key1: value1
+            subscription_metadata:
+              key2: value2
+  'trait:created:201':
+    description: Created
+    schema:
+      type: object
+      required:
+        - ticketNumber
+      properties:
+        ticketNumber:
+          type: string
+          example: '123456789012345678'
+    examples:
+      example-1:
+        ticketNumber: '123456789012345678'
+  'trait:unexpectedError:500':
+    description: Unexpected Error
+    schema:
+      $ref: '#/definitions/UnexpectedErrorResponse'
+  'trait:tokenCreated:201':
+    description: TokenCreated
+    schema:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: AbCDef123456Z7Ghi8901234jkLMNopQ
+definitions: {}

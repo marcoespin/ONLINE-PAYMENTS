@@ -1,0 +1,17 @@
+description: Response error
+type: object
+x-examples:
+  example-1:
+    code: string
+    message: string
+examples:
+  - code: string
+    message: string
+properties:
+  code:
+    type: string
+  message:
+    type: string
+required:
+  - code
+  - message

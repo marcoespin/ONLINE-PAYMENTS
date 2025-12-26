@@ -1,0 +1,58 @@
+type: object
+x-examples:
+  Example 1:
+    deviceType: some device
+    requestorId: '98987676501'
+    source: '01'
+    walletId: ABC
+    authenticationLevel: '02'
+examples:
+  - deviceType: some device
+    requestorId: '98987676501'
+    source: '01'
+    walletId: ABC
+    authenticationLevel: '02'
+description: "<b style=\"background-color:#0366d6; color:white; border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 600;\">PRODUCT IN BETA VERSION</b> \n<br> **Required when `isNetworkToken` is `true`**</b> \n\n\n> Only available in Chile \U0001F1E8\U0001F1F1 and Perú\U0001F1F5\U0001F1EA.\n\nAdditional metadata required when processing transactions with network tokenized cards. These fields help identify the device, wallet, and authentication context used during token provisioning or transaction initiation."
+properties:
+  deviceType:
+    type: string
+    description: Describes the type of device from which the tokenized transaction originate
+  requestorId:
+    type: string
+    description: |
+      The unique identifier assigned to the token requestor by the card network (e.g., Visa or Mastercard). Often required for network token authentication.
+  source:
+    type: string
+    description: 'Indicates the source of the token '
+  walletId:
+    type: string
+    description: |2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Identifier of the digital wallet or platform where the token was provisioned. Helps provide issuer context.
+  authenticationLevel:
+    type: string
+    description: |
+      Indicates the level of authentication performed during token provisioning or transaction. Used to improve authorization and reduce risk.
+  mvv:
+    type: string
+    x-stoplight:
+      id: x3u4236axa2ye
+    example: '6355661111'
+    maxLength: 10
+    description: The 10-digit Merchant Verification Value (MVV). Applicable to Visa transactions only.
+title: ''

@@ -1,0 +1,45 @@
+type: object
+x-examples:
+  example-1:
+    id: 198952AB
+    title: eBook Digital Services
+    price: 6990000
+    sku: '10101042'
+    quantity: 1
+examples:
+  - id: 198952AB
+    title: eBook Digital Services
+    price: 6990000
+    sku: '10101042'
+    quantity: 1
+required:
+  - id
+  - title
+  - price
+  - sku
+  - quantity
+properties:
+  id:
+    type: string
+    description: The item's unique identifier according to your system. Use the same ID that you would use to look up items on your website's database
+  title:
+    type: string
+    description: The item's name
+  price:
+    type: number
+    description: 'The item unit price in micros, in the base unit of the `currency` code'
+  sku:
+    type: string
+    description: 'Stock-keeping Unit ID: code that refers to the particular stock keeping unit'
+  quantity:
+    type: number
+    description: Quantity of the item
+  category:
+    type: string
+    x-stoplight:
+      id: 9lph8kt3hjlgq
+  tags:
+    type: array
+    x-stoplight:
+      id: ta6ik9bzkfi1y
+    items: {}

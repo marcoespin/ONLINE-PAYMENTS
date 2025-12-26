@@ -1,0 +1,1226 @@
+swagger: '2.0'
+x-stoplight:
+  id: 7c2828e7dec31
+info:
+  version: 1.1.3
+  title: CASH IN
+  description: |
+    ### Allow your customers without a bank account to purchase your products or services from your website
+
+    If your users do not have a bank account or do not want to cover additional charges, due to interests or fees, and you want to provide them with the possibility to purchase products or services through your website or app, the cash payment option is ideal. With this method, your customers will only need the payment reference and cash in order to complete the purchase.
+
+    <!-- theme: warning -->
+    > #### To keep in mind
+    >Due to our risk policies, the available payment methods and the integration type may vary once you complete the affiliation. We will tell you how to proceed if this process applies to your merchant.
+
+    ## Payment process
+
+    The cash payment process consists of generating a reference or code, making the payment at a physical point, and confirming the receipt of the money.
+
+    ![Cash in EN](//images.ctfassets.net/mmjbm94f6iyd/SnJCNbjpKeOt25PvoRvK5/9c09d171d2831790d1613e5d47f9dc62/Cash_in_EN.png)
+
+    ## 1. and 2. Selection of the payment method
+
+    Within your App or website, the user performs the purchase process and selects cash as the payment method at checkout.
+
+    ### 3. and 4. Generate the reference or payment code
+
+    Kushki receives the transaction request and generates the reference/pin and the “voucher ” or payment receipt.
+
+    ### 5. 6. and 7. Make the payment
+
+    The user must go to a physical point of any collection entity with the receipt or payment reference, where the cashier will validate the data and allow the customer to make the deposit for the amount corresponding to the purchase.
+
+    ### 8. and 9. Payment confirmation
+
+    Once the user makes the payment, the collection entity confirms the successful deposit and the transaction money is credited to the merchant's account in Kushki.
+
+    Read more on our [documentation page](https://docs.kushkipagos.com/).
+
+    ## Using the API
+
+    To use the API you must ask for your Kushki Sandbox, composed of a `Public-Merchant-Id` and a `Private-Merchant-Id`.
+
+    * The current version of the Kushki API rests at: `https://api.kushkipagos.com/`
+    * The testing version rests at: `https://api-uat.kushkipagos.com/`
+
+
+    ## Endpoints
+
+    We dispose various endpoints to start your payment flows, find our products available:
+
+    * [Request a cash in token](https://api-docs.kushkipagos.com/docs/online-payments/cash-in/operations/create-a-cash-v-1-token)
+    * [Init Transaction](https://api-docs.kushkipagos.com/docs/online-payments/cash-in/operations/create-a-cash-v-1-charge-init)
+    * [Transaction Status](https://api-docs.kushkipagos.com/docs/online-payments/cash-in/operations/get-a-cash-v-1-status)
+    * [Update a cash in transaction](https://api-docs.kushkipagos.com/docs/online-payments/cash-in/operations/modify-a-cash-v-1-charge)
+    * [Delete a cash in transaction](https://api-docs.kushkipagos.com/docs/online-payments/cash-in/operations/delete-a-cash-v-1-charge)
+
+    [Return Home](/)
+
+    > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+host: api-uat.kushkipagos.com
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    scopes: {}
+    authorizationUrl: ''
+paths:
+  /cash/v1/tokens:
+    post:
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+          examples:
+            application/json:
+              token: b209ff69ae02be9bc0e58dee225fd8f5
+        '400':
+          description: ''
+          examples:
+            application/json:
+              code: C001
+              message: Cuerpo de la petición inválido.
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+      operationId: cashInToken
+      summary: Request a cash in token
+      parameters:
+        - in: header
+          name: Public-key
+          type: string
+          required: true
+        - in: header
+          name: Content-Type
+          type: string
+          required: true
+          description: application/json
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              lastName:
+                type: string
+              identification:
+                type: string
+                pattern: '[0-9]+'
+              documentType:
+                type: string
+                description: |-
+                  * CC: Identity Document
+                  * NIT: Tax Id number in Colombia
+                  * CE: Foreign resident card in Colombia and Peru
+                  * TI: Identity Card in Colombia
+                  * PP: Passport in Colombia, Chile, Mexico and Ecuador
+                  * RUC: Tax Id number in Ecuador and Peru
+                  * CURP: Unique Population Registry Code in Mexico
+                  * RFC: Tax Id number in Mexico
+                  * RUT: Tax Id number in Chile
+                  * DNI: Identity Document in Peru
+                  * PAS: Passport in Peru
+                  * CI: Identity Card in Ecuador
+                enum:
+                  - CC
+                  - NIT
+                  - CE
+                  - TI
+                  - PP
+                  - RUC
+                  - CURP
+                  - RFC
+                  - RUT
+                  - DNI
+                  - PAS
+                  - CI
+                example: NIT
+              email:
+                type: string
+              totalAmount:
+                type: number
+              currency:
+                type: string
+                enum:
+                  - USD
+                  - COP
+                  - MXN
+                  - CLP
+                  - PEN
+              description:
+                type: string
+                description: A description of the payment
+            required:
+              - name
+              - lastName
+              - identification
+              - documentType
+              - totalAmount
+              - currency
+          x-examples:
+            application/json:
+              name: John
+              lastName: Doe
+              identification: '123456789'
+              documentType: CC
+              email: user@example.com
+              totalAmount: 3700
+              currency: COP
+              description: Description of the payment
+      description: "Request a Cash In `token`.\n\n## Sandbox\n\nKushki allows you to simulate a full transaction. When using the Cash In Sandbox, you can test successful and failed transactions.\n\n* Successful Transaction <br>\n\tCreate a token with any `identification` number\n\t\n* Initialized Transaction<br>\n\tCreate a token with 9999999999 as `identification` number \n\n* Declined Transaction<br>\n\tCreate a token with 1000000000 as `identification` number \n\t\n\tOnce you Init the transaction you can check the `status` with the Transaction Status endpoint.\n\t\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Ecuador, Chile, Colombia, México, Perú.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\t\n<!-- theme: danger -->\n> #### Token expiration\n>\n>Tokens will expire in 30 minutes and can be used only for a single transaction (even if the transaction was wrong). You will need to request a new token when it expires.\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)\n"
+      x-stoplight:
+        id: gb47z8dn0qyf1
+  /cash/v1/charges/init:
+    post:
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            x-examples:
+              example-1:
+                details:
+                  agreementDetails:
+                    - seveneleven:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - k:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - circulok:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - extra:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - farmaciasdelahorro:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - farmaciadedios:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - farmatodo:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - farmacentro:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - gm:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - nosarco:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - santacruz:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - sanfranciscodeasis:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - union:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - zapotlan:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                    - farmaciabenavides:
+                        - agreementNumber: kushki_pagos
+                          processorName: Datalogic
+                  amount:
+                    subtotalIva: 0
+                    subtotalIva0: 3700
+                    iva: 0
+                    ExtraTaxes: {}
+                    currency: COP
+                  description: Description of the payment
+                  documentNumber: '123456789'
+                  documentType: CC
+                  expiration: 1668891600000
+                  lastName: Doe
+                  merchantId: '20000000104111374000'
+                  merchantName: Merchant MX
+                  name: John
+                  transactionId: c0311aac-eb0c-4312-838d-9de50218532e
+                  transactionStatus: initializedTransaction
+                pdfUrl: 'https://api-uat.kushkipagos.com/cash/v1/charges/2358346676119533/receipt'
+                pin: '8346680862'
+                ticketNumber: '2358346676119533'
+                transactionReference: c0311aac-eb0c-4312-838d-9de50218532e
+            properties:
+              details:
+                type: object
+                properties:
+                  agreementDetails:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        storeName:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              agreementNumber:
+                                type: string
+                              processorName:
+                                type: string
+                  amount:
+                    $ref: ../models/Amount-cash-in.yaml
+                  description:
+                    type: string
+                  documentNumber:
+                    type: string
+                    enum:
+                      - CC
+                      - NIT
+                      - CE
+                      - TI
+                      - PP
+                      - RUC
+                      - CURP
+                      - RFC
+                      - RUT
+                      - DNI
+                      - PAS
+                      - CI
+                    example: NIT
+                  documentType:
+                    type: string
+                    description: |-
+                      * CC: Identity Document
+                      * NIT: Tax Id number in Colombia
+                      * CE: Foreign resident card in Colombia and Peru
+                      * TI: Identity Card in Colombia
+                      * PP: Passport in Colombia, Chile, Mexico and Ecuador
+                      * RUC: Tax Id number in Ecuador and Peru
+                      * CURP: Unique Population Registry Code in Mexico
+                      * RFC: Tax Id number in Mexico
+                      * RUT: Tax Id number in Chile
+                      * DNI: Identity Document in Peru
+                      * PAS: Passport in Peru
+                      * CI: Identity Card in Ecuador
+                  expiration:
+                    type: integer
+                  lastName:
+                    type: string
+                  merchantId:
+                    type: string
+                  merchantName:
+                    type: string
+                  name:
+                    type: string
+                  transactionId:
+                    type: string
+                  transactionStatus:
+                    type: string
+              pdfUrl:
+                type: string
+              pin:
+                type: string
+              ticketNumber:
+                type: string
+              transactionReference:
+                type: string
+          examples:
+            Without fullResponse:
+              agreementNumber: '9595950804'
+              barCodeUrl: 'https://api-uat.kushkipagos.com/cash/v1/charges/193222411482/barcode'
+              getPinBarCode: '4150000000054244802015549183763900100009620190417'
+              pins:
+                - pin: '1554244909'
+                  processorName: BancoBogota
+                - pin: '1231242'
+                  processorName: Payvalida
+              pdfUrl: 'https://api-uat.kushkipagos.com/cash/v1/charges/2388729046399317/receipt'
+              pdf:
+                - 'https://api-uat.kushkipagos.com/cash/v1/charges/2388729046399317/receipt'
+              pin: '1554244909'
+              ticketNumber: '193222411482'
+              transactionReference: fa3cb92f-f53f-46e8-a9f9-0c40e9ae2df2
+              agreementDetails:
+                - Baloto:
+                    - agreementNumber: '9595950804'
+                      processorName: BancoBogota
+                - Carulla:
+                    - agreementNumber: '9595950804'
+                      processorName: BancoBogota
+                - efecty:
+                    - agreementNumber: '110342'
+                      processorName: Payvalida
+                - bancolombia:
+                    - agreementNumber: '54245'
+                      processorName: Payvalida
+            fullResponse v2:
+              details:
+                agreementDetails:
+                  - seveneleven:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - k:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - circulok:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - extra:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - farmaciasdelahorro:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - farmaciadedios:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - farmatodo:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - farmacentro:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - gm:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - nosarco:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - santacruz:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - sanfranciscodeasis:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - union:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - zapotlan:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                  - farmaciabenavides:
+                      - agreementNumber: kushki_pagos
+                        processorName: Datalogic
+                amount:
+                  subtotalIva: 0
+                  subtotalIva0: 3700
+                  iva: 0
+                  extraTaxes: {}
+                  currency: MXN
+                description: Description of the payment
+                documentNumber: '123456789'
+                documentType: CC
+                expiration: 1668891600000
+                lastName: Doe
+                merchantId: '20000000104111374000'
+                merchantName: Merchant MX
+                name: John
+                transactionId: c0311aac-eb0c-4312-838d-9de50218532e
+                transactionStatus: initializedTransaction
+              pdfUrl: 'https://api-uat.kushkipagos.com/cash/v1/charges/2358346676119533/receipt'
+              pin: '8346680862'
+              ticketNumber: '2358346676119533'
+              transactionReference: c0311aac-eb0c-4312-838d-9de50218532e
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+          examples:
+            Invalid request body:
+              code: C001
+              message: Cuerpo de la petición inválido.
+            Invalid Token:
+              code: C003
+              message: Token inválido.
+            Merchant ID does not correspond to the credential sent:
+              code: C040
+              message: El ID de comercio no corresponde a la credencial enviada
+            Invalid transaction amount:
+              code: C006
+              message: Monto de la transacción inválido.
+            The expiration date is not valid:
+              code: C017
+              message: La fecha de expiración no es válida
+      description: |
+        Init the transaction with a Cash In `token` provided by Kushki. The Init Transaction delivers a pin number to perform the customer payment and the URL of the receipt.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: header
+          name: Content-Type
+          type: string
+          required: true
+          description: application/json
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - token
+              - amount
+            properties:
+              token:
+                type: string
+              expirationDate:
+                type: string
+                description: |-
+                  `YYYY-MM-DD HH:mm:ss` 
+
+                  **Note:** Use a future date (UTC time). It has to be at least one day after creating the pin. If you don't set this property, the pin will expire after 7 days. Maximum expiration for Peru is 15 days
+                format: date-time
+                default: 7 days
+              amount:
+                $ref: ../models/Amount-cash-in.yaml
+              metadata:
+                $ref: ../models/Metadata.yaml
+              webhooks:
+                type: object
+                description: |-
+                  Send this object as another transactional notification option for your customers. In case you have a **Webhook** created through the Console, the notification will be sent to both the **API** and the **Console** channels. It means they will not be mutually exclusive.
+
+                  The notifications will be seen in the Webhooks Notifications dashboard, and they will have a new field called Configuration, which will identify the source of the notification.
+
+                  **Example:**
+
+                  ```Example
+                  {
+                    "webhooks": [
+                      {
+                        "events": [
+                          "approvedTransaction",
+                          "declinedTransaction"
+                        ],
+                        "headers": [
+                          {
+                            "label": "json",
+                            "value": "12"
+                          }
+                        ],
+                        "urls": [
+                          "https://eof2hhkrta4ooo1.m.pipedream.net"
+                        ]
+                      }
+                    ]
+                  }
+                  ```
+                required:
+                  - urls
+                properties:
+                  events:
+                    type: array
+                    description: 'Keep in mind to use the events associated with the payment method. If you send this object empty, the information created in the transaction request will be taken.'
+                    items:
+                      type: string
+                      enum:
+                        - approvedTransaction
+                        - declinedTransaction
+                  headers:
+                    $ref: ../models/headers.yaml
+                  urls:
+                    type: array
+                    description: Add the URL(s) you require for each of the events.  **Make sure you send a valid URL HTTP or HTTPS**
+                    items:
+                      type: string
+                      example: 'https://eod9gdc8ybn5yxq.m.pipedream.net'
+              fullResponse:
+                type: string
+                enum:
+                  - v2
+          x-examples:
+            webhook with preauthorization:
+              token: 5c786b972ad54ab39b0aad0774434c4d
+              expirationDate: '2022-12-26 21:00:00'
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 200
+                iva: 0
+              webhooks:
+                - events:
+                    - preauthorization
+                  headers:
+                    - label: json
+                      value: '12'
+                  urls:
+                    - 'https://eof2hhkrta4ooo1.m.pipedream.net'
+            Webhooks:
+              token: 5c786b972ad54ab39b0aad0774434c4d
+              expirationDate: '2022-12-26 21:00:00'
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 200
+                iva: 0
+              webhooks:
+                - events:
+                    - approvedTransaction
+                    - declinedTransaction
+                  headers:
+                    - label: json
+                      value: '12'
+                  urls:
+                    - 'https://eof2hhkrta4ooo1.m.pipedream.net'
+            application/json:
+              token: 5c786b972ad54ab39b0aad0774434c4d
+              expirationDate: '2022-11-19 21:00:00'
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 3700
+                iva: 0
+      summary: Init Transaction
+      operationId: cashInInit
+      x-stoplight:
+        id: qv1fuzlj9h7rj
+  '/cash/v1/status/{ticketNumber}':
+    get:
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            properties:
+              ticketNumber:
+                type: string
+              userIp:
+                type: string
+              currency:
+                type: string
+              totalAmount:
+                type: number
+              lastName:
+                type: string
+              status:
+                type: string
+                enum:
+                  - initializedTransaction
+                  - approvedTransaction
+                  - expiredTransaction
+              created:
+                type: integer
+              merchantName:
+                type: string
+              name:
+                type: string
+              token:
+                type: string
+              identification:
+                type: string
+              processorPaymentPoint:
+                type: string
+                description: '**It only applies to the Banco de Bogotá processor in Colombia**'
+              amount:
+                type: object
+                properties:
+                  extraTaxes:
+                    $ref: ../models/extraTaxes.yaml
+                  subtotalIva0:
+                    type: number
+                  iva:
+                    type: number
+                  subtotalIva:
+                    type: number
+              processorName:
+                type: string
+              merchantId:
+                type: string
+              pins:
+                type: array
+                items:
+                  type: string
+              transactionReference:
+                type: string
+              processorType:
+                type: string
+              documentType:
+                type: string
+                description: |-
+                  * CC: Identity Document
+                  * NIT: Tax Id number in Colombia
+                  * CE: Foreign resident card in Colombia and Peru
+                  * TI: Identity Card in Colombia
+                  * PP: Passport in Colombia, Chile, Mexico and Ecuador
+                  * RUC: Tax Id number in Ecuador and Peru
+                  * CURP: Unique Population Registry Code in Mexico
+                  * RFC: Tax Id number in Mexico
+                  * RUT: Tax Id number in Chile
+                  * DNI: Identity Document in Peru
+                  * PAS: Passport in Peru
+                  * CI: Identity Card in Ecuador
+                enum:
+                  - CC
+                  - NIT
+                  - CE
+                  - TI
+                  - PP
+                  - RUC
+                  - CURP
+                  - RFC
+                  - RUT
+                  - DNI
+                  - PAS
+                  - CI
+                example: NIT
+              expiration:
+                type: integer
+              email:
+                type: string
+              country:
+                $ref: ../models/Country.yaml
+              completedAt:
+                type: integer
+              processorAuthorizationNumber:
+                type: string
+              credentialMetadata:
+                type: string
+              transactionId:
+                type: string
+              description:
+                type: string
+              processorId:
+                type: string
+              publicCredentialId:
+                type: string
+              credentialId:
+                type: string
+              credentialInfo:
+                type: object
+                properties:
+                  alias:
+                    type: string
+                  credentialId:
+                    type: string
+                  publicCredentialId:
+                    type: string
+              userAgent:
+                type: string
+              credentialAlias:
+                type: string
+              integrationChannel:
+                type: string
+              pin:
+                type: string
+          examples:
+            CO-Banco Bogotá Processor:
+              userAgent: PostmanRuntime/7.30.0
+              ticketNumber: '2372673199478413'
+              userIp: 198.24.30.573
+              currency: COP
+              processorType: aggregator_formal
+              documentType: CC
+              lastName: Doe
+              status: approvedTransaction
+              expiration: 1673816400000
+              merchantName: Colombia Inc
+              email: johndoe@example.com
+              country: Colombia
+              name: John
+              token: 71278442a8ac4d689be4d7811ca0361d
+              completedAt: 1672673403649
+              processorAuthorizationNumber: '672673366502'
+              processorName: Banco Bogota Processor
+              credentialAlias: Colombia Inc
+              totalAmount: 300
+              created: 1672673199472
+              credentialMetadata: null
+              transactionId: ddca94e3-6b0b-4c8e-7725-5da23f108a0d
+              integrationChannel: SOAP
+              pin: '2673220823'
+              identification: '1718171671'
+              processorPaymentPoint: '5353673'
+              amount:
+                subtotalIva0: 300
+                iva: 0
+                subtotalIva: 0
+              description: Description of the payment
+              processorId: '6000000000159865356108763327693'
+              publicCredentialId: 80c476bdfc2e4cc780668adfga33c5415
+              credentialId: 1306057940ac4296ab1dfbecb7f203a3
+              credentialInfo:
+                alias: Colombia Inc
+                credentialId: 1306057940ac4296ab1dfbecb7f203a3
+                publicCredentialId: 80c476bdfc2e4cc780668adfga33c5415
+              merchantId: '200000001005634497000'
+              pins:
+                - '2673456833'
+              transactionReference: ddca94e3-6b0b-4c8e-8825-5da22f108a0d
+            Transaction Status:
+              ticketNumber: '2347529752172881'
+              currency: PEN
+              processorType: aggregator_formal
+              documentType: CC
+              lastName: Doe
+              status: approvedTransaction
+              expiration: 1668891600000
+              merchantName: Tu comercio
+              email: user@example.com
+              country: Peru
+              name: John
+              token: 5c786b952bd14ab39b1dad0774434c4d
+              completedAt: 1647929970268
+              processorName: Payvalida Processor
+              credentialAlias: Postman
+              totalAmount: 3700
+              created: 1647929752945
+              credentialMetadata: null
+              transactionId: bd831c5e-b5d8-438b-b59d-3ed9b16c2291
+              operationId: '1647929926511721825'
+              pin: '7929926379'
+              identification: '123456789'
+              amount:
+                subtotalIva0: 3700
+                iva: 0
+                subtotalIva: 0
+              description: Description of the payment
+              processorId: '6000000000163949322636034211992'
+              publicCredentialId: 4da3fc210f0013bb2abfac6cfbabed65
+              credentialId: 45fe3a3ebe464ebb100f2aa344b6a095
+              pins:
+                - '7929926512'
+                - '7929926379'
+              credentialInfo:
+                alias: Postman
+                credentialId: 45fe3a3ebe464ebb100f2aa344b6a095
+                publicCredentialId: 4da3fc210f0013bb2abfac6cfbabed65
+              merchantId: '20000000101573380000'
+              transactionReference: b31c4d8e-b543-8d8c-d15d-3ed9b16c3519
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+          examples:
+            application/json:
+              code: C005
+              message: Id de transacción no válido.
+      parameters:
+        - in: path
+          name: ticketNumber
+          type: string
+          required: true
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+      summary: Transaction Status
+      description: |-
+        Get the status of a transaction created at the Init Transaction endpoint.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: cashInStatus
+      x-stoplight:
+        id: t2afc7ywma9i3
+  '/cash/v1/charges/{ticketNumber}':
+    patch:
+      responses:
+        '204':
+          description: No Content
+          schema: {}
+          examples: {}
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+          examples:
+            Invalid transaction id:
+              code: C005
+              message: Id de transacción no válido.
+            Unable to update transaction:
+              code: C023
+              message: No es posible actualizar la transacción.
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              totalAmount:
+                type: number
+                minimum: 0
+            required:
+              - totalAmount
+        - in: path
+          name: ticketNumber
+          type: string
+          required: true
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: header
+          name: Content-Type
+          type: string
+          default: application/json
+          required: true
+      summary: Update a cash in transaction
+      description: |-
+        Update the amount of a Cash In transaction.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Colombia.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: cashInUpdate
+      x-stoplight:
+        id: xkewy96my0ddq
+    parameters:
+      - name: ticketNumber
+        in: path
+        type: string
+        required: true
+    delete:
+      responses:
+        '201':
+          description: No Content
+          schema: {}
+          examples:
+            example-1: {}
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+          examples:
+            Invalid merchant ID or credential:
+              message: ID de comercio o credencial no válido
+              code: K004
+            Invalid transaction id:
+              code: C005
+              message: Id de transacción no válido.
+            Wrong credentials:
+              code: C066
+              message: Las credenciales no son correctas o no coinciden.
+            The transaction does not exist or has been deleted:
+              code: C018
+              message: La transacción no existe o ha sido eliminada
+      summary: Delete a cash in transaction
+      parameters:
+        - in: path
+          name: ticketNumber
+          type: string
+          required: true
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+      description: |-
+        Delete a Cash In transaction.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Colombia.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: cashInDelete
+      x-stoplight:
+        id: wnhy52uw6rgtt
+responses:
+  'trait:invalidBin:402':
+    description: Invalid Bin
+    schema:
+      $ref: '#/definitions/InvalidBinResponse'
+  'trait:badRequest:400':
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/BadRequestResponse'
+  'trait:fetchedList:200':
+    description: Fetch a transactions list
+    schema:
+      type: object
+      required:
+        - has_more
+        - data
+      properties:
+        has_more:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            required:
+              - subtotalIVA0
+              - date
+              - lastFourDigitsOfCard
+              - transactionStatus
+              - transactionId
+              - voidedBy
+              - merchantName
+              - cardHolderName
+              - approvedTransactionAmount
+              - numberOfMonths
+              - extraTaxes
+              - saleTicketNumber
+              - ivaValue
+              - isDeferred
+              - ticketNumber
+              - id
+              - dateAndTimeTransaction
+              - cardType
+              - subtotalIVA
+              - requestAmount
+              - currencyCode
+              - transactionType
+              - processorName
+              - iceValue
+              - merchantId
+              - processorBankName
+              - approvalCode
+            properties:
+              subtotalIVA0:
+                type: number
+                example: 10
+              date:
+                type: string
+                example: '2017-03-24T18:52:34.000Z'
+              lastFourDigitsOfCard:
+                type: string
+                example: 1234
+              transactionStatus:
+                type: string
+                example: APPROVAL
+              transactionId:
+                type: string
+                example: 1234567890987654
+              voidedBy:
+                type: string
+                example: 10334120439012934
+              merchantName:
+                type: string
+                example: Some_Merchant_Name
+              cardHolderName:
+                type: string
+                example: John Doe
+              approvedTransactionAmount:
+                type: string
+                example: 135.5
+              numberOfMonths:
+                type: string
+                example: 0
+              ExtraTaxes:
+                type: array
+                items:
+                  required:
+                    - tasaAeroportuaria
+                    - agenciaDeViaje
+                    - iac
+                  properties:
+                    tasaAeroportuaria:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '4'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_AERO
+                    iac:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '5'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: IAC
+                    agenciaDeViaje:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '6'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_ADMIN_AGEN_COD
+              saleTicketNumber:
+                type: string
+                example: 1204493249523
+              ivaValue:
+                type: integer
+                example: 15.5
+              isDeferred:
+                type: string
+                example: 'Y'
+              ticketNumber:
+                type: string
+                example: 1234567890987654
+              id:
+                type: string
+                example: '123456'
+              dateAndTimeTransaction:
+                type: string
+                example: 12345012469
+              cardType:
+                type: string
+                example: Master Card
+              subtotalIVA:
+                type: number
+                example: 10
+              requestAmount:
+                type: string
+                example: 130
+              currencyCode:
+                type: string
+                example: USD
+              transactionType:
+                type: string
+                example: SALE
+              processorName:
+                type: string
+                example: Some_Processor_Name
+              iceValue:
+                type: number
+                example: 10
+              merchantId:
+                type: string
+                example: 1200000432450023
+              processorBankName:
+                type: string
+                example: Some_Bank_Name
+              approvalCode:
+                type: string
+                example: 342347
+              Metadata:
+                type: object
+                properties:
+                  key1:
+                    type: string
+                    example: value1
+              subscription_metadata:
+                type: object
+                properties:
+                  key2:
+                    type: string
+                    example: value2
+    examples:
+      example-1:
+        has_more: true
+        data:
+          - subtotalIVA0: 10
+            date: '2017-03-24T18:52:34.000Z'
+            lastFourDigitsOfCard: 1234
+            transactionStatus: APPROVAL
+            transactionId: 1234567890987654
+            voidedBy: 10334120439012934
+            merchantName: Some_Merchant_Name
+            cardHolderName: John Doe
+            approvedTransactionAmount: 135.5
+            numberOfMonths: 0
+            ExtraTaxes:
+              - tasaAeroportuaria:
+                  taxid: '4'
+                  taxAmount: 2
+                  taxName: TASA_AERO
+                iac:
+                  taxid: '5'
+                  taxAmount: 2
+                  taxName: IAC
+                agenciaDeViaje:
+                  taxid: '6'
+                  taxAmount: 2
+                  taxName: TASA_ADMIN_AGEN_COD
+            saleTicketNumber: 1204493249523
+            ivaValue: 15.5
+            isDeferred: 'Y'
+            ticketNumber: 1234567890987654
+            id: '123456'
+            dateAndTimeTransaction: 12345012469
+            cardType: Master Card
+            subtotalIVA: 10
+            requestAmount: 130
+            currencyCode: USD
+            transactionType: SALE
+            processorName: Some_Processor_Name
+            iceValue: 10
+            merchantId: 1200000432450023
+            processorBankName: Some_Bank_Name
+            approvalCode: 342347
+            Metadata:
+              key1: value1
+            subscription_metadata:
+              key2: value2
+  'trait:created:201':
+    description: Created
+    schema:
+      type: object
+      required:
+        - ticketNumber
+      properties:
+        ticketNumber:
+          type: string
+          example: '123456789012345678'
+    examples:
+      example-1:
+        ticketNumber: '123456789012345678'
+  'trait:unexpectedError:500':
+    description: Unexpected Error
+    schema:
+      $ref: '#/definitions/UnexpectedErrorResponse'
+  'trait:tokenCreated:201':
+    description: TokenCreated
+    schema:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: AbCDef123456Z7Ghi8901234jkLMNopQ
+definitions: {}

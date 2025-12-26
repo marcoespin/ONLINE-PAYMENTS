@@ -1,0 +1,58 @@
+x-stoplight:
+  id: 76sendh3ggvw3
+type: object
+x-examples:
+  example-1:
+    currency: USD
+    subtotalIva: 0
+    subtotalIva0: 10
+    iva: 0
+    ice: 0
+    extraTaxes:
+      iac: 0
+      tasaAeroportuaria: 0
+      agenciaDeViaje: 0
+examples:
+  - currency: CLP
+    subtotalIva: 0
+    subtotalIva0: 10
+    iva: 0
+    ice: 0
+    extraTaxes:
+      iac: 0
+      tasaAeroportuaria: 0
+      agenciaDeViaje: 0
+properties:
+  currency:
+    $ref: ./currency-CL.yaml
+    x-stoplight:
+      id: mmcbalt97xtag
+  subtotalIva:
+    type: number
+    description: Set it to `0` in case the transaction has no taxes
+    x-stoplight:
+      id: a24045s995zf5
+  subtotalIva0:
+    type: number
+    description: 'Set the total amount of the transaction here in case it has no taxes. Otherwise, set it to `0`'
+    x-stoplight:
+      id: xk6onf6v1lm1t
+  iva:
+    type: number
+    description: Set it to `0` in case the transaction has no taxes
+    x-stoplight:
+      id: 0clmb95gje64s
+  ice:
+    type: number
+    description: Set it to `0` in case the transaction has no ICE (Impuesto a Consumos Especiales)
+    x-stoplight:
+      id: w0lt6mpyckpu9
+  extraTaxes:
+    $ref: ./extraTaxes.yaml
+    x-stoplight:
+      id: h23bdfo17ipa2
+required:
+  - subtotalIva
+  - subtotalIva0
+  - iva
+  - ice

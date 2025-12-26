@@ -1,0 +1,2626 @@
+swagger: '2.0'
+x-stoplight:
+  id: 7e7a1e08818b0
+info:
+  version: 1.1.3
+  title: SMARTLINKS
+  description: |
+    ### Receive payments through channels such as chats and social media without writing a single line of code.
+
+    <!-- theme: warning -->
+    > #### To keep in mind
+    >Due to our risk policies, the available payment methods and the integration type may vary once you complete the affiliation. We will tell you how to proceed if this process applies to your merchant.
+
+    ## Create a Smartlink
+
+    Our payment links or __Smartlinks__, are a quick and practical payment solution that allows you to sell online without the need to have technical or programming knowledge.
+
+    __What are they used for?__
+
+    They are ideal for promotions, accepting payments on social networks, WhatsApp or mail, Instagram or Facebook stores; __all without the need for a website__.
+
+    Instead of using several offer links for every campaign, create just one Smartlink in seconds and use it for all your campaigns.
+
+    ## Features
+
+    - Offer all payment methods: debit or credit card, wire transfer or cash payments.
+    - Offer installments or deferred to your clients.
+    - Manage and control all your sales from Kushki's console.
+    - Customize your Smartlink look and feel for the best integration with your brand experience.
+    - Choose between one-time payments, recurring payments or both.
+    - You can share them as many times as you want and for as long as you choose.
+    - Supports Sift Science anti-fraud validation tool in card payments.
+
+    Read more on our [documentation page](https://docs.kushkipagos.com/).
+
+    ## Using the API
+
+    To use the API you must ask for your Kushki Sandbox, composed of a `Public-Merchant-Id` and a `Private-Merchant-Id`.
+
+    * The current version of the Kushki API rests at: `https://api.kushkipagos.com/`
+    * The testing version rests at: `https://api-uat.kushkipagos.com/`
+
+
+    ## Endpoints
+
+    We dispose various endpoints to start your payment flows, find our products available:
+
+    * [Create a Smartlink](https://api-docs.kushkipagos.com/docs/online-payments/smartlinks-v2/operations/create-a-smartlink-v-2-smart-link)
+    * [Get a Smartlink](https://api-docs.kushkipagos.com/docs/online-payments/smartlinks-v2/operations/get-a-smartlink-v-2-smart-link)
+    * [Delete a smartlink](https://api-docs.kushkipagos.com/docs/online-payments/smartlinks-v2/operations/delete-a-smartlink-v-2-smart-link)
+    * [Update a Smartlink](https://api-docs.kushkipagos.com/docs/online-payments/smartlinks-v2/operations/modify-a-smartlink-v-2-smart-link)
+
+    [Return Home](/)
+
+    > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+host: api-uat.kushkipagos.com
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    scopes: {}
+    authorizationUrl: ''
+paths:
+  /smartlink/v2/smart-link:
+    post:
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            properties:
+              smartLinkUrl:
+                type: string
+          examples:
+            application/json:
+              smartLinkUrl: 'https://uat.kshk.co/global/4RUvloWDA'
+        '400':
+          description: ''
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                example: K001
+              message:
+                type: string
+                example: El cuerpo de la petición es inválido
+          examples:
+            The request body is invalid:
+              code: WCH001
+              message: El cuerpo de la petición es inválido
+            Invalid Smartlink currency:
+              code: WCH012
+              message: Moneda del smartlink inválida
+        '500':
+          description: ''
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                example: K001
+              message:
+                type: string
+                example: El cuerpo de la petición es inválido
+          examples:
+            An unexpected error has occurred:
+              code: WCH002
+              message: Ha ocurrido un error inesperado
+      summary: Create a Smartlink
+      operationId: createSmartlinkV2
+      parameters:
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - publicMerchantId
+              - merchantName
+              - generalConfig
+              - styleAndStructure
+              - contact
+              - formConfig
+            properties:
+              publicMerchantId:
+                type: string
+              merchantName:
+                type: string
+                description: Name included in the smartlink URL.
+              paymentConfigType:
+                type: string
+                x-stoplight:
+                  id: 891ts7bp5d00f
+                enum:
+                  - fixed
+                  - open
+                default: fixed
+                description: Allows you to generate a smartlink with an open amount (open) or a predefined amount (fixed).
+              paymentConfig:
+                type: object
+                x-stoplight:
+                  id: 57vou86qxr669
+                description: Object for predefined amount (`paymentConfigType` = `fixed`)
+                required:
+                  - paymentType
+                  - amount
+                  - paymentMethod
+                properties:
+                  paymentType:
+                    type: string
+                    enum:
+                      - unique
+                      - subscription
+                      - mixed
+                    description: |-
+                      - Unique: For one time payment
+                      - Subscription: To create a recurring subscription. Only available with card
+                      - Mixed: To include the first two choices in the same smartlink
+                    default: unique
+                  amount:
+                    $ref: ../models/Amount.yaml
+                  paymentMethod:
+                    type: array
+                    enum:
+                      - cash
+                      - credit-card
+                      - transfer
+                      - card-async
+                      - subscription
+                    description: Use `subscription` when `paymentType` is `subscription`
+                    items:
+                      type: string
+                  subscriptionOptions:
+                    type: object
+                    description: Not required when `paymentType` is `unique`
+                    required:
+                      - amount
+                      - periodicity
+                      - planName
+                      - terms
+                    properties:
+                      amount:
+                        $ref: ../models/Amount.yaml
+                      periodicity:
+                        type: string
+                        enum:
+                          - daily
+                          - weekly
+                          - biweekly
+                          - monthly
+                          - threefortnights
+                          - bimonthly
+                          - quarterly
+                          - fourmonths
+                          - halfYearly
+                          - yearly
+                      planName:
+                        type: string
+                      startDate:
+                        type: string
+                        description: |-
+                          `YYYY-MM-DD` 
+
+                          **Note:** Use future date
+                        format: date
+                        example: '2020-04-06'
+                      terms:
+                        type: string
+                        description: Terms and Conditions for subscriptions
+                  mixedOptions:
+                    type: object
+                    description: Not required when `paymentType` is `unique`
+                    required:
+                      - numberOfFees
+                      - periodicity
+                    properties:
+                      numberOfFees:
+                        type: number
+                        description: |-
+                          Number of periods the subscription is going to be charged. 
+                          - Use `0` for an undefined number of charges. The subscription has to be canceled manually
+                          - If it is different than 0, the subscription is going to be canceled automatically once its charged the number of periods specified
+                      periodicity:
+                        type: string
+                        enum:
+                          - daily
+                          - weekly
+                          - biweekly
+                          - monthly
+                          - quarterly
+                          - halfYearly
+                          - yearly
+                      subscriptionDay:
+                        type: number
+                        minimum: 0
+                        maximum: 31
+                        description: |-
+                          - Use `0`, so that the subscription is charged in the next 24 hours
+                          - If it is different than 0, the subscription is going to be charged on that particular day of the month
+                          **NOTE: If the `startDate` field is sent in the request, the value sent in that field will be taken as the start of the subscription. If you want to set a value in the `subscriptionDay` field, the `startDate` field should not be sent.**
+              'paymentConfig ':
+                type: object
+                x-stoplight:
+                  id: glpqiq5piaai1
+                description: Object for open amount (`paymentConfigType` = `open`)
+                required:
+                  - paymentType
+                  - paymentMethod
+                  - currency
+                  - taxEnabled
+                properties:
+                  paymentType:
+                    type: string
+                    enum:
+                      - unique
+                    description: '- Unique: For one time payment'
+                    default: unique
+                  paymentMethod:
+                    type: array
+                    enum:
+                      - cash
+                      - credit-card
+                      - transfer
+                      - card-async
+                    items:
+                      type: string
+                      enum:
+                        - cash
+                        - transfer
+                        - credit-card
+                        - card-async
+                  currency:
+                    $ref: ../models/currency.yaml
+                  taxEnabled:
+                    type: boolean
+                    x-stoplight:
+                      id: s9306t8hvd2yx
+                  taxPercentage:
+                    type: number
+                    x-stoplight:
+                      id: la8ydg2dtxjoi
+                    minimum: 0
+                    maximum: 100
+                    description: Required if the `taxEnabled` field is set in `true`
+                  defaultAmount:
+                    type: number
+                    x-stoplight:
+                      id: fg8xkiu6ug165
+                    description: Must be a number between the `minAmount` and the `maxAmount`
+                  minAmount:
+                    type: number
+                    x-stoplight:
+                      id: ruaa0lti4cepv
+                    minimum: 1
+                  maxAmount:
+                    type: number
+                    x-stoplight:
+                      id: r3mbd5ifmjkln
+                    minimum: 1
+              generalConfig:
+                type: object
+                required:
+                  - productName
+                  - description
+                  - productImage
+                  - brandLogo
+                  - executionLimit
+                  - showTimer
+                  - enabled
+                  - termsAndConditions
+                properties:
+                  productName:
+                    type: string
+                  description:
+                    type: string
+                    description: HTML format
+                    example: <p>Description of the product</p>
+                  productImage:
+                    type: string
+                    description: URL image
+                  brandLogo:
+                    type: string
+                    description: URL image
+                  executionLimit:
+                    type: number
+                    description: |-
+                      Number of times the smartlink can be used. 
+                      - Use `0` for no limit
+                      - If it is different than 0, the smartlink is going to be disabled once it reaches the limit
+                  showTimer:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  termsAndConditions:
+                    type: string
+                  promotionalText:
+                    type: string
+                  expirationDate:
+                    type: number
+                    description: UTC Timestamp format (Epoch)
+                    example: 1585717199999
+                  buyButtonText:
+                    type: string
+                    description: Required only if `structure` is `cover`.
+                  hidePayButtonAmount:
+                    type: boolean
+                    x-stoplight:
+                      id: cas6t1ow25xrl
+                    default: false
+                    description: Allows to hide the amount from the pay button.
+                  payButtonText:
+                    type: string
+                    x-stoplight:
+                      id: hx5ekrxw0jso9
+                    example: Donar
+                    description: Allows to change pay button text.
+                    maxLength: 20
+              styleAndStructure:
+                type: object
+                required:
+                  - structure
+                properties:
+                  structure:
+                    type: string
+                    enum:
+                      - checkout
+                      - cover
+                  coverModel:
+                    type: string
+                    description: Required only if `structure` is `cover`
+                    enum:
+                      - left
+                      - center
+                      - right
+                  buttonStyle:
+                    type: string
+                    description: Required only if `structure` is `cover`
+                    enum:
+                      - square
+                      - semi
+                      - round
+                  primaryColor:
+                    type: string
+                    description: Hexadecimal format
+                    example: '#00E6B2'
+                  secondaryColor:
+                    type: string
+                    description: Hexadecimal format
+                    example: '#023366'
+              contact:
+                type: object
+                description: Support contacts
+                properties:
+                  email:
+                    type: string
+                  phoneNumber:
+                    type: string
+              formConfig:
+                type: array
+                items:
+                  anyOf:
+                    - description: Input
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - disabled
+                        - name
+                        - placeholder
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - input
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        disabled:
+                          type: boolean
+                        name:
+                          type: string
+                        placeholder:
+                          type: string
+                        value:
+                          type: string
+                          description: Required only if `disabled` is `true`
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: 2oxs9em2ut32c
+                          default: true
+                    - description: Select
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - name
+                        - options
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - select
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                        options:
+                          type: array
+                          items:
+                            type: string
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: wl65gpp5ashnr
+                          default: true
+                    - description: Date
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - name
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - date
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: ctjnyi711os3g
+                          default: true
+                    - description: Area
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - disabled
+                        - name
+                        - placeholder
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - area
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        disabled:
+                          type: boolean
+                        name:
+                          type: string
+                        placeholder:
+                          type: string
+                        value:
+                          type: string
+                          description: Required only if `disabled` is `true`
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: vyy700evpa6vm
+                          description: Validate the email the user enters in the payment form
+                          default: true
+                    - description: Checkbox
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - name
+                        - options
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - checkbox
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                        options:
+                          type: array
+                          items:
+                            type: string
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: uokr21ouezkgu
+                          default: true
+                    - description: Radio
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - name
+                        - options
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - radio
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                        options:
+                          type: array
+                          items:
+                            type: string
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: od1kpjatzuo09
+                          default: true
+                  type: object
+              language:
+                type: string
+                x-stoplight:
+                  id: 57qgxif4k2jg1
+                enum:
+                  - es
+                  - en
+                  - br
+                default: es
+          x-examples:
+            paymentType unique with multiple payment methods:
+              publicMerchantId: '20000001408167121000'
+              merchantName: Global
+              language: en
+              paymentConfig:
+                paymentType: unique
+                amount:
+                  currency: PEN
+                  subtotalIva: 0
+                  subtotalIva0: 15
+                  iva: 0
+                paymentMethod:
+                  - cash
+                  - credit-card
+                  - transfer
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+                promotionalText: ''
+                buyButtonText: ''
+              styleAndStructure:
+                structure: checkout
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '8100000000'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+            paymentType unique with one payment method:
+              publicMerchantId: '20000001408167121000'
+              merchantName: Global
+              language: en
+              paymentConfig:
+                paymentType: unique
+                amount:
+                  currency: PEN
+                  subtotalIva: 0
+                  subtotalIva0: 15
+                  iva: 0
+                paymentMethod: credit-card
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+                promotionalText: ''
+                buyButtonText: ''
+              styleAndStructure:
+                structure: checkout
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '8100000000'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+            structure value is cover:
+              publicMerchantId: '20000001408167121000'
+              merchantName: Global
+              language: es
+              paymentConfig:
+                paymentType: unique
+                amount:
+                  currency: PEN
+                  subtotalIva: 0
+                  subtotalIva0: 15
+                  iva: 0
+                paymentMethod: credit-card
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+                promotionalText: ''
+                buyButtonText: Comprar ahora
+              styleAndStructure:
+                structure: cover
+                coverModel: left
+                buttonStyle: semi
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '8100000000'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+            paymentType subscription:
+              publicMerchantId: '20000001408167121000'
+              merchantName: Global
+              language: es
+              paymentConfig:
+                paymentType: subscription
+                amount:
+                  currency: PEN
+                  subtotalIva: 0
+                  subtotalIva0: 0
+                  iva: 0
+                paymentMethod: subscription
+                subscriptionOptions:
+                  amount:
+                    currency: PEN
+                    subtotalIva: 0
+                    subtotalIva0: 15
+                    iva: 0
+                  periodicity: monthly
+                  planName: Starter
+                  startDate: '2022-03-12'
+                  terms: Example terms
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+              styleAndStructure:
+                structure: checkout
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '988238833'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+                  value: ''
+                - split: true
+                  name: documentodeid
+                  disabled: false
+                  label: Documento de Id.
+                  placeholder: Documento de Id.
+                  type: input
+                  required: false
+                - split: true
+                  name: email
+                  disabled: false
+                  label: E-mail
+                  placeholder: E-mail
+                  type: input
+                  required: false
+            paymentType mixed:
+              publicMerchantId: '20000001408167121000'
+              merchantName: Global
+              language: es
+              paymentConfig:
+                paymentType: mixed
+                amount:
+                  currency: PEN
+                  subtotalIva: 0
+                  subtotalIva0: 20
+                  iva: 0
+                paymentMethod:
+                  - subscription
+                  - cash
+                  - credit-card
+                subscriptionOptions:
+                  amount:
+                    currency: PEN
+                    subtotalIva: 0
+                    subtotalIva0: 15
+                    iva: 0
+                  periodicity: monthly
+                  planName: Starter
+                  startDate: '2022-03-12'
+                  terms: Example terms
+                mixedOptions:
+                  numberOfFees: 0
+                  periodicity: monthly
+                  subscriptionDay: 0
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+              styleAndStructure:
+                structure: checkout
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '988238833'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+                  value: ''
+                - split: true
+                  name: documentodeid
+                  disabled: false
+                  label: Documento de Id.
+                  placeholder: Documento de Id.
+                  type: input
+                  required: false
+                - split: true
+                  name: email
+                  disabled: false
+                  label: E-mail
+                  placeholder: E-mail
+                  type: input
+                  required: false
+            Open amount:
+              publicMerchantId: '20000001408167321001'
+              merchantName: Global
+              paymentConfigType: open
+              paymentConfig:
+                paymentType: unique
+                currency: MXN
+                paymentMethod:
+                  - credit-card
+                  - cash
+                taxEnabled: true
+                taxPercentage: 18
+                minAmount: 50
+                maxAmount: 500
+                defaultAmount: 80
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+                promotionalText: ''
+                buyButtonText: ''
+              styleAndStructure:
+                structure: checkout
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '8100000000'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+      description: |-
+        Create a smartLink that can later be shared to a customer in order to complete the payment process.
+         
+        In the form you can include 6 different type of items:
+        1) Input: Useful to create tags so customers can include name, email and other important information for the business.
+        2) Select: Useful to select from a list of available options.
+        3) Date: Shows a calendar if you need the customer to select a specific date.
+        4) Area: Useful to enter multiple lines of text.
+        5) Checkbox: Useful to let a customer select one or more options from a limited list of choices.
+        6) Radio: Allows the customer to choose only one of a limited list of choices.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      x-stoplight:
+        id: fzzbbyacr5ylb
+  '/smartlink/v2/smart-link/{smartlinkId}':
+    get:
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            properties:
+              merchantName:
+                type: string
+              executionCount:
+                type: number
+              version:
+                type: string
+                example: V2
+              created:
+                type: number
+              publicMerchantId:
+                type: string
+              id:
+                type: string
+              merchantId:
+                type: string
+              subscriptionTotalAmount:
+                type: number
+              totalAmount:
+                type: number
+              paymentConfig:
+                type: object
+                properties:
+                  paymentType:
+                    type: string
+                    enum:
+                      - unique
+                      - subscription
+                      - mixed
+                  amount:
+                    $ref: ../models/Amount.yaml
+                  paymentMethod:
+                    type: array
+                    enum:
+                      - cash
+                      - credit-card
+                      - transfer
+                      - card-async
+                    items:
+                      type: string
+                  subscriptionOptions:
+                    type: object
+                    properties:
+                      amount:
+                        $ref: ../models/Amount.yaml
+                      periodicity:
+                        type: string
+                        enum:
+                          - daily
+                          - weekly
+                          - biweekly
+                          - monthly
+                          - quarterly
+                          - halfYearly
+                          - yearly
+                      planName:
+                        type: string
+                      startDate:
+                        type: string
+                        format: date
+                        example: '2020-04-06'
+                      terms:
+                        type: string
+                  mixedOptions:
+                    type: object
+                    properties:
+                      numberOfFees:
+                        type: number
+                      periodicity:
+                        type: string
+                        enum:
+                          - daily
+                          - weekly
+                          - biweekly
+                          - monthly
+                          - quarterly
+                          - halfYearly
+                          - yearly
+                      subscriptionDay:
+                        type: number
+                  currency:
+                    $ref: ../models/currency.yaml
+                  taxEnabled:
+                    type: boolean
+                    x-stoplight:
+                      id: som6tyba9pb5g
+                  taxPercentage:
+                    type: number
+                    x-stoplight:
+                      id: q2xa2emzqjppb
+                    minimum: 1
+                    maximum: 100
+                  defaultAmount:
+                    type: number
+                    x-stoplight:
+                      id: 1xxkc2m7ympe1
+                  minAmount:
+                    type: number
+                    x-stoplight:
+                      id: kbg5zzi5j0pq0
+                  maxAmount:
+                    type: number
+                    x-stoplight:
+                      id: bp77m5ixub2ij
+              generalConfig:
+                type: object
+                properties:
+                  productName:
+                    type: string
+                  description:
+                    type: string
+                    example: <p>Description of the product</p>
+                  productImage:
+                    type: string
+                  brandLogo:
+                    type: string
+                  executionLimit:
+                    type: number
+                  showTimer:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  termsAndConditions:
+                    type: string
+                  promotionalText:
+                    type: string
+                  expirationDate:
+                    type: number
+                    description: Timestamp format
+                    example: 1585717199999
+                  buyButtonText:
+                    type: string
+                  hidePayButtonAmount:
+                    type: boolean
+                    x-stoplight:
+                      id: ahdsqzb707m8l
+                  payButtonText:
+                    type: string
+                    x-stoplight:
+                      id: 9chgv90le0cux
+              styleAndStructure:
+                type: object
+                properties:
+                  structure:
+                    type: string
+                    enum:
+                      - checkout
+                      - cover
+                  coverModel:
+                    type: string
+                    enum:
+                      - left
+                      - center
+                      - right
+                  buttonStyle:
+                    type: string
+                    enum:
+                      - square
+                      - semi
+                      - round
+                  primaryColor:
+                    type: string
+                    description: Hexadecimal format
+                    example: '#00E6B2'
+                  secondaryColor:
+                    type: string
+                    description: Hexadecimal format
+                    example: '#023366'
+              contact:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  phoneNumber:
+                    type: string
+              formConfig:
+                type: array
+                items:
+                  anyOf:
+                    - description: Input
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - input
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        disabled:
+                          type: boolean
+                        name:
+                          type: string
+                        placeholder:
+                          type: string
+                        value:
+                          type: string
+                          description: Required only if `disabled` is `true`
+                    - description: Select
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - select
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                        options:
+                          type: array
+                          items:
+                            type: string
+                    - description: Date
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - date
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                    - description: Area
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - area
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        disabled:
+                          type: boolean
+                        name:
+                          type: string
+                        placeholder:
+                          type: string
+                        value:
+                          type: string
+                          description: Required only if `disabled` is `true`
+                    - description: Checkbox
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - checkbox
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                        options:
+                          type: array
+                          items:
+                            type: string
+                    - description: Radio
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - radio
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                        options:
+                          type: array
+                          items:
+                            type: string
+                  type: object
+              paymentConfigType:
+                type: string
+                x-stoplight:
+                  id: ckyuz3s5zebsd
+                enum:
+                  - open
+                  - fixed
+              language:
+                type: string
+                x-stoplight:
+                  id: t0b8t06rbv4fh
+                enum:
+                  - es
+                  - en
+                  - br
+                default: es
+              source:
+                x-stoplight:
+                  id: 50nn8mfzrwute
+                enum:
+                  - api
+                  - console
+          examples:
+            Smartlink found:
+              paymentConfig:
+                mixedOptions:
+                  numberOfFees: 13
+                  periodicity: weekly
+                  subscriptionDay: 28
+                paymentMethod:
+                  - cash
+                  - credit-card
+                  - transfer
+                amount:
+                  currency: COP
+                  subtotalIva0: 0
+                  iva: 211.09
+                  subtotalIva: 1111
+                subscriptionOptions:
+                  periodicity: weekly
+                  planName: Subscription-SmartLink
+                  amount:
+                    currency: COP
+                    subtotalIva0: 0
+                    iva: 422.18
+                    subtotalIva: 2222
+                  terms: T&C suscripcion
+                  startDate: '2020-03-15'
+                paymentType: mixed
+              executionCount: 0
+              version: V2
+              formConfig:
+                - split: true
+                  icon: bold
+                  name: nombresyapellidos
+                  disabled: false
+                  label: Nombres y apellidos
+                  placeholder: Nombres y apellidos
+                  type: input
+                  required: false
+                  selected: false
+                - split: true
+                  icon: bold
+                  name: email
+                  disabled: false
+                  label: E-mail
+                  placeholder: E-mail
+                  type: input
+                  required: false
+                  selected: false
+                - split: true
+                  icon: server
+                  name: listadeseleccion
+                  options:
+                    - Opcion 1
+                    - Opcion 2
+                    - Opcion 3
+                  index: 3
+                  disabled: false
+                  label: Lista de selección
+                  type: select
+                  required: false
+                  selected: false
+                - split: true
+                  icon: check-circle
+                  name: seleccionmultiple
+                  options:
+                    - Opcion 1
+                    - Opcion 2
+                  index: 3
+                  disabled: false
+                  label: Selección múltiple
+                  type: checkbox
+                  required: false
+                  selected: false
+                - split: true
+                  icon: calendar
+                  name: fecha
+                  index: 4
+                  disabled: false
+                  label: Fecha
+                  type: date
+                  required: false
+                  selected: false
+                - split: true
+                  icon: bold
+                  name: areadetexto
+                  index: 4
+                  disabled: false
+                  label: Área de texto
+                  placeholder: Área de texto
+                  type: area
+                  required: false
+                  selected: false
+              generalConfig:
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                showTimer: true
+                buyButtonText: pago
+                description: <p>Descipción</p>
+                executionCount: 0
+                executionLimit: 999
+                promotionalText: promocional
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                enabled: true
+                productName: nombre producto
+                expirationDate: 1585717199999
+                termsAndConditions: tyc smartlink
+              created: 1585715919666
+              publicMerchantId: '20000000100338110000'
+              merchantName: CLINICA OFTALMOLOGICA
+              styleAndStructure:
+                primaryColor: '#00E6B2'
+                coverModel: left
+                structure: cover
+                buttonStyle: square
+                secondaryColor: '#023366'
+              id: 4RUvloWDA
+              merchantId: '20000000100338110000'
+              subscriptionTotalAmount: 2644.18
+              totalAmount: 1322.09
+              paymentConfigType: fixed
+              source: console
+            Smartlink with open amount set:
+              version: V2
+              formConfig: []
+              contact: {}
+              created: 1685044019686
+              merchantName: Your merchant
+              publicMerchantId: 1b3706f8228f4674a99d712a386a0401
+              country: Colombia
+              language: es
+              paymentConfig:
+                minAmount: 10
+                defaultAmount: 120
+                taxPercentage: 10
+                paymentMethod:
+                  - credit-card
+                currency: COP
+                taxEnabled: true
+                maxAmount: 200
+                paymentType: unique
+              executionCount: 0
+              generalConfig:
+                productImage: 'https://kushki-usrv-webcheckout-qa-images-tungurahua.s3.amazonaws.com/smartlinks/productImages/product-image.png'
+                showTimer: false
+                buyButtonText: Pagar
+                hidePayButtonAmount: false
+                description: <p>product description</p>
+                executionLimit: 0
+                executionCount: 0
+                promotionalText: Promotional text here
+                payButtonText: payButtonTextString
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                productName: The name of your product
+                enabled: true
+              paymentConfigType: open
+              presetTerms: true
+              siftScienceEnabled: false
+              styleAndStructure:
+                primaryColor: ''
+                structure: checkout
+                secondaryColor: ''
+              id: sFSISTK4n
+              merchantId: '20000000105887780000'
+              subscriptionTotalAmount: 0
+              totalAmount: 0
+              notifyTransactionStatus: false
+              source: api
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            'Smartlink not found, not available or expired':
+              code: WCH003
+              message: 'Smartlink no encontrado, no disponible o expirado.'
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            application/json:
+              code: WCH002
+              message: Ha ocurrido un error inesperado.
+      description: |-
+        Get the Smartlink information that can be used to render the form in a website hosted by Kushki.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      summary: Get a Smartlink
+      operationId: getSmartlinkV2
+      parameters:
+        - in: path
+          name: smartlinkId
+          type: string
+          required: true
+          description: |-
+            It corresponds to the last characters of the URL, for example in this smartlink:
+            https://uat.kshk.co/global/u2Ab4qE_b
+            the smartlinkId will be `u2Ab4qE_b`
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+      x-stoplight:
+        id: nw1odnz0do3lw
+    parameters:
+      - name: smartlinkId
+        in: path
+        type: string
+        required: true
+    delete:
+      responses:
+        '204':
+          description: ''
+          schema: {}
+        '400':
+          description: Bad Request
+          schema:
+            description: ''
+            type: object
+            x-examples:
+              example-1:
+                code: WCH003
+                message: 'Smartlink no encontrado, no disponible o expirado.'
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            'Smartlink not found, not available or expired':
+              code: WCH003
+              message: 'Smartlink no encontrado, no disponible o expirado.'
+            invalid credentials:
+              code: WCH009
+              message: Credenciales inválidas.
+        '500':
+          description: ''
+          examples:
+            application/json:
+              code: WCH002
+              message: Ha ocurrido un error inesperado.
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+      summary: Delete a smartlink
+      description: |-
+        Remember once you delete a Smartlink it won't be available!
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: deleteSmartlinkV2
+      parameters:
+        - in: path
+          name: smartlinkId
+          type: string
+          required: true
+          description: |-
+            It corresponds to the last characters of the URL, for example in this smartlink:
+            https://uat.kshk.co/global/u2Ab4qE_b
+            the smartlinkId will be `u2Ab4qE_b`
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+      x-stoplight:
+        id: hy7w1de5parhj
+    patch:
+      responses:
+        '204':
+          description: ''
+          schema: {}
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            Smartlink not found or not available:
+              code: WCH003
+              message: Smartlink no encontrado o no disponible
+            The request body is invalid:
+              code: WCH001
+              message: El cuerpo de la petición es inválido
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            application/json:
+              code: WCH002
+              message: Ha ocurrido un error inesperado.
+      summary: Update a Smartlink
+      operationId: updateSmartlinkV2
+      parameters:
+        - in: path
+          name: smartlinkId
+          type: string
+          required: true
+          description: |-
+            It corresponds to the last characters of the URL, for example in this smartlink:
+            https://uat.kshk.co/global/u2Ab4qE_b
+            the smartlinkId will be `u2Ab4qE_b`
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              publicMerchantId:
+                type: string
+              merchantName:
+                type: string
+                description: Name included in the smartlink URL
+              paymentConfigType:
+                type: string
+                x-stoplight:
+                  id: amuc93iciq8mv
+                enum:
+                  - fixed
+                  - open
+                default: fixed
+                description: Allows you to generate a smartlink with an open amount (open) or a predefined amount (fixed).
+              paymentConfig:
+                type: object
+                description: Object for predefined amount (`paymentConfigType` = `fixed`)
+                required:
+                  - paymentType
+                  - paymentMethod
+                properties:
+                  paymentType:
+                    type: string
+                    enum:
+                      - unique
+                      - subscription
+                      - mixed
+                    description: |-
+                      - Unique: For one time payment
+                      - Subscription: To create a recurring subscription. Only available with card
+                      - Mixed: To include the first two choices in the same smartlink
+                  amount:
+                    $ref: ../models/Amount.yaml
+                  paymentMethod:
+                    type: array
+                    enum:
+                      - cash
+                      - credit-card
+                      - transfer
+                      - card-async
+                      - subscription
+                    description: Use `subscription` when `paymentType` is `subscription`
+                    items:
+                      type: string
+                  subscriptionOptions:
+                    type: object
+                    description: Not required when `paymentType` is `unique`
+                    properties:
+                      amount:
+                        $ref: ../models/Amount.yaml
+                      periodicity:
+                        type: string
+                        enum:
+                          - daily
+                          - weekly
+                          - biweekly
+                          - monthly
+                          - threefortnights
+                          - bimonthly
+                          - quarterly
+                          - fourmonths
+                          - halfYearly
+                          - yearly
+                      planName:
+                        type: string
+                      startDate:
+                        type: string
+                        description: |-
+                          `YYYY-MM-DD` 
+
+                          **Note:** Use future date
+                        format: date
+                        example: '2020-04-06'
+                      terms:
+                        type: string
+                        description: Terms and Conditions for subscriptions
+                    required:
+                      - amount
+                      - periodicity
+                      - planName
+                      - startDate
+                      - terms
+                  mixedOptions:
+                    type: object
+                    description: Not required when `paymentType` is `unique`
+                    properties:
+                      numberOfFees:
+                        type: number
+                        description: |-
+                          Number of periods the subscription is going to be charged. 
+                          - Use `0` for an undefined number of charges. The subscription has to be canceled manually
+                          - If it is different than 0, the subscription is going to be canceled automatically once its charged the number of periods specified
+                      periodicity:
+                        type: string
+                        enum:
+                          - daily
+                          - weekly
+                          - biweekly
+                          - monthly
+                          - quarterly
+                          - halfYearly
+                          - yearly
+                      subscriptionDay:
+                        type: number
+                        minimum: 0
+                        maximum: 30
+                        exclusiveMaximum: false
+                        description: |-
+                          - Use `0`, so that the subscription is charged in the next 24 hours
+                          - If it is different than 0, the subscription is going to be charged on that particular day of the month
+                          **NOTE: If the `startDate` field is sent in the request, the value sent in that field will be taken as the start of the subscription. If you want to set a value in the `subscriptionDay` field, the `startDate` field should not be sent.**
+                    required:
+                      - numberOfFees
+                      - periodicity
+                      - subscriptionDay
+              'paymentConfig ':
+                type: object
+                description: Object for open amount (`paymentConfigType` = `open`)
+                x-stoplight:
+                  id: olih9jziumlrm
+                required:
+                  - paymentType
+                  - paymentMethod
+                  - currency
+                  - taxEnabled
+                properties:
+                  paymentType:
+                    type: string
+                    enum:
+                      - unique
+                    description: '- Unique: For one time payment'
+                  paymentMethod:
+                    type: array
+                    enum:
+                      - cash
+                      - credit-card
+                      - transfer
+                      - card-async
+                    items:
+                      type: string
+                  currency:
+                    $ref: ../models/currency.yaml
+                  taxEnabled:
+                    type: boolean
+                    x-stoplight:
+                      id: tp7zoqugfc8nb
+                  taxPercentage:
+                    type: number
+                    x-stoplight:
+                      id: skv14xor15x80
+                    description: Required if the `taxEnabled` field is set in `true`
+                    minimum: 1
+                    maximum: 100
+                  defaultAmount:
+                    type: number
+                    x-stoplight:
+                      id: m2m97h0l4mvvo
+                    description: Must be a number between the `minAmount` and the `maxAmount`
+                    minimum: 1
+                  minAmount:
+                    type: number
+                    x-stoplight:
+                      id: l9awg5c7ivc1w
+                    minimum: 1
+                  maxAmount:
+                    type: number
+                    x-stoplight:
+                      id: oqusflb28q7z6
+                    minimum: 1
+              generalConfig:
+                type: object
+                required:
+                  - productName
+                  - description
+                  - productImage
+                  - brandLogo
+                  - executionLimit
+                  - showTimer
+                  - enabled
+                  - termsAndConditions
+                properties:
+                  productName:
+                    type: string
+                  description:
+                    type: string
+                    description: HTML format
+                    example: <p>Description of the product</p>
+                  productImage:
+                    type: string
+                    description: URL image
+                  brandLogo:
+                    type: string
+                    description: URL image
+                  executionLimit:
+                    type: number
+                    description: |-
+                      Number of times the smartlink can be used. 
+                      - Use `0` for no limit
+                      - If it is different than 0, the smartlink is going to be disabled once it reaches the limit
+                  showTimer:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  termsAndConditions:
+                    type: string
+                  promotionalText:
+                    type: string
+                  expirationDate:
+                    type: number
+                    description: UTC Timestamp format
+                    example: 1585717199999
+                  buyButtonText:
+                    type: string
+                    description: Required only if `structure` is `cover`.
+                  hidePayButtonAmount:
+                    type: boolean
+                    x-stoplight:
+                      id: mtbs6i49u8yba
+                    description: Allows to hide the amount from the pay button.
+                    default: false
+                  payButtonText:
+                    type: string
+                    x-stoplight:
+                      id: 3ypfpr20fey6x
+                    example: Donar
+                    description: Allows to change pay button text.
+                    maxLength: 20
+              styleAndStructure:
+                type: object
+                required:
+                  - structure
+                properties:
+                  structure:
+                    type: string
+                    enum:
+                      - checkout
+                      - cover
+                  coverModel:
+                    type: string
+                    description: Required only if `structure` is `cover`
+                    enum:
+                      - left
+                      - center
+                      - right
+                  buttonStyle:
+                    type: string
+                    description: Required only if `structure` is `cover`
+                    enum:
+                      - square
+                      - semi
+                      - round
+                  primaryColor:
+                    type: string
+                    description: Hexadecimal format
+                    example: '#00E6B2'
+                  secondaryColor:
+                    type: string
+                    description: Hexadecimal format
+                    example: '#023366'
+              contact:
+                type: object
+                description: Support contacts
+                properties:
+                  email:
+                    type: string
+                  phoneNumber:
+                    type: string
+              formConfig:
+                type: array
+                items:
+                  anyOf:
+                    - description: Input
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - input
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        disabled:
+                          type: boolean
+                        name:
+                          type: string
+                        placeholder:
+                          type: string
+                        value:
+                          type: string
+                          description: Required only if `disabled` is `true`
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: 8pwdett4lw281
+                          default: true
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - disabled
+                        - name
+                        - placeholder
+                    - description: Select
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - select
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                        options:
+                          type: array
+                          items:
+                            type: string
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: m2ccw02e9id2x
+                          default: true
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - name
+                        - options
+                    - description: Date
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - date
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: bl402vr0rpjh3
+                          default: true
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - name
+                    - description: Area
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - area
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        disabled:
+                          type: boolean
+                        name:
+                          type: string
+                        placeholder:
+                          type: string
+                        value:
+                          type: string
+                          description: Required only if `disabled` is `true`
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: mfg4ym213jon6
+                          default: true
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - disabled
+                        - name
+                        - placeholder
+                    - description: Checkbox
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - checkbox
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                        options:
+                          type: array
+                          items:
+                            type: string
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: v5blwwgqiyzyc
+                          default: true
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - name
+                        - options
+                    - description: Radio
+                      properties:
+                        label:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                            - radio
+                        split:
+                          type: boolean
+                        required:
+                          type: boolean
+                        name:
+                          type: string
+                        options:
+                          type: array
+                          items:
+                            type: string
+                        validateEmail:
+                          type: boolean
+                          x-stoplight:
+                            id: hcs54lk9t69vr
+                          default: true
+                      required:
+                        - label
+                        - type
+                        - split
+                        - required
+                        - name
+                        - options
+                  type: object
+              language:
+                type: string
+                x-stoplight:
+                  id: zonm7xj35u9ym
+                enum:
+                  - en
+                  - es
+                  - br
+                default: es
+            required:
+              - publicMerchantId
+              - merchantName
+              - paymentConfig
+              - 'paymentConfig '
+              - generalConfig
+              - styleAndStructure
+              - contact
+              - formConfig
+          x-examples:
+            paymentType unique with multiple payment methods:
+              publicMerchantId: '20000001408167121000'
+              merchantName: Global
+              language: es
+              paymentConfig:
+                paymentType: unique
+                amount:
+                  currency: PEN
+                  subtotalIva: 0
+                  subtotalIva0: 15
+                  iva: 0
+                paymentMethod:
+                  - cash
+                  - credit-card
+                  - transfer
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+                promotionalText: ''
+                buyButtonText: ''
+              styleAndStructure:
+                structure: checkout
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '8100000000'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+            paymentType unique with one payment method:
+              publicMerchantId: '20000001408167121000'
+              merchantName: Global
+              language: es
+              paymentConfig:
+                paymentType: unique
+                amount:
+                  currency: PEN
+                  subtotalIva: 0
+                  subtotalIva0: 15
+                  iva: 0
+                paymentMethod: credit-card
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+                promotionalText: ''
+                buyButtonText: ''
+              styleAndStructure:
+                structure: checkout
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '8100000000'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+            structure value is cover:
+              publicMerchantId: '20000001408167121000'
+              merchantName: Global
+              language: en
+              paymentConfig:
+                paymentType: unique
+                amount:
+                  currency: PEN
+                  subtotalIva: 0
+                  subtotalIva0: 15
+                  iva: 0
+                paymentMethod: credit-card
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+                promotionalText: ''
+                buyButtonText: Comprar ahora
+              styleAndStructure:
+                structure: cover
+                coverModel: left
+                buttonStyle: semi
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '8100000000'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+            paymentType subscription:
+              publicMerchantId: '20000001408167121000'
+              merchantName: Global
+              language: en
+              paymentConfig:
+                paymentType: subscription
+                amount:
+                  currency: PEN
+                  subtotalIva: 0
+                  subtotalIva0: 0
+                  iva: 0
+                paymentMethod: subscription
+                subscriptionOptions:
+                  amount:
+                    currency: PEN
+                    subtotalIva: 0
+                    subtotalIva0: 15
+                    iva: 0
+                  periodicity: monthly
+                  planName: Starter
+                  startDate: '2022-03-12'
+                  terms: Example terms
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+              styleAndStructure:
+                structure: checkout
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '988238833'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+                  value: ''
+                - split: true
+                  name: documentodeid
+                  disabled: false
+                  label: Documento de Id.
+                  placeholder: Documento de Id.
+                  type: input
+                  required: false
+                - split: true
+                  name: email
+                  disabled: false
+                  label: E-mail
+                  placeholder: E-mail
+                  type: input
+                  required: false
+            paymentType mixed:
+              publicMerchantId: '20000001408167121000'
+              merchantName: Global
+              language: es
+              paymentConfig:
+                paymentType: mixed
+                amount:
+                  currency: PEN
+                  subtotalIva: 0
+                  subtotalIva0: 20
+                  iva: 0
+                paymentMethod:
+                  - subscription
+                  - cash
+                  - credit-card
+                subscriptionOptions:
+                  amount:
+                    currency: PEN
+                    subtotalIva: 0
+                    subtotalIva0: 15
+                    iva: 0
+                  periodicity: monthly
+                  planName: Starter
+                  startDate: '2022-03-12'
+                  terms: Example terms
+                mixedOptions:
+                  numberOfFees: 0
+                  periodicity: monthly
+                  subscriptionDay: 0
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+              styleAndStructure:
+                structure: checkout
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '988238833'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+                  value: ''
+                - split: true
+                  name: documentodeid
+                  disabled: false
+                  label: Documento de Id.
+                  placeholder: Documento de Id.
+                  type: input
+                  required: false
+                - split: true
+                  name: email
+                  disabled: false
+                  label: E-mail
+                  placeholder: E-mail
+                  type: input
+                  required: false
+              version: V2
+            Open amount:
+              publicMerchantId: '20000001408167321001'
+              merchantName: Global
+              paymentConfigType: open
+              paymentConfig:
+                paymentType: unique
+                currency: MXN
+                paymentMethod:
+                  - credit-card
+                  - cash
+                taxEnabled: true
+                taxPercentage: 18
+                minAmount: 50
+                maxAmount: 500
+                defaultAmount: 100
+              generalConfig:
+                productName: Plan Hogar
+                description: <p>Cobertura completa</p>
+                productImage: 'https://kushki-static.s3.amazonaws.com/smartlinks/product-image.png'
+                brandLogo: 'https://kushki-static.s3.amazonaws.com/smartlinks/logo.png'
+                executionLimit: 0
+                showTimer: false
+                enabled: true
+                termsAndConditions: ''
+                promotionalText: ''
+                buyButtonText: ''
+              styleAndStructure:
+                structure: checkout
+              contact:
+                email: soporte@soporte.com
+                phoneNumber: '8100000000'
+              formConfig:
+                - label: Nombres y apellidos
+                  type: input
+                  split: false
+                  required: true
+                  disabled: false
+                  name: nombresyapellidos
+                  placeholder: Nombres y apellidos
+              version: V2
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+      description: |-
+        Update an existing Smartlink.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      x-stoplight:
+        id: bbtp338ererxa
+responses:
+  'trait:invalidBin:402':
+    description: Invalid Bin
+    schema:
+      $ref: '#/definitions/InvalidBinResponse'
+  'trait:badRequest:400':
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/BadRequestResponse'
+  'trait:fetchedList:200':
+    description: Fetch a transactions list
+    schema:
+      type: object
+      required:
+        - has_more
+        - data
+      properties:
+        has_more:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            required:
+              - subtotalIVA0
+              - date
+              - lastFourDigitsOfCard
+              - transactionStatus
+              - transactionId
+              - voidedBy
+              - merchantName
+              - cardHolderName
+              - approvedTransactionAmount
+              - numberOfMonths
+              - extraTaxes
+              - saleTicketNumber
+              - ivaValue
+              - isDeferred
+              - ticketNumber
+              - id
+              - dateAndTimeTransaction
+              - cardType
+              - subtotalIVA
+              - requestAmount
+              - currencyCode
+              - transactionType
+              - processorName
+              - iceValue
+              - merchantId
+              - processorBankName
+              - approvalCode
+            properties:
+              subtotalIVA0:
+                type: number
+                example: 10
+              date:
+                type: string
+                example: '2017-03-24T18:52:34.000Z'
+              lastFourDigitsOfCard:
+                type: string
+                example: 1234
+              transactionStatus:
+                type: string
+                example: APPROVAL
+              transactionId:
+                type: string
+                example: 1234567890987654
+              voidedBy:
+                type: string
+                example: 10334120439012934
+              merchantName:
+                type: string
+                example: Some_Merchant_Name
+              cardHolderName:
+                type: string
+                example: John Doe
+              approvedTransactionAmount:
+                type: string
+                example: 135.5
+              numberOfMonths:
+                type: string
+                example: 0
+              ExtraTaxes:
+                type: array
+                items:
+                  required:
+                    - tasaAeroportuaria
+                    - agenciaDeViaje
+                    - iac
+                  properties:
+                    tasaAeroportuaria:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '4'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_AERO
+                    iac:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '5'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: IAC
+                    agenciaDeViaje:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '6'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_ADMIN_AGEN_COD
+              saleTicketNumber:
+                type: string
+                example: 1204493249523
+              ivaValue:
+                type: integer
+                example: 15.5
+              isDeferred:
+                type: string
+                example: 'Y'
+              ticketNumber:
+                type: string
+                example: 1234567890987654
+              id:
+                type: string
+                example: '123456'
+              dateAndTimeTransaction:
+                type: string
+                example: 12345012469
+              cardType:
+                type: string
+                example: Master Card
+              subtotalIVA:
+                type: number
+                example: 10
+              requestAmount:
+                type: string
+                example: 130
+              currencyCode:
+                type: string
+                example: USD
+              transactionType:
+                type: string
+                example: SALE
+              processorName:
+                type: string
+                example: Some_Processor_Name
+              iceValue:
+                type: number
+                example: 10
+              merchantId:
+                type: string
+                example: 1200000432450023
+              processorBankName:
+                type: string
+                example: Some_Bank_Name
+              approvalCode:
+                type: string
+                example: 342347
+              Metadata:
+                type: object
+                properties:
+                  key1:
+                    type: string
+                    example: value1
+              subscription_metadata:
+                type: object
+                properties:
+                  key2:
+                    type: string
+                    example: value2
+    examples:
+      example-1:
+        has_more: true
+        data:
+          - subtotalIVA0: 10
+            date: '2017-03-24T18:52:34.000Z'
+            lastFourDigitsOfCard: 1234
+            transactionStatus: APPROVAL
+            transactionId: 1234567890987654
+            voidedBy: 10334120439012934
+            merchantName: Some_Merchant_Name
+            cardHolderName: John Doe
+            approvedTransactionAmount: 135.5
+            numberOfMonths: 0
+            ExtraTaxes:
+              - tasaAeroportuaria:
+                  taxid: '4'
+                  taxAmount: 2
+                  taxName: TASA_AERO
+                iac:
+                  taxid: '5'
+                  taxAmount: 2
+                  taxName: IAC
+                agenciaDeViaje:
+                  taxid: '6'
+                  taxAmount: 2
+                  taxName: TASA_ADMIN_AGEN_COD
+            saleTicketNumber: 1204493249523
+            ivaValue: 15.5
+            isDeferred: 'Y'
+            ticketNumber: 1234567890987654
+            id: '123456'
+            dateAndTimeTransaction: 12345012469
+            cardType: Master Card
+            subtotalIVA: 10
+            requestAmount: 130
+            currencyCode: USD
+            transactionType: SALE
+            processorName: Some_Processor_Name
+            iceValue: 10
+            merchantId: 1200000432450023
+            processorBankName: Some_Bank_Name
+            approvalCode: 342347
+            Metadata:
+              key1: value1
+            subscription_metadata:
+              key2: value2
+  'trait:created:201':
+    description: Created
+    schema:
+      type: object
+      required:
+        - ticketNumber
+      properties:
+        ticketNumber:
+          type: string
+          example: '123456789012345678'
+    examples:
+      example-1:
+        ticketNumber: '123456789012345678'
+  'trait:unexpectedError:500':
+    description: Unexpected Error
+    schema:
+      $ref: '#/definitions/UnexpectedErrorResponse'
+  'trait:tokenCreated:201':
+    description: TokenCreated
+    schema:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: AbCDef123456Z7Ghi8901234jkLMNopQ
+definitions: {}

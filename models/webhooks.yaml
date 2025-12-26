@@ -1,0 +1,76 @@
+type: object
+x-stoplight:
+  id: ykvnpgtnn1x0q
+x-examples:
+  example-1:
+    currency: USD
+    subtotalIva: 0
+    subtotalIva0: 10
+    iva: 0
+    ice: 0
+    extraTaxes:
+      iac: 0
+      tasaAeroportuaria: 0
+      agenciaDeViaje: 0
+examples:
+  - webhooks:
+      - events:
+          - approvedTransaction
+          - declinedTransaction
+        headers:
+          - label: json
+            value: '12'
+        urls:
+          - 'https://eof2hhkrta4ooo1.m.pipedream.net'
+title: webhooks
+description: |-
+  Send this object as another transactional notification option. In case you have a **Webhook** created through the Console, the notification will be sent to both the **API** and the **Console** channels. It means they will not be mutually exclusive.
+
+  The notifications will be seen in the Webhooks Notifications dashboard, and they will have a new field called Configuration, which will identify the source of the notification.
+
+  **Example:**
+
+  ```Example
+  {
+    "webhooks": [
+      {
+        "events": [
+          "approvedTransaction",
+          "declinedTransaction"
+        ],
+        "headers": [
+          {
+            "label": "json",
+            "value": "12"
+          }
+        ],
+        "urls": [
+          "https://eof2hhkrta4ooo1.m.pipedream.net"
+        ]
+      }
+    ]
+  }
+  ```
+properties:
+  events:
+    type: array
+    description: 'Keep in mind to use the events associated with the payment method. If you send this object empty, the information created in the transaction request will be taken.'
+    items:
+      type: string
+      example: '"events": [ "approvedTransaction", "declinedTransaction" , "preauthorization" ]'
+      enum:
+        - approvedTransaction
+        - declinedTransaction
+  headers:
+    $ref: ./headers.yaml
+  urls:
+    type: array
+    description: |-
+      Add the URL(s) you require for each of the events.
+      **The url must start with http or https.**
+    items:
+      type: string
+      example: 'https://eod9gdc8ybn5yxq.m.pipedream.net'
+required:
+  - events
+  - urls

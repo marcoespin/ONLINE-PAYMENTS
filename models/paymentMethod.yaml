@@ -1,0 +1,6 @@
+type: string
+title: payment_method
+enum:
+  - CARD
+  - CASH
+  - TRANSFER

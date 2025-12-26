@@ -1,0 +1,171 @@
+description: ''
+type: object
+x-examples:
+  example-1:
+    ticketNumber: string
+    details:
+      responseCode: string
+      responseText: string
+      approvedTransactionAmount: 0
+      transactionId: string
+      approvalCode: string
+      cardHolderName: string
+      lastFourDigits: string
+      binCard: string
+      processorName: string
+      processorBankName: string
+      merchantName: string
+      currencyCode: string
+      taxes: {}
+      transactionType: string
+      numberOfMonths: 0
+      processorId: string
+      merchantId: string
+      paymentBrand: string
+      created: 0
+      requestAmount: 0
+      subtotalIva: 0
+      subtotalIva0: 0
+      ivaValue: 0
+      iceValue: 0
+      transactionStatus: string
+      metadata: {}
+      subscriptionMetadata: {}
+      subscriptionId: string
+      method: string
+      syncMode: api
+      saleTicketNumber: string
+      graceMonths: string
+examples:
+  - ticketNumber: string
+    details:
+      responseCode: string
+      responseText: string
+      approvedTransactionAmount: 0
+      transactionId: string
+      approvalCode: string
+      cardHolderName: string
+      lastFourDigits: string
+      binCard: string
+      processorName: string
+      processorBankName: string
+      merchantName: string
+      currencyCode: string
+      taxes: {}
+      transactionType: string
+      numberOfMonths: 0
+      processorId: string
+      merchantId: string
+      paymentBrand: string
+      created: 0
+      requestAmount: 0
+      subtotalIva: 0
+      subtotalIva0: 0
+      ivaValue: 0
+      iceValue: 0
+      transactionStatus: string
+      metadata: {}
+      subscriptionMetadata: {}
+      subscriptionId: string
+      method: string
+      syncMode: api
+      saleTicketNumber: string
+      graceMonths: string
+properties:
+  ticketNumber:
+    type: string
+    pattern: '^[0-9]{10,18}$'
+  details:
+    type: object
+    required:
+      - transactionId
+      - approvalCode
+      - cardHolderName
+      - lastFourDigits
+      - binCard
+      - processorName
+      - processorBankName
+      - merchantName
+      - transactionType
+      - paymentBrand
+      - created
+      - requestAmount
+      - subtotalIva
+      - subtotalIva0
+      - ivaValue
+      - iceValue
+      - transactionStatus
+      - metadata
+      - subscriptionMetadata
+      - subscriptionId
+      - method
+      - syncMode
+      - saleTicketNumber
+      - graceMonths
+    properties:
+      responseCode:
+        type: string
+      responseText:
+        type: string
+      approvedTransactionAmount:
+        type: number
+      transactionId:
+        type: string
+      approvalCode:
+        type: string
+      cardHolderName:
+        type: string
+      lastFourDigits:
+        type: string
+      binCard:
+        type: string
+      processorName:
+        type: string
+      processorBankName:
+        type: string
+      merchantName:
+        type: string
+      currencyCode:
+        type: string
+      taxes:
+        type: object
+      transactionType:
+        type: string
+      numberOfMonths:
+        type: number
+      processorId:
+        type: string
+      merchantId:
+        type: string
+      paymentBrand:
+        type: string
+      created:
+        type: number
+      requestAmount:
+        type: number
+      subtotalIva:
+        type: number
+      subtotalIva0:
+        type: number
+      ivaValue:
+        type: number
+      iceValue:
+        type: number
+      transactionStatus:
+        type: string
+      metadata:
+        type: object
+      subscriptionMetadata:
+        type: object
+      subscriptionId:
+        type: string
+      method:
+        type: string
+      syncMode:
+        type: string
+      saleTicketNumber:
+        type: string
+      graceMonths:
+        type: string
+required:
+  - ticketNumber

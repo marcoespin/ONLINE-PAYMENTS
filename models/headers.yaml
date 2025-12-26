@@ -1,0 +1,26 @@
+type: array
+x-stoplight:
+  id: jsg8j054nzhrn
+x-examples:
+  example-1:
+    currency: USD
+    subtotalIva: 0
+    subtotalIva0: 10
+    iva: 0
+    ice: 0
+    extraTaxes:
+      iac: 0
+      tasaAeroportuaria: 0
+      agenciaDeViaje: 0
+examples:
+  - headers:
+      - label: json
+        value: '12'
+title: headers
+items:
+  type: object
+  properties:
+    label:
+      type: string
+    value:
+      type: string

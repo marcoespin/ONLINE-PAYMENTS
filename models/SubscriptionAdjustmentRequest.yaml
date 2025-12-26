@@ -1,0 +1,63 @@
+description: ''
+type: object
+x-examples:
+  example-1:
+    amount:
+      currency: USD
+      subtotalIva: 0
+      subtotalIva0: 0
+      iva: 0
+      ice: 0
+      extraTaxes:
+        iac: 0
+        tasaAeroportuaria: 0
+        agenciaDeViaje: 0
+    periods: 1
+title: SubscriptionAdjustmentRequest
+properties:
+  amount:
+    type: object
+    required:
+      - subtotalIva
+      - subtotalIva0
+      - iva
+    properties:
+      currency:
+        $ref: ./currency.yaml
+      subtotalIva:
+        type: number
+        description: Set it to `0` in case the transaction has no taxes
+        minimum: 0
+      subtotalIva0:
+        type: number
+        description: 'Set the total amount of the transaction here in case it has no taxes. Otherwise, set it to `0`'
+        minimum: 0
+      iva:
+        type: number
+        description: Set it to `0` in case the transaction has no taxes
+        minimum: 0
+      ice:
+        type: number
+        description: Set it to `0` in case the transaction has no ICE (Impuesto a consumos especiales)
+        minimum: 0
+      extraTaxes:
+        $ref: ./extraTaxes.yaml
+  periods:
+    type: number
+    minimum: 1
+    maximum: 12
+required:
+  - amount
+  - periods
+examples:
+  - amount:
+      currency: USD
+      subtotalIva: 0
+      subtotalIva0: 0
+      iva: 0
+      ice: 0
+      extraTaxes:
+        iac: 0
+        tasaAeroportuaria: 0
+        agenciaDeViaje: 0
+    periods: 1

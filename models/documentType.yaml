@@ -1,0 +1,18 @@
+type: string
+title: documentType
+description: "* CC: Identity Document (applies to Colombia \U0001F1E8\U0001F1F4, Chile \U0001F1E8\U0001F1F1, and Mexico \U0001F1F2\U0001F1FD)\n* NIT: Tax Id number in Colombia \U0001F1E8\U0001F1F4\n* CE: Foreign resident card in Colombia \U0001F1E8\U0001F1F4 and Peru \U0001F1F5\U0001F1EA\n* TI: Identity Card in Colombia \U0001F1E8\U0001F1F4\n* PP: Passport (applies to Colombia \U0001F1E8\U0001F1F4, Chile \U0001F1E8\U0001F1F1, and Mexico \U0001F1F2\U0001F1FD)\n* PAS: Passport in Peru \U0001F1F5\U0001F1EA and Ecuador \U0001F1EA\U0001F1E8\n* RUC: Tax Id number in Ecuador \U0001F1EA\U0001F1E8 and Peru \U0001F1F5\U0001F1EA \n* CURP: Unique Population Registry Code in Mexico \U0001F1F2\U0001F1FD\n* RFC: Tax Id number in Mexico \U0001F1F2\U0001F1FD\n* RUT: Tax Id number in Chile \U0001F1E8\U0001F1F1\n* DNI: Identity Document in Peru\n* CI: Identity Card in Ecuador \U0001F1EA\U0001F1E8"
+example: NIT
+enum:
+  - CC
+  - NIT
+  - CE
+  - TI
+  - PP
+  - RUC
+  - CURP
+  - RFC
+  - RUT
+  - DNI
+  - PAS
+  - CI
+  - DE

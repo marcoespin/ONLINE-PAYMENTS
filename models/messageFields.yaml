@@ -1,0 +1,41 @@
+title: ' messageFields'
+x-stoplight:
+  id: s5cfibpd7tzar
+type: object
+description: ' messageFields'
+properties:
+  f39:
+    type: string
+    x-stoplight:
+      id: 8l1hqoh2rhfxj
+    description: |
+      Generic response codes from card Visa or Mastercard. It could be received both for approved or declined transactions
+  f48:
+    type: object
+    x-stoplight:
+      id: rosc572gbt72r
+    description: |
+      Responses codes. Only for Mastercard
+    properties:
+      s22:
+        type: object
+        x-stoplight:
+          id: pun77igncgh9i
+        description: |
+          It corresponds to the `citMit` code sent in the request. Only for Mastercard. ⛔️ This field is not available for domestic transactions in Mexico.
+        properties:
+          se5:
+            type: string
+            x-stoplight:
+              id: py61x02lh9imt
+      s84:
+        type: string
+        x-stoplight:
+          id: nrx11o978vvs0
+        description: |
+          It's the MAC code (Merchant Advice Code) from Mastercard for declined transactions.
+  restricted:
+    type: boolean
+    x-stoplight:
+      id: bf6o5c2hhih1a
+    description: Returned when the transaction has been blocked by Kushki

@@ -1,0 +1,45 @@
+description: ''
+type: object
+x-examples:
+  example-1:
+    firstName: John
+    lastName: Doe
+    secondLastName: ''
+    email: user@example.com
+    documentType: CC
+    documentNumber: '123456789'
+    phoneNumber: '+593912345678'
+examples:
+  - firstName: John
+    lastName: Doe
+    secondLastName: ''
+    email: user@example.com
+    documentType: CC
+    documentNumber: '123456789'
+    phoneNumber: '+593912345678'
+properties:
+  firstName:
+    type: string
+    example: John
+  lastName:
+    type: string
+    example: Doe
+  secondLastName:
+    type: string
+  email:
+    type: string
+    example: user@example.com
+  documentType:
+    $ref: ./documentType.yaml
+  documentNumber:
+    type: string
+  phoneNumber:
+    type: string
+    example: '+593988734644'
+required:
+  - firstName
+  - lastName
+  - email
+  - documentType
+  - documentNumber
+  - phoneNumber

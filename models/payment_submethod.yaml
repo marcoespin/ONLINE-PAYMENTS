@@ -1,0 +1,14 @@
+type: string
+x-stoplight:
+  id: jxw2j8apsgaqv
+title: payment_submethod
+enum:
+  - CARD NO PRESENT
+  - CARD PRESENT
+  - SUBSCRIPTION
+  - CHARGEBACK CARD NO PRESENT
+  - CHARGEBACK CARD PRESENT
+  - TRANSFER IN
+  - TRANSFER OUT
+  - CASH IN
+  - CASH OUT

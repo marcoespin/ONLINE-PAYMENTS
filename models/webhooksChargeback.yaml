@@ -1,0 +1,62 @@
+type: object
+x-stoplight:
+  id: u91a41xi96fdh
+x-examples:
+  example-1:
+    currency: USD
+    subtotalIva: 0
+    subtotalIva0: 10
+    iva: 0
+    ice: 0
+    extraTaxes:
+      iac: 0
+      tasaAeroportuaria: 0
+      agenciaDeViaje: 0
+examples:
+  - webhooksChargeback:
+      - events:
+          - initialized
+          - pending
+          - review
+          - approval
+          - declined
+          - failed
+          - expired
+        headers:
+          - label: json
+            value: '12'
+        urls:
+          - 'https://eof2hhkrta4ooo1.m.pipedream.net'
+title: webhooksChargeback
+description: '**Chargeback notifications**'
+properties:
+  events:
+    type: array
+    description: 'If you send this object empty, all allowed events will be notified.'
+    items:
+      type: string
+      enum:
+        - initialized
+        - pending
+        - review
+        - approval
+        - declined
+        - failed
+        - expired
+  headers:
+    $ref: ./headers.yaml
+    x-stoplight:
+      id: 2nny0z8d0u1qw
+  urls:
+    type: array
+    x-stoplight:
+      id: 37921zoxjyhow
+    description: Add the URL(s) you require for each of the events. **The url must start with http or https.**
+    items:
+      x-stoplight:
+        id: k4umzh4duf0u1
+      type: string
+      example: 'https://eod9gdc8ybn5yxq.m.pipedream.net'
+required:
+  - events
+  - urls

@@ -1,0 +1,11 @@
+type: string
+x-stoplight:
+  id: end959poipmzo
+title: currency
+enum:
+  - CLP
+  - UF
+examples:
+  - CLP
+default: CLP
+example: CLP

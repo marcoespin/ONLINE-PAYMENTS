@@ -1,0 +1,53 @@
+type: object
+x-examples:
+  example-1:
+    name: John Doe
+    phone: '+593912345678'
+    address1: Eloy Alfaro 139 y Catalina Aldaz
+    address2: centro 123
+    city: Quito
+    region: Pichincha
+    country: Ecuador
+    zipcode: '170402'
+examples:
+  - name: John Doe
+    phone: '+593912345678'
+    address1: Eloy Alfaro 139 y Catalina Aldaz
+    address2: centro 123
+    city: Quito
+    region: Pichincha
+    country: Ecuador
+    zipcode: '170402'
+title: Shipping Address
+required:
+  - name
+  - phone
+  - address1
+  - city
+  - region
+  - country
+properties:
+  name:
+    type: string
+  phone:
+    type: string
+  address1:
+    type: string
+  address2:
+    type: string
+  city:
+    type: string
+  region:
+    type: string
+  country:
+    type: string
+  zipcode:
+    type: string
+  secondaryAddress:
+    type: string
+    x-stoplight:
+      id: ikfgbsy2fzhbh
+  userEmail:
+    type: string
+    x-stoplight:
+      id: 7ve6owfuajydx

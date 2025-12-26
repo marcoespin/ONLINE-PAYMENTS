@@ -1,0 +1,2258 @@
+swagger: '2.0'
+info:
+  version: 1.1.3
+  title: ANALYTICS
+  description: |
+    ## Using the API
+
+    To use the API you must ask for your Kushki Sandbox, composed of a `Public-Merchant-Id` and a `Private-Merchant-Id`.
+
+    * The current version of the Kushki API rests at: `https://api.kushkipagos.com/`
+    * The testing version rests at: `https://api-uat.kushkipagos.com/`
+
+
+    ## Endpoints
+
+    We dispose various endpoints to start your payment flows, find our products available:
+
+    * [Get transactions list](https://api-docs.kushkipagos.com/docs/online-payments/analytics/operations/get-a-analytics-v-1-transactions-list)
+
+
+    [Return Home](/)
+
+    > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+host: api-uat.kushkipagos.com
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    scopes: {}
+    authorizationUrl: ''
+paths:
+  /analytics/v1/transactions-list:
+    get:
+      summary: Get transactions list v1
+      tags: []
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                total: 1
+                data:
+                  - account_type: ''
+                    acquirer_bank: null
+                    agenciaDeViaje_value: 0
+                    approval_code: '000000'
+                    approved_transaction_amount: 57.36
+                    aurus_ticket_number: '880704136755757050'
+                    bank_id: ''
+                    bank_name: ''
+                    bin_card: '545195'
+                    buy_order: ''
+                    card_holder_name: John Doe
+                    card_type: Credit
+                    client_name: John Doe
+                    contact_person: John
+                    channel: PRESTASHOP
+                    commission_type: ''
+                    contact_details:
+                      document_number: '1009283738'
+                      document_type: CC
+                      email: user@example.com
+                      first_name: John
+                      last_name: Doe
+                      phone_number: '+593912345678'
+                    converted_amount: 0
+                    converted_currency: ''
+                    country: Peru
+                    created: '2022-01-04T05:03:35.000Z'
+                    credential_alias: null
+                    credential_id: null
+                    credential_metadata: null
+                    credit_type: null
+                    currency_code: PEN
+                    description: Payment description.
+                    document_number: '123456789'
+                    document_type: DNI
+                    email: user@example.com
+                    foreign_card: true
+                    grace_months: ''
+                    historical:
+                      - approved_transaction_amount: 57.36
+                        bin_card: '545195'
+                        card_holder_name: John Doe
+                        card_type: Credit
+                        contact_person: John
+                        country: Peru
+                        created: '2022-01-04T05:08:47.059Z'
+                        credential_alias: null
+                        credential_id: null
+                        credential_metadata: null
+                        currency_code: PEN
+                        email: user@example.com
+                        foreign_card: true
+                        ice_value: 0
+                        iva_value: 0
+                        last_four_digits: '5480'
+                        masked_credit_card: 545195XXXXXX5480
+                        merchant_id: '20000000108481570000'
+                        merchant_name: Tu comercio
+                        nit: '12345678'
+                        payment_brand: Mastercard
+                        payment_method: card
+                        processor_id: '1000000858816509955116107200241'
+                        processor_merchant_id: '543210'
+                        processor_name: MC Processor
+                        processor_transaction_id: '463606'
+                        processor_type: gateway
+                        public_credential_id: null
+                        request_amount: 57.36
+                        response_code: '000'
+                        response_text: Transacción aprobada
+                        sale_approval_code: '000000'
+                        sale_ticket_number: '880704136755757050'
+                        sale_transaction_type: SALE
+                        subtotal_iva: 0
+                        subtotal_iva0: 57.36
+                        sync_mode: online
+                        terminal_id: null
+                        ticket_number: '661641272926959146'
+                        transaction_id: '1641272926958551247'
+                        transaction_reference: 0e993c1d-03f7-48d5-93e4-63bb10cea776
+                        transaction_status: INITIALIZED
+                        transaction_type: VOID
+                        unique_code: '1212334'
+                        visibility: visible
+                    iac_value: 0
+                    ice_value: 0
+                    identification: '123456789'
+                    initialized: '2022-01-28T20:28:01.459Z'
+                    issuing_bank: BANCO DE LA PRODUCCION S.A. (PRODUBANCO)
+                    iva_value: 0
+                    last_four_digits: '5480'
+                    masked_account_number: ''
+                    merchant_id: '20000000108481570000'
+                    merchant_name: Tu comercio
+                    metadata:
+                      key0: value0
+                      key1: value1
+                      key2: value2
+                    method: ''
+                    number_of_months: 4
+                    operation_id: '1643403824778083825'
+                    origin: ''
+                    owner_merchant_id: ''
+                    parent_merchant_id: ''
+                    parent_ticket_number: ''
+                    payment_brand: Mastercard
+                    payment_description: '-'
+                    pin: '3403824670'
+                    preauth_transaction_reference: 95dc21c8-8064-44a4-acb3-bde153c25460
+                    processor:
+                      code: '566'
+                      message: 'El token es invalido , o ya fue usado en otra transaccion.'
+                    processor_bank_name: ''
+                    processor_id: '1000000858816509955116107200241'
+                    processor_name: MC Processor
+                    processor_private_id: ''
+                    processor_transaction_id: '463606'
+                    processor_type: gateway
+                    propina_value: 0
+                    provider: ''
+                    public_credential_id: null
+                    recap: null
+                    retry: 0
+                    retry_count: 0
+                    request_amount: 57.36
+                    response_code: '000'
+                    response_text: Transaccion aprobada
+                    sale_approval_code: '000000'
+                    sale_ticket_number: '880704136755757050'
+                    sale_transaction_type: SALE
+                    secure_id: ''
+                    secure_service: ''
+                    string_taxes: '{}'
+                    subscription_id: ''
+                    subscription_metadata:
+                      key1: value1
+                      key2: value2
+                    subscription_trigger: ''
+                    subtotal_iva: 0
+                    subtotal_iva0: 57.36
+                    sync_mode: online
+                    tasaAeroportuaria_value: 0
+                    terminal_id: null
+                    ticket_number: '880704136755757050'
+                    token: dffddf9aa77549148d2450d0662c6e4b
+                    total_amount: 0
+                    transaction_id: '887693705036122450'
+                    transaction_reference: 11a798d5-7565-4e78-a4e7-dfb7995f1c67
+                    transaction_status: APPROVAL
+                    transaction_type: SALE
+                    unique_code: '1212334'
+                    user_type: Jurídica
+                    visibility: visible
+                    void_ticket_number: '661641272926959146'
+                    card_country_code: EC
+                    card_country: Ecuador
+                    payment_method: card
+                    masked_credit_card: 545195XXXXXX5480
+                    security:
+                      ip: 187.252.251.37
+                      user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'
+                      whitelist: false
+                    string_metadata: '{"country":"Peru","city":"Lima","orderId":"20","postalCode":"64700","ip":"180.250.250.30","billingAddressPhone":null,"totalAmount":57.36,"plugin":"prestashop","province":"0","name":"John","currency":"PEN","billingAddress":"centro #123","email":"user@example.com"}'
+                    order_details:
+                      shipping_details:
+                        name: John Doe
+                        phone: 593912345678
+                        address1: Eloy Alfaro 139 y Catalina Aldaz
+                        address2: centro 123
+                        city: Quito
+                        region: Pichincha
+                        country: Ecuador
+                        zipcode: 170402
+                      billing_details:
+                        name: John Doe
+                        phone: 593912345678
+                        address1: Eloy Alfaro 139 y Catalina Aldaz
+                        address2: centro 123
+                        city: Quito
+                        region: Pichincha
+                        country: Ecuador
+                        zipcode: 170402
+                      site_domain: kushki.com
+                    product_details:
+                      product:
+                        - quantity: 3
+                          price: 19.12
+                          id: '1'
+                          title: Hummingbird printed t-shirt
+                          sku: demo_1
+            required:
+              - total
+              - data
+            properties:
+              total:
+                type: number
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    account_type:
+                      type: string
+                    acquirer_bank:
+                      type: string
+                      x-nullable: true
+                    agenciaDeViaje_value:
+                      type: number
+                    approval_code:
+                      type: string
+                    approved_transaction_amount:
+                      type: number
+                    aurus_ticket_number:
+                      type: string
+                    bank_id:
+                      type: string
+                    bank_name:
+                      type: string
+                    bin_card:
+                      type: string
+                    buy_order:
+                      type: string
+                    card_holder_name:
+                      type: string
+                    card_type:
+                      type: string
+                    client_name:
+                      type: string
+                    contact_person:
+                      type: string
+                    channel:
+                      $ref: ../models/Channel.yaml
+                    commission_type:
+                      type: string
+                    contact_details:
+                      $ref: ../models/ContactDetails.yaml
+                    converted_amount:
+                      type: number
+                    converted_currency:
+                      type: string
+                    country:
+                      $ref: ../models/Country.yaml
+                    created:
+                      type: string
+                      format: date-time
+                      example: '2022-03-10T13:39:00.836'
+                      pattern: 'AAAA-MM-DDTHH:MM :SS'
+                      description: UTC Format
+                    credential_alias:
+                      type: string
+                      x-nullable: true
+                    credential_id:
+                      type: string
+                      x-nullable: true
+                    credential_metadata:
+                      type: string
+                      x-nullable: true
+                    credit_type:
+                      type: string
+                      x-nullable: true
+                    currency_code:
+                      $ref: ../models/currency.yaml
+                    description:
+                      type: string
+                    document_number:
+                      type: string
+                    document_type:
+                      type: string
+                    email:
+                      type: string
+                    foreign_card:
+                      type: boolean
+                    grace_months:
+                      type: string
+                    historical:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          approved_transaction_amount:
+                            type: number
+                          bin_card:
+                            type: string
+                          card_holder_name:
+                            type: string
+                          card_type:
+                            type: string
+                          contact_person:
+                            type: string
+                          country:
+                            $ref: ../models/Country.yaml
+                          created:
+                            type: string
+                          credential_alias:
+                            type: string
+                            x-nullable: true
+                          credential_id:
+                            type: string
+                            x-nullable: true
+                          credential_metadata:
+                            x-nullable: true
+                          currency_code:
+                            $ref: ../models/currency.yaml
+                          email:
+                            type: string
+                          foreign_card:
+                            type: boolean
+                          ice_value:
+                            type: number
+                          iva_value:
+                            type: number
+                          last_four_digits:
+                            type: string
+                          masked_credit_card:
+                            type: string
+                          merchant_id:
+                            type: string
+                          merchant_name:
+                            type: string
+                          nit:
+                            type: string
+                          payment_brand:
+                            type: string
+                          payment_method:
+                            $ref: ../models/paymentMethod.yaml
+                          processor_id:
+                            type: string
+                          processor_merchant_id:
+                            type: string
+                          processor_name:
+                            type: string
+                          processor_transaction_id:
+                            type: string
+                          processor_type:
+                            type: string
+                          public_credential_id:
+                            x-nullable: true
+                          request_amount:
+                            type: number
+                          response_code:
+                            type: string
+                          response_text:
+                            type: string
+                          sale_approval_code:
+                            type: string
+                          sale_ticket_number:
+                            type: string
+                          sale_transaction_type:
+                            type: string
+                          subtotal_iva:
+                            type: number
+                          subtotal_iva0:
+                            type: number
+                          sync_mode:
+                            type: string
+                          terminal_id:
+                            x-nullable: true
+                          ticket_number:
+                            type: string
+                          transaction_id:
+                            type: string
+                          transaction_reference:
+                            type: string
+                          transaction_status:
+                            enum:
+                              - INITIALIZED
+                              - APPROVAL
+                              - DECLINED
+                          transaction_type:
+                            enum:
+                              - SALE
+                              - CAPTURE
+                              - VOID
+                              - DEFERRED
+                              - PREAUTHORIZATION
+                          unique_code:
+                            type: string
+                          visibility:
+                            type: string
+                    iac_value:
+                      type: number
+                    ice_value:
+                      type: number
+                    identification:
+                      type: string
+                    initialized:
+                      type: string
+                    issuing_bank:
+                      type: string
+                    iva_value:
+                      type: number
+                    last_four_digits:
+                      type: string
+                    masked_account_number:
+                      type: string
+                    merchant_id:
+                      type: string
+                    merchant_name:
+                      type: string
+                    metadata:
+                      $ref: ../models/Metadata.yaml
+                    method:
+                      type: string
+                    number_of_months:
+                      type: number
+                    operation_id:
+                      type: string
+                    origin:
+                      type: string
+                    owner_merchant_id:
+                      type: string
+                    parent_merchant_id:
+                      type: string
+                    parent_ticket_number:
+                      type: string
+                    payment_brand:
+                      type: string
+                    payment_description:
+                      type: string
+                    pin:
+                      type: string
+                    preauth_transaction_reference:
+                      type: string
+                    processor:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                        message:
+                          type: string
+                    processor_bank_name:
+                      type: string
+                    processor_id:
+                      type: string
+                    processor_name:
+                      type: string
+                    processor_private_id:
+                      type: string
+                    processor_transaction_id:
+                      type: string
+                    processor_type:
+                      type: string
+                    propina_value:
+                      type: number
+                    provider:
+                      type: string
+                    public_credential_id:
+                      x-nullable: true
+                    recap:
+                      x-nullable: true
+                    retry:
+                      type: number
+                    retry_count:
+                      type: number
+                    request_amount:
+                      type: number
+                    response_code:
+                      type: string
+                    response_text:
+                      type: string
+                    sale_approval_code:
+                      type: string
+                    sale_ticket_number:
+                      type: string
+                    sale_transaction_type:
+                      type: string
+                    secure_id:
+                      type: string
+                    secure_service:
+                      type: string
+                    string_taxes:
+                      type: string
+                    subscription_id:
+                      type: string
+                    subscription_metadata:
+                      type: object
+                      properties:
+                        key1:
+                          type: string
+                        key2:
+                          type: string
+                    subscription_trigger:
+                      type: string
+                    subtotal_iva:
+                      type: number
+                    subtotal_iva0:
+                      type: number
+                    sync_mode:
+                      type: string
+                    tasaAeroportuaria_value:
+                      type: number
+                    terminal_id:
+                      type: string
+                      x-nullable: true
+                    ticket_number:
+                      type: string
+                    token:
+                      type: string
+                    total_amount:
+                      type: number
+                    transaction_id:
+                      type: string
+                    transaction_reference:
+                      type: string
+                    transaction_status:
+                      enum:
+                        - INITIALIZED
+                        - APPROVAL
+                        - DECLINED
+                    transaction_type:
+                      type: string
+                    unique_code:
+                      type: string
+                    user_type:
+                      type: string
+                    visibility:
+                      type: string
+                    void_ticket_number:
+                      type: string
+                    card_country_code:
+                      type: string
+                    card_country:
+                      type: string
+                    payment_method:
+                      $ref: ../models/paymentMethod.yaml
+                    masked_credit_card:
+                      type: string
+                    security:
+                      type: object
+                      properties:
+                        ip:
+                          type: string
+                        user_agent:
+                          type: string
+                        whitelist:
+                          type: boolean
+                    string_metadata:
+                      type: string
+                    order_details:
+                      type: object
+                      properties:
+                        shipping_details:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            phone:
+                              type: integer
+                            address1:
+                              type: string
+                            address2:
+                              type: string
+                            city:
+                              type: string
+                            region:
+                              type: string
+                            country:
+                              type: string
+                            zipcode:
+                              type: integer
+                        billing_details:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            phone:
+                              type: integer
+                            address1:
+                              type: string
+                            address2:
+                              type: string
+                            city:
+                              type: string
+                            region:
+                              type: string
+                            country:
+                              type: string
+                            zipcode:
+                              type: integer
+                        site_domain:
+                          type: string
+                    product_details:
+                      type: object
+                      properties:
+                        product:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              quantity:
+                                type: integer
+                              price:
+                                type: number
+                              id:
+                                type: string
+                              title:
+                                type: string
+                              sku:
+                                type: string
+                    transaction_arn:
+                      type: string
+                      x-stoplight:
+                        id: fgpi76nqokzt5
+                      description: 'Acquirer Reference Number: unique ID per credit card transaction under Kushki Acquirer model. This parameter may take 1 business day to be reflected.'
+      operationId: get-analytics-v1-transactions-list
+      x-stoplight:
+        id: ldboektet7gar
+      description: "Request a list of transactions for a specific merchant. The transactions are returned in sorted order, with the most recent transactions appearing first, and with pagination.\n\n<!-- theme: danger -->\n\n> #### Deprecation Notice!\n>**This service will be deprecated starting July 2025**.<br>\n>We recommend using the Get Transactions List v2 endpoint instead, which offers more search filters and additional response fields for enhanced transaction management.\n>Please update your integration accordingly to ensure continued functionality and take advantage of the improved features.\n\n\n\n\n<!-- theme: info -->\n> #### Service available in the following countries:\n>\n> Ecuador, Chile, Colombia, México, Perú.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n>  **To Keep in mind:**\n>*   Transactions can only be queried through this endpoint `90 seconds` after their creation.\n>*   The maximum number of transactions you can query per request is `600`.\n>* \tIn case the `limit` parameter is not included in the request, the maximum number of transactions that will be returned is `100`.\n\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)"
+      parameters:
+        - type: string
+          in: header
+          name: Private-key
+          required: true
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+        - type: string
+          in: query
+          name: from
+          description: 'Start date of search **Format:** AAAA-MM-DDTHH:MM:SS.  Example: 2022-03-10T13:39:00.836'
+          required: true
+        - type: string
+          in: query
+          name: to
+          description: 'End date of search**Format:** AAAA-MM-DDTHH:MM:SS.  Example: 2022-03-10T23:00:00.836'
+          required: true
+        - type: string
+          in: query
+          name: limit
+          description: 'Maximum of records to display. **Default**: 100 '
+        - type: string
+          in: query
+          name: offset
+          description: Locate in an specific page of records
+        - type: string
+          in: query
+          name: ticket_number
+        - type: string
+          in: query
+          name: bin_card
+        - type: string
+          in: query
+          name: transaction_id
+        - type: string
+          in: query
+          name: currency_code
+        - type: string
+          in: query
+          name: transaction_type
+        - type: string
+          in: query
+          name: card_holder_name
+        - type: string
+          in: query
+          name: number_of_months
+        - type: string
+          in: query
+          name: processor_id
+        - type: string
+          in: query
+          name: merchant_id
+        - type: string
+          in: query
+          name: card_type
+        - type: string
+          in: query
+          name: last_four_digits
+        - type: string
+          in: query
+          name: created
+          description: Unix Timestamp with milliseconds
+        - type: string
+          in: query
+          name: request_amount
+        - type: string
+          in: query
+          name: approved_transaction_amount
+        - type: string
+          in: query
+          name: approval_code
+        - type: string
+          in: query
+          name: subtotal_iva
+        - type: string
+          in: query
+          name: subtotal_iva0
+        - type: string
+          in: query
+          name: iva_value
+        - type: string
+          in: query
+          name: ice_value
+        - type: string
+          in: query
+          name: transaction_status
+        - type: string
+          in: query
+          name: merchant_name
+        - type: string
+          in: query
+          name: subscription_id
+        - type: string
+          in: query
+          name: response_code
+        - type: string
+          in: query
+          name: response_text
+        - type: string
+          in: query
+          name: payment_method
+        - type: string
+          in: query
+          name: sync_mode
+        - type: string
+          in: query
+          name: sale_ticket_number
+        - type: string
+          in: query
+          name: processor_name
+  /analytics/v2/transactions-list:
+    parameters: []
+    get:
+      operationId: transactionList
+      summary: Get transactions list v2
+      description: "Retrieve a paginated list of transactions for a specific merchant using the **Get Transaction List v2 API**. This version supports both card-present and card-not-present transactions, as well as filtering by pay-ins and pay-outs. Transactions are returned in descending order, with the most recent ones appearing first.\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Ecuador, Chile, Colombia, México, Perú.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n>  **To Keep in mind:**\n>*   Transactions can only be queried through this endpoint `90 seconds` after their creation.\n>*   The maximum number of transactions you can query per request is `600`.\n>* \tIn case the `limit` parameter is not included in the request, the maximum number of transations that will be returned is `100`.\n\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)"
+      parameters:
+        - name: Private-key
+          in: header
+          required: true
+          type: string
+        - in: query
+          name: from
+          type: string
+          required: true
+          description: 'Start date of search **Format:** AAAA-MM-DDTHH:MM:SS.  Example: 2022-03-10T13:39:00.836'
+        - in: query
+          name: to
+          type: string
+          required: true
+          description: 'End date of search**Format:** AAAA-MM-DDTHH:MM:SS.  Example: 2022-03-10T23:00:00.836'
+        - in: query
+          name: limit
+          type: string
+          description: 'Maximum of records to display. **Default**: 100 '
+        - in: query
+          name: offset
+          type: string
+          description: Locate in an specific page of records
+        - in: query
+          name: ticket_number
+          type: string
+        - in: query
+          name: transaction_id
+          type: string
+        - in: query
+          name: currency_code
+          type: string
+        - in: query
+          name: transaction_type
+          type: string
+          description: 'Allowed values: `SALE`,`CAPTURE`,`VOID`,`DEFERRED`,`PREAUTHORIZATION`,`REFUND`,`CHARGEBACK`,`PAYOUT`.<br>If this field is left blank, **only pay-ins** transactions will be returned by default. Send `PAYOUT` to only get pay-out type transactions'
+        - in: query
+          name: card_holder_name
+          type: string
+        - in: query
+          name: number_of_months
+          type: string
+        - in: query
+          name: processor_id
+          type: string
+        - in: query
+          name: merchant_id
+          type: string
+          maxLength: 50
+        - in: query
+          name: card_type
+          type: string
+          description: '`debit`, `credit`'
+        - in: query
+          name: created
+          type: string
+          description: Unix Timestamp with milliseconds
+        - in: query
+          name: request_amount
+          type: string
+        - in: query
+          name: approved_transaction_amount
+          type: string
+        - in: query
+          name: approval_code
+          type: string
+        - in: query
+          name: subtotal_iva
+          type: string
+        - in: query
+          name: subtotal_iva0
+          type: string
+        - in: query
+          name: iva_value
+          type: string
+        - in: query
+          name: ice_value
+          type: string
+        - in: query
+          name: transaction_status
+          type: string
+          description: 'Allowed values: `APPROVAL`,`DECLINED`,`INITIALIZED `'
+        - in: query
+          name: merchant_name
+          type: string
+          maxLength: 250
+        - in: query
+          name: subscription_id
+          type: string
+        - in: query
+          name: response_code
+          type: string
+        - in: query
+          name: response_text
+          type: string
+        - in: query
+          name: payment_method
+          type: string
+          description: 'Allowed values: `card`,`transfer`,`cash`<br>If this field is left blank, transactions from all payment methods will be returned. If you send `card`, card present and card not present transactions will be returned.'
+        - in: query
+          name: sync_mode
+          type: string
+          enum:
+            - api
+            - file
+        - in: query
+          name: sale_ticket_number
+          type: string
+        - in: query
+          name: processor_name
+          type: string
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+        - type: string
+          in: query
+          name: external_reference_id
+          description: Transaction ID generated from the merchant side
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                total: 1
+                data:
+                  - account_type: ''
+                    acquirer_bank: Kushki Peru
+                    approval_code: '948354'
+                    approved_transaction_amount: 27.76
+                    bank_id: ''
+                    bank_name: ''
+                    bin_card: '42135501'
+                    buy_order: ''
+                    card_country: ''
+                    card_holder_name: '51977756384'
+                    card_type: debit
+                    channel: ''
+                    complete: ''
+                    country: Peru
+                    created: '2024-10-29T06:45:48.000Z'
+                    credential_alias: DIDI FOOD
+                    credential_id: bc6ff82275244eb087734519e2e6fcca
+                    credential_metadata: ''
+                    credit_type: ''
+                    currency_code: PEN
+                    foreign_card: false
+                    ice_value: 0
+                    issuing_bank: INTERBANK - BANCO INTERNACIONAL DEL PERU
+                    iva_value: 0
+                    last_four_digits: '2180'
+                    masked_account_number: ''
+                    merchant_id: '20000000106418692000'
+                    merchant_name: DIDI FOOD
+                    metadata:
+                      transactionId: '7633606210'
+                      fraudData: {}
+                      Facturas: {}
+                      money: {}
+                      orderDetails:
+                        shippingDetails: {}
+                        billingDetails: {}
+                      productDetails:
+                        product: {}
+                      commission: {}
+                      guardian: {}
+                      items: {}
+                      tax_lines: {}
+                      date_created: {}
+                      date_modified: {}
+                      additional:
+                        collection_notices: {}
+                      member: {}
+                      billing: {}
+                      plan: {}
+                      shipping: {}
+                      fulfillments: {}
+                      student:
+                        school:
+                          gateway_credentials:
+                            credentials:
+                              payin: {}
+                              payout: {}
+                          commissions_schema:
+                            credit_card: {}
+                            bank_transfer: {}
+                            oxxo: {}
+                            ticket: {}
+                            amex_credit_card: {}
+                            digital_currency: {}
+                            debit_card: {}
+                          config_portal: {}
+                          config_dashboard: {}
+                        billing_guardian:
+                          phone: {}
+                        guardians: {}
+                      concept:
+                        early_bird_discounts: {}
+                        interest_schema: {}
+                      commission_info:
+                        commission_schema: {}
+                      subscription: {}
+                      price_breakdown:
+                        discount_breakdown:
+                          details:
+                            early_bird:
+                              details: {}
+                            scholarships:
+                              details: {}
+                        commission_breakdown:
+                          details: {}
+                      subscriptionMetadata: {}
+                      store: {}
+                      platform: {}
+                      cuotas: {}
+                      menu:
+                        platos:
+                          carne: {}
+                          pollo:
+                            opcion2:
+                              alitas: {}
+                        bebida: {}
+                      contactDetails: {}
+                      shipping_lines: {}
+                      Detalle de pago:
+                        Servicio Internet GPON: {}
+                        INT_HFC: {}
+                      billingInfo: {}
+                      carInfo: {}
+                      deferred: {}
+                      msi_surcharge_details: {}
+                      msi_discount_details: {}
+                      invoices: {}
+                    number_of_months: 0
+                    order_details: ''
+                    parent_merchant_id: ''
+                    parent_ticket_number: ''
+                    payment_brand: Visa
+                    payment_description: ''
+                    payment_method: ''
+                    payment_point: ''
+                    pdfUrl: ''
+                    pin: ''
+                    preauth_transaction_reference: ''
+                    processor_code: ''
+                    processor_message: Approval and completed successfully Accepted and processed.
+                    processor_name: Kushki Acquirer Processor
+                    processor_transaction_id: 3fd14575-d7a0-44be-8295-786159ea9028
+                    processor_type: aggregator_formal
+                    public_credential_id: 84542266f21c46dab6899d422632ac8c
+                    recap: '430306178594'
+                    request_amount: 27.76
+                    response_code: '000'
+                    response_text: Approval and completed successfully Accepted and processed.
+                    retry: ''
+                    retry_count: ''
+                    sale_approval_code: ''
+                    sale_ticket_number: ''
+                    sale_transaction_type: ''
+                    string_taxes: ''
+                    subscription_id: ''
+                    subscription_metadata:
+                      cardPreferences: {}
+                      plan: {}
+                      fulfillments: {}
+                      student:
+                        school:
+                          gateway_credentials:
+                            credentials:
+                              payin: {}
+                              payout: {}
+                          commissions_schema:
+                            credit_card: {}
+                            bank_transfer: {}
+                            oxxo: {}
+                            ticket: {}
+                            amex_credit_card: {}
+                            digital_currency: {}
+                            debit_card: {}
+                          config_portal: {}
+                          config_dashboard: {}
+                        billing_guardian:
+                          phone: {}
+                        guardians: {}
+                      concept:
+                        early_bird_discounts: {}
+                        interest_schema: {}
+                      commission_info:
+                        commission_schema: {}
+                      subscription: {}
+                      guardian:
+                        phone: {}
+                      price_breakdown:
+                        discount_breakdown:
+                          details:
+                            early_bird:
+                              details: {}
+                            scholarships:
+                              details: {}
+                        commission_breakdown:
+                          details: {}
+                      subscriptionMetadata: {}
+                      store: {}
+                      platform: {}
+                      menu:
+                        platos:
+                          carne: {}
+                          pollo:
+                            opcion2:
+                              alitas: {}
+                        bebida: {}
+                    subscription_trigger: ''
+                    subtotal_iva: 0
+                    subtotal_iva0: 27.76
+                    ticket_number: '821730184348688145'
+                    token: 0c291739-d93a-4e89-9b44-6de011c4fdb8
+                    total_amount: ''
+                    transaction_id: '821730184348805573736'
+                    transaction_reference: 0c291739-d93a-4e89-9b44-6de011c4fdb8
+                    transaction_status: APPROVED
+                    transaction_type: CAPTURE
+                    void_ticket_number: ''
+            required:
+              - total
+              - data
+            properties:
+              total:
+                type: integer
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    account_type:
+                      type: string
+                      description: 'Only for `transfer` payment method. Displays the type of account from which the transfer was made. '
+                    acquirer_bank:
+                      type: string
+                      description: 'Acquiring bank with whom the transaction was approved '
+                    approval_code:
+                      type: string
+                      description: Authorization number that responds to the applicable entity for each payment method.
+                    approved_transaction_amount:
+                      type: number
+                    bank_id:
+                      type: string
+                      description: 'Only for `transfer` payment method. The code of the bank from which the money transfer was made. '
+                    bank_name:
+                      type: string
+                      description: 'Only for `transfer` payment method. The name of the bank from which the money transfer was made. '
+                    bin_card:
+                      type: string
+                      description: 'Only for `card` payment method. Identification of the issuing bank of the card with which the transaction was made. '
+                    buy_order:
+                      type: string
+                      description: Only for `card` payment method. Order number of the transaction. Information sent by the merchant in the transaction.
+                    card_country:
+                      type: string
+                      description: Only for `card` payment method. Country of the card with which the transaction was processed
+                    card_country_code:
+                      type: string
+                      x-stoplight:
+                        id: fi86owoe9cbnt
+                    card_holder_name:
+                      type: string
+                      description: Only for `card` payment method. Name that the end customer enters as the owner of the card.
+                    card_type:
+                      description: Only for `card` payment method. Type of card used for the transaction. The `prepaid` value is only returned for Visa and Mastercard cards processed through Kushki Acquirer.
+                      enum:
+                        - debit
+                        - credit
+                        - preaid
+                    complete:
+                      type: string
+                      description: Date on which the transaction was completed or when it takes its final status
+                      format: date
+                    converted_currency:
+                      $ref: ../models/currency.yaml
+                    contact_details:
+                      x-stoplight:
+                        id: tn1ry72k9kt0f
+                      type: object
+                      properties:
+                        document_code:
+                          type: string
+                          x-stoplight:
+                            id: cb3ibehld3yn6
+                        document_type:
+                          type: string
+                          x-stoplight:
+                            id: ht93hqhzs2g9g
+                        email:
+                          type: string
+                          x-stoplight:
+                            id: g4y2wyc3jkyzt
+                        first_name:
+                          type: string
+                          x-stoplight:
+                            id: b90uyzkm1fi2m
+                        last_name:
+                          type: string
+                          x-stoplight:
+                            id: zqg3oj5t0ypcd
+                        phone:
+                          type: string
+                          x-stoplight:
+                            id: bdcpl3xtc8xvg
+                    country:
+                      $ref: ../models/Country.yaml
+                    created:
+                      type: string
+                      description: Displays the date on which the transaction was created
+                      format: date-time
+                    credential_alias:
+                      type: string
+                      description: Merchant Authentication Data Aliases
+                    credential_id:
+                      type: string
+                      description: Identification of merchant credential
+                    credential_metadata:
+                      type: string
+                      description: Displays the metadata that the customer sends in the request.
+                    currency_code:
+                      $ref: ../models/currency.yaml
+                    credit_type:
+                      type: string
+                      description: Only for `card `payment method. Type of deferral with which the transaction was processed.
+                    foreign_card:
+                      type: boolean
+                      description: Only for `card `payment method. Indicates if the transaction was made with a foreign card.
+                    ice_value:
+                      type: integer
+                      description: |-
+                        Special Consumption Tax that applies to certain trade transactions carried out only in Ecuador. 
+                        Note: For other countries this field is blank or with a value of 0.
+                    issuing_bank:
+                      type: string
+                      description: 'Only for `card `payment method. '
+                    iva_value:
+                      type: integer
+                    last_four_digits:
+                      type: string
+                      description: 'Only for `card `payment method. Last 4 digits of the card with which the transaction was made '
+                    masked_account_number:
+                      type: string
+                      description: Only for `transfer` payment method. Displays the destination account (masked) of Payouts transactions.
+                    masked_credit_card:
+                      type: string
+                      x-stoplight:
+                        id: gyrxlwn5bfqbi
+                      description: Only for `card` transactions
+                    merchant_id:
+                      type: string
+                      description: Indicates the identification of the merchant
+                    document_number:
+                      type: string
+                      x-stoplight:
+                        id: puumcl0qvnphv
+                    merchant_name:
+                      type: string
+                    metadata:
+                      type: object
+                      properties:
+                        key0:
+                          type: string
+                          x-stoplight:
+                            id: 6n8al0hstxos1
+                        key1:
+                          type: string
+                          x-stoplight:
+                            id: wjdqwwo6lhau2
+                        key2:
+                          type: string
+                          x-stoplight:
+                            id: aoy90bob4p89u
+                    number_of_months:
+                      type: integer
+                      description: 'Only for `card `payment method. Displays the number of months for which payment of the transaction was deferred. '
+                    order_details:
+                      $ref: ../models/orderDetails.yaml
+                    parent_merchant_id:
+                      type: string
+                      description: Only for `card` payment method.
+                    parent_ticket_number:
+                      type: string
+                      description: Only for `card` payment method.
+                    payment_brand:
+                      type: string
+                      description: 'Only for `card` payment method. Displays the brand of the card with which the transaction was made. '
+                    payment_description:
+                      type: string
+                      description: Description of the transaction that the customer indicates when sending the request to Kushki.
+                    payment_method:
+                      $ref: ../models/paymentMethod.yaml
+                    payment_submethod:
+                      $ref: ../models/payment_submethod.yaml
+                    payment_point:
+                      type: string
+                      description: Only for `cash` payment method.
+                    pdfUrl:
+                      type: string
+                      description: Only for `cash` payment method.
+                    pin:
+                      type: string
+                      description: Only for `cash` payment method. Payment PIN that was generated for the transaction
+                    preauth_transaction_reference:
+                      type: string
+                      description: 'Only for `card` payment method. '
+                    processor_code:
+                      type: string
+                      description: Code of the response generated by the authorizer.
+                    processor_id:
+                      type: string
+                      description: transaction processor code. It is only displayed if the transaction is approved or rejected by the processor.
+                      x-stoplight:
+                        id: 1r9anz3l0wock
+                    processor_message:
+                      type: string
+                      description: Message of the response generated by the authorizer.
+                    processor_merchant_id:
+                      type: string
+                      x-stoplight:
+                        id: 312kfbyhahd9o
+                    processor_name:
+                      type: string
+                      description: name of the transaction processor. It is only displayed if the transaction is approved or rejected by the processor.
+                    processor_type:
+                      description: Indicates whether the transaction has passed through the aggregator or gateway model according to the configuration. Only information for `SALE` type is shown.
+                      enum:
+                        - gateway
+                        - aggregator
+                    public_credential_id:
+                      type: string
+                      description: 'Public key information associated with the merchant. '
+                    recap:
+                      type: string
+                      description: Only for `card` payment method. Authorization code provided by the processors
+                    request_amount:
+                      type: number
+                      description: Displays the total amount the customer requested to return (card) or the amount of the transaction (cash or transfer). In partial voids the value is different from the `request_amount` field
+                    response_code:
+                      type: string
+                      description: Displays the response code sent by the processor
+                    response_text:
+                      type: string
+                      description: Displays the response sent by the processor
+                    retry:
+                      type: string
+                      description: 'Only for `card` payment method. It is used for scheduled subscriptions, for when you cannot collect and retry collection on different days.'
+                    retry_count:
+                      type: string
+                      description: Only for `card` payment method. Count of collection reattempts that have been made on your scheduled subscriptions.
+                    sale_approval_code:
+                      type: string
+                      description: 'Displays the sale approval number that was generated for the transaction. '
+                    sale_ticket_number:
+                      type: string
+                      description: 'Displays the number of the sales receipt that was generated for the transaction. '
+                    sale_transaction_type:
+                      type: string
+                      description: Used only for voids and refunds transactions. Indicates the `transaction_type` of the sale on which the void or refund was performed.
+                    string_taxes:
+                      type: string
+                      description: |-
+                        Only for `card` payment method. Refers to additional taxes that apply to the transaction in Colombia. 
+                        For example: airport taxes, etc.
+                    subscription_id:
+                      type: string
+                      description: 'Only for `card` payment method. Identifier of the applied subscription. '
+                    subscription_metadata:
+                      type: object
+                      description: Only for `card` payment method. Displays the metadata that the customer sends in the request.
+                      properties:
+                        subscription_metadata_key0:
+                          type: string
+                          x-stoplight:
+                            id: kg7c52226d0lp
+                        subscription_metadata_key1:
+                          type: string
+                          x-stoplight:
+                            id: gl6a8fflmjhcg
+                    subscription_trigger:
+                      type: string
+                    subtotal_iva:
+                      type: number
+                      description: 'Amount of the requested transaction excluding VAT. Information will only be displayed in this field if data was sent in this field of the request. Otherwise, it will show the value 0. Applies to approved and rejected transactions.'
+                    subtotal_iva0:
+                      type: number
+                      description: ' amount of the requested transaction (equal to the amount collected). Information will only be displayed in this field if data was sent in this field of the request. Otherwise, it will show the value 0. Applies to approved and rejected transactions.'
+                    taxes:
+                      type: object
+                      x-stoplight:
+                        id: thliw22f94n2h
+                      properties:
+                        agenciaDeViaje:
+                          type: number
+                          x-stoplight:
+                            id: d0lvsl9lzhnwu
+                        iac:
+                          type: number
+                          x-stoplight:
+                            id: kcvldu5ph6an9
+                        tasaAeroportuaria:
+                          type: number
+                          x-stoplight:
+                            id: w507iouk3uahg
+                    ticket_number:
+                      type: string
+                      description: 'Unique numeric identifier of the transactions that apply to each of the payment methods: Cash, Transfer and Card.'
+                    token:
+                      type: string
+                      description: For `cash` transactions
+                    total_amount:
+                      type: string
+                      description: |-
+                        1. For `VOID` or `REFUND`, shows the total amount that the customer requested to be refunded. 
+                        2. For the `SALE` case, shows the amount the customer requested to collect.
+                    transaction_arn:
+                      type: string
+                      x-stoplight:
+                        id: z3hpn3x1vtn8p
+                      description: 'Acquirer Reference Number: unique ID per credit card transaction under Kushki Acquirer model. This parameter may take 1 business day to be reflected.'
+                    transaction_card_id:
+                      type: string
+                      x-stoplight:
+                        id: biiyh9j9vmkim
+                    transaction_id:
+                      type: string
+                      description: Displays a unique identifier for all transaction types. This identifier is used to identify a transaction in Kushki.
+                    transaction_reference:
+                      type: string
+                      description: Unique alphanumeric identifier for all transaction types. This identifier is used to identify a transaction in Kushki
+                    transaction_status:
+                      enum:
+                        - APPROVED
+                        - DECLINED
+                        - INITIALIZED
+                    transaction_type:
+                      $ref: ../models/transactionType.yaml
+                    void_ticket_number:
+                      type: string
+                      description: Displays the voucher number that was generated for the void transaction.
+                    expire_timestamp:
+                      type: integer
+                      x-stoplight:
+                        id: 5ndrx5uuywgvr
+                    external_reference_id:
+                      type: string
+                      x-stoplight:
+                        id: yzmhzmsn2v110
+                      description: Only for card transactions. Transaction ID generated from the merchant side. It must be a unique ID per transaction.
+                    transaction_sub_type:
+                      x-stoplight:
+                        id: 7zdnz67kbhl12
+                      enum:
+                        - installment
+                        - principal
+                      description: 'Subtype for merchant installment transactions. Possible values:<br>• `installment` → current installment being charged<br>• `principal` → total financed amount. Applies only to Chile. <b style="background-color:#0366d6; color:white; border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 600;"> BETA VERSION</b> '
+                    principal_amount:
+                      type: number
+                      x-stoplight:
+                        id: lt5qoqhxnjvzh
+                      description: 'Total financed amount under a **merchant installment plan**. Applies only to Chile in transactions type `installment`. <b style="background-color:#0366d6; color:white; border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 600;">BETA VERSION</b> '
+                    installment_count:
+                      type: string
+                      x-stoplight:
+                        id: 4c6y0cmplyqml
+                      description: 'Sequence number of the installment being collected. To see the **total number of installments**, refer to `number_of_months`. Applies only to Chile. <b style="background-color:#0366d6; color:white; border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 600;"> BETA VERSION</b> '
+                    principal_ticket_code:
+                      type: string
+                      x-stoplight:
+                        id: iepm1c6rlessw
+                      description: 'Ticket number of the **principal transaction** associated with a merchant installment. Used to link each installment charge back to the original financed transaction. Applies only to Chile. <b style="background-color:#0366d6; color:white; border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 600;"> BETA VERSION</b> '
+          examples:
+            Get transactions list:
+              total: 3
+              data:
+                - masked_credit_card: 545195XXXXXX5480
+                  created: '2025-02-04T15:53:45.000Z'
+                  metadata: '{"contractID":"157AB"}'
+                  approved_transaction_amount: 0
+                  contact_details:
+                    document_code: DORJ760623HNGDORJ7
+                    document_type: CURP
+                    email: user@example.com
+                    first_name: John
+                    last_name: Doe
+                    phone: '+593912345678'
+                  country: Mexico
+                  credential_alias: Manuel Mexico
+                  credential_id: aa39582ddf0e4fcdad6d91f0caf64e28
+                  currency_code: MXN
+                  ice_value: 0
+                  iva_value: 0
+                  merchant_id: '20000000106554380000'
+                  merchant_name: TW Mexico
+                  payment_method: CARD
+                  payment_submethod: CARD NO PRESENT
+                  processor_name: undefined
+                  processor_type: aggregator_formal
+                  public_credential_id: fc98ad9ee66443588be2873c89217cdd
+                  request_amount: 1000
+                  response_code: K220
+                  response_text: Monto de la transacción es diferente al monto de la venta inicial
+                  subtotal_iva: 0
+                  subtotal_iva0: 1000
+                  token: 47cd356ce5724d68993218d6be4834c9
+                  transaction_id: '1738684425593130452'
+                  transaction_reference: 1275635a-ad34-4764-a27e-f6215b94b3c7
+                  transaction_status: DECLINED
+                  transaction_type: SALE
+                  bin_card: '54519515'
+                  card_country: Ecuador
+                  card_country_code: EC
+                  card_holder_name: Jose Perez
+                  card_type: credit
+                  foreign_card: true
+                  issuing_bank: Banco de la Produccion S.A. (PRODUBANCO)
+                  last_four_digits: '5480'
+                  payment_brand: Mastercard
+                  transaction_card_id: 6420c5bd-5a3f-45d2-8ac4-88de7b09958d
+                - masked_credit_card: 545195XXXXXX5480
+                  created: '2025-02-04T15:55:37.000Z'
+                  metadata: '{"contractID":"157AB"}'
+                  approved_transaction_amount: 1000
+                  contact_details:
+                    document_code: DORJ760623HNGDORJ7
+                    document_type: CURP
+                    email: user@example.com
+                    first_name: John
+                    last_name: Doe
+                    phone: '+523912345678'
+                  country: Mexico
+                  credential_alias: Alias1
+                  credential_id: 22c33a81f145415cb200ab8139603a51
+                  currency_code: MXN
+                  ice_value: 0
+                  iva_value: 0
+                  merchant_id: '20000000106554380000'
+                  merchant_name: TW Mexico
+                  payment_method: CARD
+                  payment_submethod: CARD NO PRESENT
+                  processor_id: '6000000000172166121420424728'
+                  processor_name: Prosa Processor
+                  processor_type: gateway
+                  public_credential_id: d5713887dc434cc4bb873781e46e10ca
+                  request_amount: 1000
+                  response_code: '000'
+                  response_text: Transacción aprobada
+                  subtotal_iva: 0
+                  subtotal_iva0: 1000
+                  ticket_number: '029184246439606168'
+                  token: a53d40a70ead40ecb24a4c872027da5c
+                  transaction_id: '700011575252919092'
+                  transaction_reference: aa778d12-c56b-4cc2-86c8-1dea7cebe65e
+                  transaction_status: APPROVED
+                  transaction_type: SALE
+                  acquirer_bank: Afirme
+                  approval_code: '000000'
+                  bin_card: '54519515'
+                  card_country: Ecuador
+                  card_country_code: EC
+                  card_holder_name: John Doe
+                  card_type: credit
+                  foreign_card: true
+                  issuing_bank: Banco de la Produccion S.A. (PRODUBANCO)
+                  last_four_digits: '5480'
+                  payment_brand: Mastercard
+                  processor_merchant_id: '111'
+                  taxes:
+                    agenciaDeViaje: 0
+                    iac: 0
+                    tasaAeroportuaria: 0
+                  transaction_card_id: 6420c5bd-5a3f-45d2-8ac4-88de7b09958d
+                - masked_credit_card: 545195XXXXXX5480
+                  created: '2025-02-04T15:58:44.302Z'
+                  metadata: '{"contractID":"157AB"}'
+                  approved_transaction_amount: 500
+                  contact_details:
+                    email: manuel.guerrero@kushkipagos.com
+                  country: Mexico
+                  credential_alias: Alias1
+                  credential_id: 22c33a81f145415cb200ab8139603a51
+                  credential_metadata: null
+                  currency_code: MXN
+                  ice_value: 0
+                  iva_value: 0
+                  merchant_id: '20000000106554380000'
+                  merchant_name: TW Mexico
+                  payment_method: CARD
+                  payment_submethod: CARD NO PRESENT
+                  processor_id: '6000000000172166121420424728'
+                  processor_name: Prosa Processor
+                  processor_type: gateway
+                  public_credential_id: d5713887dc434cc4bb873781e46e10ca
+                  request_amount: 500
+                  response_code: '000'
+                  response_text: Transacción aprobada
+                  sale_approval_code: '000000'
+                  sale_ticket_number: '029184246439606168'
+                  sale_transaction_type: SALE
+                  subtotal_iva: 500
+                  subtotal_iva0: 0
+                  ticket_number: '661738684712571670'
+                  transaction_id: '700011575252919092'
+                  transaction_reference: 2052742c-97dc-4d8a-b7b0-27bf4eafcc0a
+                  transaction_status: APPROVED
+                  transaction_type: VOID
+                  tax_id: '1234567890123'
+                  approval_code: null
+                  bin_card: '545195'
+                  card_country: Ecuador
+                  card_country_code: EC
+                  card_holder_name: John Doe
+                  card_type: Credit
+                  foreign_card: true
+                  historical:
+                    - country: Mexico
+                      public_credential_id: d5713887dc434cc4bb873781e46e10ca
+                      subtotal_iva: 500
+                      card_country: Ecuador
+                      nit: '1234567890123'
+                      processor_name: Prosa Processor
+                      response_text: Transacción aprobada
+                      sale_ticket_number: '029184246439606168'
+                      transaction_reference: c737dd5c-fcb2-4c92-92bc-db3f79c56304
+                      mcc_code: '5934'
+                      unique_code: null
+                      payment_method: card
+                      terminal_id: '1111'
+                      transaction_id: '1738684712570726917'
+                      visibility: visible
+                      created: 1738684712892
+                      iva_value: 0
+                      sale_approval_code: '000000'
+                      merchant_name: TW Mexico
+                      sale_transaction_type: SALE
+                      transaction_type: VOID
+                      tax_id: '1234567890123'
+                      sync_mode: online
+                      credential_metadata: null
+                      subtotal_iva0: 0
+                      processor_type: gateway
+                      response_code: '000'
+                      transaction_status: INITIALIZED
+                      social_reason: MANUEL MEXICO
+                      card_holder_name: John Doe
+                      payment_brand: Mastercard
+                      request_amount: 500
+                      processor_merchant_id: '111'
+                      merchant_id: '20000000106554380000'
+                      approved_transaction_amount: 500
+                      merchant_category: null
+                      currency_code: MXN
+                      transaction_card_id: null
+                      masked_credit_card: 545195XXXXXX5480
+                      processor_id: '6000000000172166121420424728'
+                      foreign_card: true
+                      last_four_digits: '5480'
+                      email: manuel.guerrero@kushkipagos.com
+                      contact_person: Manuel Mexico
+                      consortium_name: null
+                      card_type: Credit
+                      ticket_number: '661738684712571670'
+                      card_country_code: EC
+                      credential_alias: Alias1
+                      processor_bank_name: 0032~BANCO INTERNACIONAL
+                      bin_card: '545195'
+                      ice_value: 0
+                      partial_void: true
+                      created_iso: '2025-02-04T15:58:32.892Z'
+                      credential_id: 22c33a81f145415cb200ab8139603a51
+                  last_four_digits: '5480'
+                  payment_brand: Mastercard
+                  processor_code: '000'
+                  processor_merchant_id: '111'
+                  processor_message: Transacción aprobada
+                  recap: null
+                  transaction_card_id: null
+                  void_ticket_number: '661738684712571670'
+            Cash transaction (CO):
+              total: 1
+              data:
+                - created: '2025-01-30T22:12:44.706Z'
+                  metadata: '{}'
+                  approved_transaction_amount: 3700
+                  contact_details:
+                    document_code: '123456789'
+                    document_type: CC
+                    email: user@example.com
+                    first_name: John
+                    last_name: Doe
+                  country: Colombia
+                  credential_alias: BRANCH CO101
+                  credential_metadata: null
+                  currency_code: COP
+                  customer_merchant_id: '20000000102173070000'
+                  iva_value: 0
+                  merchant_id: '20000000105929933000'
+                  merchant_name: BRANCH CO101
+                  payment_method: CASH
+                  payment_submethod: CASH IN
+                  processor_id: null
+                  processor_name: null
+                  processor_type: null
+                  public_credential_id: 21432ef8ccd84a51b36e5b738a81f511
+                  request_amount: 3700
+                  subtotal_iva: 0
+                  subtotal_iva0: 3700
+                  ticket_number: '2338275164711963'
+                  transaction_id: f8049352-099f-43ad-a23f-81494cc916db
+                  transaction_reference: f8049352-099f-43ad-a23f-81494cc916db
+                  transaction_status: INITIALIZED
+                  transaction_type: SALE
+                  completed: '1970-01-01T00:00:00.000Z'
+                  expired: '2025-02-19T21:00:00.000Z'
+                  pdfUrl: ''
+                  credential_id: 6a052f778bc147fdbc2532f10b663442
+                  expire_timestamp: 1739998800000
+                  document_number: '123456789'
+            Card transaction:
+              total: 1
+              data:
+                - masked_credit_card: 545195XXXXXX5480
+                  created: '2025-01-30T22:05:32.000Z'
+                  metadata: '{"customerId":"123"}'
+                  approved_transaction_amount: 48000
+                  contact_details:
+                    document_code: '1009283738'
+                    document_type: CC
+                    email: user@example.com
+                    first_name: John
+                    last_name: Doe
+                    phone: '+593912345678'
+                  country: Colombia
+                  credential_alias: BRANCH CO101
+                  credential_id: 6a052f778bc147fdbc2532f10b663442
+                  currency_code: COP
+                  ice_value: 0
+                  iva_value: 2000
+                  merchant_id: '20000000105929933000'
+                  merchant_name: BRANCH CO101
+                  payment_method: CARD
+                  payment_submethod: CARD NO PRESENT
+                  processor_id: '6000000000167692716389681607'
+                  processor_name: Kushki Acquirer Processor
+                  processor_type: gateway
+                  public_credential_id: 21432ef8ccd84a51b36e5b738a81f511
+                  request_amount: 48000
+                  response_code: '000'
+                  response_text: Approved or completed successfully.
+                  subtotal_iva: 46000
+                  subtotal_iva0: 0
+                  ticket_number: '821738274732841994'
+                  transaction_id: '821738274732841672275'
+                  transaction_reference: f337f316-ab2f-4d22-b1d6-c748ebd4815b
+                  transaction_status: APPROVED
+                  transaction_type: SALE
+                  acquirer_bank: IRIS CF
+                  approval_code: '123456'
+                  bin_card: '54519515'
+                  card_country: Ecuador
+                  card_country_code: EC
+                  card_holder_name: John Doe
+                  card_type: credit
+                  foreign_card: true
+                  issuing_bank: Banco de la Produccion S.A. (PRODUBANCO)
+                  last_four_digits: '5480'
+                  payment_brand: Mastercard
+                  processor_code: '000'
+                  processor_merchant_id: '170000000209'
+                  processor_message: Approved or completed successfully.
+                  processor_transaction_id: 17bf83f4-ee4e-4246-9e0d-5ac71be74e0f
+                  recap: '503022161056'
+                  subscription_id: '1738274662363667'
+                  subscription_metadata:
+                    plan:
+                      fitness:
+                        rumba: include
+                        pool: include
+                        cardio: include
+                  subscription_trigger: onDemand
+                  transaction_card_id: 6420c5bd-5a3f-45d2-8ac4-88de7b09958d
+            Preauthorization:
+              masked_credit_card: 425907XXXXXX1233
+              created: '2025-01-31T17:32:58.000Z'
+              metadata: '{"Referencia":"99999"}'
+              approved_transaction_amount: 4000
+              contact_details:
+                document_code: '1234567890'
+                document_type: CC
+                email: user@example.com
+                first_name: John
+                last_name: Doe
+                phone: '+593912345678'
+              country: Colombia
+              credential_alias: BRANCH CO101
+              credential_id: 6a052f778bc147fdbc2532f10b663442
+              currency_code: COP
+              ice_value: 0
+              iva_value: 0
+              merchant_id: '20000000105929933000'
+              merchant_name: BRANCH CO101
+              payment_method: CARD
+              payment_submethod: CARD NO PRESENT
+              processor_id: '6000000000167692716389681607'
+              processor_name: Kushki Acquirer Processor
+              processor_type: gateway
+              public_credential_id: 21432ef8ccd84a51b36e5b738a81f511
+              request_amount: 4000
+              response_code: '000'
+              response_text: Transacción aprobada
+              subtotal_iva: 0
+              subtotal_iva0: 4000
+              ticket_number: '286582427356905920'
+              token: 6f18b29ff97d4aa8be2373cf941003c2
+              transaction_id: '659252152924431306'
+              transaction_reference: 90d8dd6e-ad0a-4711-8183-5c2a666d3ee1
+              transaction_status: APPROVED
+              transaction_type: PREAUTHORIZATION
+              acquirer_bank: IRIS CF
+              approval_code: '000000'
+              bin_card: '42590780'
+              card_country: United States of America
+              card_country_code: US
+              card_holder_name: John Doe
+              card_type: credit
+              converted_currency: COP
+              foreign_card: true
+              issuing_bank: WELLSFARGO
+              last_four_digits: '1233'
+              payment_brand: Visa
+              processor_code: '000'
+              processor_merchant_id: '170000000209'
+              processor_message: Transacción aprobada
+              transaction_card_id: fbf7772e-90c6-4f86-b18f-c0ec75f78861
+            Capture:
+              masked_credit_card: 425907XXXXXX1233
+              created: '2025-01-31T17:34:46.000Z'
+              metadata: '{"key1":"value1","key2":"value2","key0":"value0"}'
+              approved_transaction_amount: 900
+              contact_details: {}
+              country: Colombia
+              credential_alias: BRANCH CO101
+              credential_id: 6a052f778bc147fdbc2532f10b663442
+              currency_code: COP
+              ice_value: 0
+              iva_value: 0
+              merchant_id: '20000000105929933000'
+              merchant_name: BRANCH CO101
+              payment_method: CARD
+              payment_submethod: CARD NO PRESENT
+              processor_id: '6000000000167692716389681607'
+              processor_name: Kushki Acquirer Processor
+              processor_type: gateway
+              public_credential_id: 21432ef8ccd84a51b36e5b738a81f511
+              request_amount: 900
+              response_code: '000'
+              response_text: Transacción aprobada
+              subtotal_iva: 0
+              subtotal_iva0: 900
+              ticket_number: '547184043743950318'
+              transaction_id: '131393429418875376'
+              transaction_reference: 90d8dd6e-ad0a-4711-8183-5c2a666d3ee1
+              transaction_status: APPROVED
+              transaction_type: CAPTURE
+              acquirer_bank: IRIS CF
+              approval_code: '000000'
+              bin_card: '42590780'
+              card_country_code: US
+              card_holder_name: John Doe
+              card_type: credit
+              foreign_card: true
+              issuing_bank: WELLSFARGO
+              last_four_digits: '1233'
+              payment_brand: Visa
+              preauth_transaction_reference: 90d8dd6e-ad0a-4711-8183-5c2a666d3ee1
+              processor_code: '000'
+              processor_merchant_id: '170000000209'
+              processor_message: Transacción aprobada
+              transaction_card_id: fbf7772e-90c6-4f86-b18f-c0ec75f78861
+            Transfer transaction:
+              created: '2024-05-16T05:00:07.600Z'
+              metadata: '{"userId":"69M1IFY462579Q73X621"}'
+              approved_transaction_amount: 10000
+              contact_details:
+                document_code: '1043669263'
+                document_type: CC
+                email: brayanvasquez0426@gmail.com
+              country: Colombia
+              credential_alias: Corredor Empresarial
+              currency_code: COP
+              ice_value: 0
+              iva_value: 0
+              merchant_id: '20000000107085173000'
+              merchant_name: Betplay
+              payment_method: TRANSFER
+              payment_submethod: TRANSFER IN
+              processor_id: '6000000000163519106463380203458'
+              processor_name: ACH Processor
+              processor_type: aggregator_formal
+              public_credential_id: 4977b53390794e6bbde6a125d71ea5da
+              request_amount: 10000
+              response_code: OK
+              response_text: OK
+              subtotal_iva: 0
+              subtotal_iva0: 10000
+              ticket_number: '5835608805700540'
+              transaction_id: fa4f8cde-48d1-4144-970c-ae1762cd9357
+              transaction_reference: fa4f8cde-48d1-4144-970c-ae1762cd9357
+              transaction_status: APPROVED
+              transaction_type: SALE
+              completed: '2024-05-16T05:01:42.025Z'
+              expired: '1970-01-01T00:00:00.000Z'
+              approval_code: '642194780'
+              credential_id: d2407de3a5b3464a88f8321f2a70c98f
+              bank_id: '1507'
+              bank_name: NEQUI
+              complete: 1715835702025
+              transaction_cycle: '1'
+            Payout transaction:
+              total: 1
+              data:
+                - created: '2025-02-05T03:19:02.675Z'
+                  metadata: '{"processorStatus":"LIQUIDADO","businessId":6,"processorStatusDescription":null}'
+                  approved_transaction_amount: 1000
+                  contact_details:
+                    document_code: '14456789'
+                    document_type: CURP
+                    first_name: John Doe
+                  country: Mexico
+                  credential_alias: Your branch
+                  currency_code: MXN
+                  iva_value: 0
+                  merchant_id: '1005555107072348021'
+                  merchant_name: Your Branch Mexico
+                  payment_method: TRANSFER
+                  payment_submethod: TRANSFER OUT
+                  processor_id: '8300330017345492295891861346'
+                  processor_name: STP Processor
+                  processor_type: aggregator_gateway
+                  public_credential_id: p81bf732f494e6h9b568e092e95ccr7
+                  request_amount: 1000
+                  response_code: '000'
+                  response_text: Transacción aprobada
+                  subtotal_iva: 0
+                  subtotal_iva0: 1000
+                  ticket_number: '1338724544820888'
+                  transaction_id: 6u2a0798-3261-4ce8-ac60-9ab71fb126fo
+                  transaction_reference: 7e2j6998-7361-4ce8-kd90-9ab71fb306rd
+                  transaction_status: APPROVED
+                  transaction_type: PAYOUT
+                  completed: '2025-02-05T03:19:19.991Z'
+                  expired: '1970-01-01T00:00:00.000Z'
+                  credential_id: yi232d6f12814a5f654766d230e5ce97
+                  account_number: '646180110400000007'
+                  account_type: CB
+                  bank_id: '0090'
+                  complete: 1738725559991
+                  fixed_fee: 0
+                  kushki_amount: 0
+                  kushki_fee_object:
+                    surcharge: 0
+                    totalAmount: 0
+                    variableFee: 0
+                    maximumAmount: 0
+                    minimumAmount: 0
+                    discountAmount: 0
+                    fixedFee: 0
+                    ivaAmount: 0
+                  payment_brand: STP
+                  processor_transaction_id: '1638787354913'
+                  variable_fee: 0
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                example: K001
+              message:
+                type: string
+                example: El cuerpo de la petición es inválido
+          examples:
+            Invalid request body:
+              code: ANL001
+              message: Cuerpo de la petición inválido.
+            Query Failed:
+              code: ANL005
+              message: Error en la consulta.
+        '500':
+          description: Unexpected Error
+          schema:
+            description: ''
+            type: object
+            x-examples:
+              example-1:
+                code: K002
+                message: Ha ocurrido un error inesperado
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            An unexpected error has occurred:
+              code: K002
+              message: Ha ocurrido un error inesperado
+      x-stoplight:
+        id: nmon3b06nwgqk
+responses:
+  'trait:invalidBin:402':
+    description: Invalid Bin
+    schema:
+      $ref: '#/definitions/InvalidBinResponse'
+  'trait:badRequest:400':
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/BadRequestResponse'
+  'trait:fetchedList:200':
+    description: Fetch a transactions list
+    schema:
+      type: object
+      required:
+        - has_more
+        - data
+      properties:
+        has_more:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            required:
+              - subtotalIVA0
+              - date
+              - lastFourDigitsOfCard
+              - transactionStatus
+              - transactionId
+              - voidedBy
+              - merchantName
+              - cardHolderName
+              - approvedTransactionAmount
+              - numberOfMonths
+              - extraTaxes
+              - saleTicketNumber
+              - ivaValue
+              - isDeferred
+              - ticketNumber
+              - id
+              - dateAndTimeTransaction
+              - cardType
+              - subtotalIVA
+              - requestAmount
+              - currencyCode
+              - transactionType
+              - processorName
+              - iceValue
+              - merchantId
+              - processorBankName
+              - approvalCode
+            properties:
+              subtotalIVA0:
+                type: number
+                example: 10
+              date:
+                type: string
+                example: '2017-03-24T18:52:34.000Z'
+              lastFourDigitsOfCard:
+                type: string
+                example: 1234
+              transactionStatus:
+                type: string
+                example: APPROVAL
+              transactionId:
+                type: string
+                example: 1234567890987654
+              voidedBy:
+                type: string
+                example: 10334120439012934
+              merchantName:
+                type: string
+                example: Some_Merchant_Name
+              cardHolderName:
+                type: string
+                example: John Doe
+              approvedTransactionAmount:
+                type: string
+                example: 135.5
+              numberOfMonths:
+                type: string
+                example: 0
+              ExtraTaxes:
+                type: array
+                items:
+                  required:
+                    - tasaAeroportuaria
+                    - agenciaDeViaje
+                    - iac
+                  properties:
+                    tasaAeroportuaria:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '4'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_AERO
+                    iac:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '5'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: IAC
+                    agenciaDeViaje:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '6'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_ADMIN_AGEN_COD
+              saleTicketNumber:
+                type: string
+                example: '1204493249523'
+              ivaValue:
+                type: integer
+                example: 15
+              isDeferred:
+                type: string
+                example: 'Y'
+              ticketNumber:
+                type: string
+                example: '1234567890987654'
+              id:
+                type: string
+                example: '123456'
+              dateAndTimeTransaction:
+                type: string
+                example: '12345012469'
+              cardType:
+                type: string
+                example: Master Card
+              subtotalIVA:
+                type: number
+                example: 10
+              requestAmount:
+                type: string
+                example: '130'
+              currencyCode:
+                type: string
+                example: USD
+              transactionType:
+                type: string
+                example: SALE
+              processorName:
+                type: string
+                example: Some_Processor_Name
+              iceValue:
+                type: number
+                example: 10
+              merchantId:
+                type: string
+                example: '1200000432450023'
+              processorBankName:
+                type: string
+                example: Some_Bank_Name
+              approvalCode:
+                type: string
+                example: '342347'
+              Metadata:
+                type: object
+                properties:
+                  key1:
+                    type: string
+                    example: value1
+              subscription_metadata:
+                type: object
+                properties:
+                  key2:
+                    type: string
+                    example: value2
+    examples:
+      example-1:
+        has_more: true
+        data:
+          - subtotalIVA0: 10
+            date: '2017-03-24T18:52:34.000Z'
+            lastFourDigitsOfCard: '1234'
+            transactionStatus: APPROVAL
+            transactionId: '1234567890987654'
+            voidedBy: '10334120439012934'
+            merchantName: Some_Merchant_Name
+            cardHolderName: John Doe
+            approvedTransactionAmount: '135.5'
+            numberOfMonths: '0'
+            extraTaxes:
+              - tasaAeroportuaria:
+                  taxid: '4'
+                  taxAmount: 2
+                  taxName: TASA_AERO
+                iac:
+                  taxid: '5'
+                  taxAmount: 2
+                  taxName: IAC
+                agenciaDeViaje:
+                  taxid: '6'
+                  taxAmount: 2
+                  taxName: TASA_ADMIN_AGEN_COD
+            saleTicketNumber: '1204493249523'
+            ivaValue: 15
+            isDeferred: 'Y'
+            ticketNumber: '1234567890987654'
+            id: '123456'
+            dateAndTimeTransaction: '12345012469'
+            cardType: Master Card
+            subtotalIVA: 10
+            requestAmount: '130'
+            currencyCode: USD
+            transactionType: SALE
+            processorName: Some_Processor_Name
+            iceValue: 10
+            merchantId: '1200000432450023'
+            processorBankName: Some_Bank_Name
+            approvalCode: '342347'
+            Metadata:
+              key1: value1
+            subscription_metadata:
+              key2: value2
+  'trait:created:201':
+    description: Created
+    schema:
+      type: object
+      required:
+        - ticketNumber
+      properties:
+        ticketNumber:
+          type: string
+          example: '123456789012345678'
+    examples:
+      example-1:
+        ticketNumber: '123456789012345678'
+  'trait:unexpectedError:500':
+    description: Unexpected Error
+    schema:
+      $ref: '#/definitions/UnexpectedErrorResponse'
+  'trait:tokenCreated:201':
+    description: TokenCreated
+    schema:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: AbCDef123456Z7Ghi8901234jkLMNopQ
+definitions: {}

@@ -1,0 +1,1252 @@
+swagger: '2.0'
+x-stoplight:
+  id: 03bd65741307a
+info:
+  version: 1.1.3
+  title: TRANSFER IN
+  description: |
+    If your users do not have a credit card or wish to use the available balance in their bank accounts to make an online purchase, wire transfer is the ideal payment option.
+
+    <!-- theme: warning -->
+    > #### To keep in mind
+    >Due to our risk policies, the available payment methods and the integration type may vary once you complete the affiliation. We will tell you how to proceed if this process applies to your merchant.
+
+    ## Using the API
+
+    To use the API you must ask for your Kushki Sandbox, composed of a `Public-Merchant-Id` and a `Private-Merchant-Id`.
+
+    * The current version of the Kushki API rests at: `https://api.kushkipagos.com/`
+    * The testing version rests at: `https://api-uat.kushkipagos.com/`
+
+
+    ## Endpoints
+
+    We dispose various endpoints to start your payment flows, find our products available:
+
+    * [Get Bank List](https://api-docs.kushkipagos.com/docs/online-payments/transfer-in/operations/get-a-transfer-v-1-bank-list)
+    * [Request a Transfer In token](https://api-docs.kushkipagos.com/docs/online-payments/transfer-in/operations/create-a-transfer-v-1-token)
+    * [Init Transaction](https://api-docs.kushkipagos.com/docs/online-payments/transfer-in/operations/create-a-transfer-v-1-init)
+    * [Get Status](https://api-docs.kushkipagos.com/docs/online-payments/transfer-in/operations/get-a-transfer-v-1-status)
+
+
+    [Return Home](/)
+
+    > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+host: api-uat.kushkipagos.com
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    scopes: {}
+    authorizationUrl: ''
+paths:
+  /transfer/v1/bankList:
+    get:
+      operationId: getBankList
+      summary: Get Bank List
+      description: |-
+        <div class="danger">
+          <p><strong>Important to consider:</strong> This endpoint is required only for Transfer In payment method in <strong>Colombia</strong>. In Chile, it is optional.</p>
+        </div>
+
+        Before requesting a Transfer In `token`, you need to load the complete list of banks available to process the transaction. Your customers will have to choose from the list the bank that belongs to their bank account. 
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - name: Public-key
+          in: header
+          required: true
+          type: string
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                code:
+                  type: string
+                name:
+                  type: string
+          examples:
+            Colombia:
+              - code: '0'
+                name: A continuación seleccione su banco
+              - code: '1001'
+                name: BANCO DE BOGOTA DESARROLLO 2013
+              - code: '1002'
+                name: BANCO POPULAR
+              - code: '1004'
+                name: Banco union Colombia Credito
+              - code: '1005'
+                name: BANCO UNION COLOMBIANO FD2
+              - code: '1006'
+                name: ITAU
+              - code: '1007'
+                name: BANCOLOMBIA QA
+              - code: '10071'
+                name: BANCOLOMBIA DESARROLLO
+              - code: '10072'
+                name: BANCOLOMBIA DATAPOWER
+              - code: '1009'
+                name: CITIBANK COLOMBIA S.A.
+              - code: '1010'
+                name: BANCO GNB COLOMBIA (ANTES HSBC)
+              - code: '1012'
+                name: BANCO GNB SUDAMERIS
+              - code: '1013'
+                name: BBVA COLOMBIA S.A.
+              - code: '1019'
+                name: SCOTIABANK COLPATRIA DESARROLLO
+              - code: '1022'
+                name: BANCO UNION COLOMBIANO
+              - code: '1023'
+                name: BANCO DE OCCIDENTE
+              - code: '1032'
+                name: BANCO CAJA SOCIAL DESARROLLO
+              - code: '10322'
+                name: BANCO CAJA SOCIAL
+              - code: '1035'
+                name: BANCO TEQUENDAMA
+              - code: '1039'
+                name: BANCO DE BOGOTA
+              - code: '1040'
+                name: BANCO AGRARIO
+              - code: '1051'
+                name: BANCO DAVIVIENDA
+              - code: '10512'
+                name: BANCO DAVIVIENDA Desarrollo
+              - code: '1052'
+                name: BANCO COMERCIAL AVVILLAS S.A.
+              - code: '1055'
+                name: Banco Web Service ACH WSE 3.0
+              - code: '1058'
+                name: BANCO CREDIFINANCIERA
+              - code: '1059'
+                name: BANCAMIA
+              - code: '1060'
+                name: BANCO PICHINCHA S.A.
+              - code: '1061'
+                name: BANCO COOMEVA S.A. - BANCOOMEVA
+              - code: '1062'
+                name: BANCO FALABELLA
+              - code: '1063'
+                name: BANCO FINANDINA S.A BIC
+              - code: '1065'
+                name: BANCO SANTANDER COLOMBIA
+              - code: '1066'
+                name: BANCO COOPERATIVO COOPCENTRAL
+              - code: '1069'
+                name: BANCO SERFINANZA
+              - code: '1070'
+                name: LULO BANK
+              - code: '1077'
+                name: BANKA
+              - code: '1078'
+                name: SCOTIABANK COLPATRIA UAT
+              - code: '1080'
+                name: BANCO AGRARIO QA DEFECTOS
+              - code: '1081'
+                name: BANCO AGRARIO DESARROLLO
+              - code: '1097'
+                name: DALE
+              - code: '1101'
+                name: Banco PSE
+              - code: '1203'
+                name: BANCO PRODUCTOS POR SEPARADO
+              - code: '121212'
+                name: Prueba Steve
+              - code: '1283'
+                name: COOPERATIVA FINANCIERA DE ANTIOQUIA
+              - code: '1289'
+                name: COOPERATIVA FINANCIERA COTRAFA
+              - code: '1291'
+                name: COOFINEP COOPERATIVA FINANCIERA
+              - code: '1292'
+                name: CONFIAR COOPERATIVA FINANCIERA
+              - code: '1303'
+                name: GIROS Y FINANZAS COMPAÑIA DE FINANCIAMIENTO S.A
+              - code: '1305'
+                name: SEIVY GM FINANCIAL
+              - code: '1370'
+                name: COLTEFINANCIERA
+              - code: '1508'
+                name: NEQUI CERTIFICACION
+              - code: '1513'
+                name: BBVA DESARROLLO
+              - code: '1551'
+                name: DAVIPLATA
+              - code: '1552'
+                name: BAN.CO
+              - code: '1558'
+                name: BAN100
+              - code: '1637'
+                name: IRIS
+              - code: '1801'
+                name: MOVII S.A
+              - code: '1811'
+                name: RAPPIPAY
+              - code: '1991'
+                name: SANTANDER CONSUMER COLOMBIA
+              - code: '5016'
+                name: ALIANZA FIDUCIARIA S A
+              - code: '9988'
+                name: prueba restriccion
+            Chile:
+              - code: cl_bice
+                name: Banco BICE
+              - code: cl_bch
+                name: Banco de Chile / Edwards
+              - code: cl_bci
+                name: Banco de Crédito e Inversiones
+              - code: cl_test
+                name: Banco de prueba
+              - code: cl_estado
+                name: Banco Estado
+              - code: cl_itau
+                name: Banco Itaú
+              - code: cl_santander
+                name: Banco Santander
+              - code: cl_scotiabank
+                name: Scotiabank Chile
+              - code: cl_fallabela
+                name: Banco Fallabela
+            Perú:
+              - name: BBVA
+                code: '1002'
+              - name: BCP
+                code: '1001'
+              - name: YAPE
+                code: '1004'
+              - name: Interbank
+                code: '1003'
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+            required:
+              - message
+              - code
+          examples:
+            application/json:
+              message: ID de comercio no válido
+              code: K004
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+          examples:
+            application/json:
+              message: Internal server error
+      x-stoplight:
+        id: z4o7hrig0ib6f
+  /transfer/v1/tokens:
+    post:
+      operationId: transferInToken
+      summary: Request a Transfer In token
+      description: |-
+        A Transfer In `token` will allow you to start a Transfer In transaction. 
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        <!-- theme: danger -->
+        > #### Token expiration
+        >
+        >Tokens will expire in 30 minutes and can be used only for a single transaction (even if the transaction was wrong). You will need to request a new token when it expires.
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            example:
+              financialInstitutionCode: '12345678'
+              amount:
+                subtotalIva: 100000
+                subtotalIva0: 0
+                iva: 10000
+                ExtraTaxes:
+                  tasaAeroportuaria: 0
+                  agenciaDeViajes: 0
+                  iac: 0
+              callbackUrl: 'http://www.mylanderpages.com/kushki/TestSold'
+              userType: '1'
+              referenceNumber: NIT171054019
+              paymentDescription: Description of the payment.
+            required:
+              - amount
+              - callbackUrl
+              - userType
+              - documentType
+              - documentNumber
+              - email
+              - currency
+            properties:
+              bankId:
+                type: string
+                example: '1022'
+                description: |-
+                  Required in Colombia. Optional in Chile.
+                  It is not required in Peru, Mexico, and Ecuador.
+              amount:
+                type: object
+                required:
+                  - subtotalIva
+                  - subtotalIva0
+                  - iva
+                properties:
+                  subtotalIva:
+                    type: number
+                    description: Set it to `0` in case the transaction has no taxes
+                  subtotalIva0:
+                    type: number
+                    description: 'Set the total amount of the transaction here in case it has no taxes. Otherwise, set it to `0`'
+                  iva:
+                    type: number
+                    description: Set it to `0` in case the transaction has no taxes
+                  extraTaxes:
+                    $ref: ../models/extraTaxes.yaml
+              callbackUrl:
+                type: string
+                description: |-
+                  URL to redirect the customer after the payment has been done.
+                  Required in Colombia, Perú, Chile and Ecuador.
+              userType:
+                type: string
+                example: '1'
+                description: |-
+                  0: Natural Person  
+                  1: Company
+
+                  Required in Colombia, Optional in Chile
+              documentType:
+                $ref: ../models/documentType.yaml
+              documentNumber:
+                type: string
+                minLength: 6
+                description: 'Required in Colombia, Perú, Chile and Ecuador.'
+              paymentDescription:
+                type: string
+                example: Description of the payment.
+              email:
+                type: string
+              currency:
+                type: string
+                default: COP
+                enum:
+                  - COP
+                  - CLP
+                  - PEN
+                  - USD
+                  - MXN
+          x-examples:
+            Colombia:
+              bankId: '1022'
+              amount:
+                subtotalIva: 100000
+                subtotalIva0: 0
+                iva: 10000
+                extraTaxes:
+                  tasaAeroportuaria: 0
+                  agenciaDeViajes: 0
+                  iac: 0
+              callbackUrl: 'https://kushki.com'
+              userType: '1'
+              documentType: NIT
+              documentNumber: '1716458334'
+              paymentDescription: Description of the payment.
+              email: user@example.com
+              currency: COP
+            México:
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 1000
+                iva: 0
+              email: user@example.com
+              currency: MXN
+        - name: Public-key
+          in: header
+          type: string
+          required: true
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+          examples:
+            application/json:
+              token: V0OzRB100000xhxQB8035251pHLBQsq5
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            GL - T001 - Cuerpo de la petición inválido:
+              code: T001
+              message: Cuerpo de la petición inválido.
+            GL - K004 - ID de comercio o credencial no válido:
+              code: K004
+              message: ID de comercio o credencial no válido
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+          examples:
+            application/json:
+              code: K002
+              message: Ha ocurrido un error inesperado
+      x-stoplight:
+        id: v73vr0akd19d7
+  /transfer/v1/init:
+    post:
+      operationId: transferInInit
+      summary: Init Transaction
+      description: |-
+        Init the transaction with a Transfer In `token` provided by Kushki which represents the customer's payment.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            required:
+              - token
+              - amount
+            properties:
+              token:
+                type: string
+              amount:
+                type: object
+                required:
+                  - subtotalIva
+                  - subtotalIva0
+                  - iva
+                properties:
+                  subtotalIva:
+                    type: integer
+                    description: Set it to `0` in case the transaction has no taxes
+                  subtotalIva0:
+                    type: integer
+                    description: 'Set the total amount of the transaction here in case it has no taxes. Otherwise, set it to `0`'
+                  iva:
+                    type: integer
+                    description: Set it to `0` in case the transaction has no taxes
+                  extraTaxes:
+                    $ref: ../models/extraTaxes.yaml
+              contactDetails:
+                type: object
+                description: Required only for merchants in Colombia that use PSE Avanza to avoid showing the modal requesting this information from their customers.
+                properties:
+                  fullName:
+                    type: string
+                  address:
+                    type: string
+                    minLength: 1
+                    maxLength: 64
+                  phoneNumber:
+                    type: string
+                    pattern: '[0-9]{10}'
+                    example: '3123456789'
+                  email:
+                    type: string
+              metadata:
+                type: object
+                properties:
+                  key0:
+                    type: string
+                  key1:
+                    type: string
+                  key2:
+                    type: string
+              fullResponse:
+                type: string
+                enum:
+                  - v2
+              expirationDate:
+                type: string
+                format: date-time
+                pattern: 'YYYY-MM-DD HH:mm:ss'
+                example: '2024-12-12 12:36:00'
+                description: |-
+                  `YYYY-MM-DD HH:mm:ss`
+                  UTC Format. **Only for Peru**, using the Kushki processor. Supports BCP, BBVA, INTERBANK, and YAPE.
+              webhooks:
+                $ref: ../models/webhooks.yaml
+          x-examples:
+            Webhooks:
+              token: b1d6f46f88fe4759aad9ae0e37cdf905
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 100000
+                iva: 10000
+                extraTaxes:
+                  tasaAeroportuaria: 0
+                  agenciaDeViajes: 0
+                  iac: 0
+              metadata:
+                userId: IB344
+              webhooks:
+                - events:
+                    - approvedTransaction
+                    - declinedTransaction
+                  headers:
+                    - label: json
+                      value: '12'
+                  urls:
+                    - 'https://eof2hhkrta4ooo1.m.pipedream.net'
+            application/json:
+              token: b1d6f46f88fe4759aad9ae0e37cdf905
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 90000
+                iva: 0
+                extraTaxes:
+                  tasaAeroportuaria: 0
+                  agenciaDeViajes: 0
+                  iac: 0
+              metadata:
+                userId: IB344
+            PE:
+              token: f4a51394506448b496d54d55c0ea22ec
+              expirationDate: '2024-12-12 12:36:00'
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 50
+                iva: 0
+                extraTaxes:
+                  tasaAeroportuaria: 0
+                  agenciaDeViajes: 0
+                  iac: 0
+              metadata:
+                userId: IB344
+              fullResponse: v2
+            CO - PSE Avanza:
+              token: b1d6f46f88fe4759aad9ae0e37cdf905
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 90000
+                iva: 0
+                extraTaxes:
+                  tasaAeroportuaria: 0
+                  agenciaDeViajes: 0
+                  iac: 0
+              contactDetails:
+                fullName: John Doe
+                address: Centro 123
+                phoneNumber: '3912345678'
+              metadata:
+                userId: IB344
+            México:
+              token: b1d6f46f88fe4759aad9ae0e37cdf905
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 1000
+                iva: 0
+                extraTaxes:
+                  tasaAeroportuaria: 0
+                  agenciaDeViajes: 0
+                  iac: 0
+              metadata:
+                userId: IB344
+              fullResponse: v2
+            Ecuador:
+              token: b1d6f46f88fe4759aad9ae0e37cdf905
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 90
+                iva: 0
+                ExtraTaxes:
+                  tasaAeroportuaria: 0
+                  agenciaDeViajes: 0
+                  iac: 0
+              metadata:
+                userId: IB344
+            Chile:
+              token: b1d6f46f88fe4759aad9ae0e37cdf905
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 5000
+                iva: 0
+                extraTaxes:
+                  tasaAeroportuaria: 0
+                  agenciaDeViajes: 0
+                  iac: 0
+              metadata:
+                userId: IB344
+          description: ''
+        - name: Private-key
+          in: header
+          type: string
+          required: true
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            x-examples:
+              example-1:
+                redirectUrl: 'https://api-uat.kushkipagos.com/transfer/v1/agent?token=ecf1024fddc046b9b47e15eeb1fd7ca0&mid=20000000108850614000'
+                trazabilityCode: '1398429'
+                bankId: '1022'
+                bankName: BANCO UNION COLOMBIANO
+                bank: STP Processor
+                referenceNumber: '0000001'
+                referenceProcessor: '641658348581888957'
+                ticketNumber: '1658348581888962'
+                transactionReference: 5cb6a259-7d45-4221-98a5-b1be0785e189
+                details:
+                  status: initializedTransaction
+                  amount:
+                    currency: COP
+                    iva: 0
+                    subtotalIva: 0
+                    subtotalIva0: 1000
+                  created: 1658348576486
+                  description: '-'
+                  documentNumber: '123456789'
+                  documentType: RUC
+                  email: user@example.com
+                  merchantId: '20000000104111374000'
+                  merchantName: Merchant
+            properties:
+              redirectUrl:
+                type: string
+                description: Single use
+              trazabilityCode:
+                type: string
+                minLength: 1
+                maxLength: 20
+                description: "Only for Colombia \U0001F1E8\U0001F1F4. Also called CUS. It's a unique payment reference code assigned by PSE."
+              bankId:
+                type: string
+              bankName:
+                type: string
+              bank:
+                type: string
+              referenceNumber:
+                type: string
+                description: "This field is only returned in Mexico \U0001F1F2\U0001F1FD"
+              referenceProcessor:
+                type: string
+                description: This is the Clabe number (México)
+              ticketNumber:
+                type: string
+              transactionReference:
+                type: string
+              details:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  amount:
+                    type: object
+                    properties:
+                      currency:
+                        type: string
+                      iva:
+                        type: integer
+                      subtotalIva:
+                        type: integer
+                      subtotalIva0:
+                        type: integer
+                  created:
+                    type: integer
+                  description:
+                    type: string
+                  documentNumber:
+                    type: string
+                  documentType:
+                    $ref: ../models/documentType.yaml
+                  email:
+                    type: string
+                  merchantId:
+                    type: string
+                  merchantName:
+                    type: string
+          examples:
+            Peru with fullResponse v2:
+              redirectUrl: 'https://api-uat.kushkipagos.com/transfer/v1/agent?token=f4a51394506448b496d54d55c0ea22ec&mid=20000000101848293000'
+              transactionReference: 3a4c3f75-258e-4738-94b8-54461364b167
+              details:
+                status: initializedTransaction
+                amount:
+                  currency: PEN
+                  iva: 0
+                  subtotalIva: 0
+                  subtotalIva0: 50
+                created: 1671728463198
+                description: Description of the payment.
+                documentNumber: '1716458334'
+                documentType: PAS
+                email: user@example.com
+                merchantId: '20000000101848293000'
+                merchantName: Merchant PE
+            Colombia: |-
+              {
+                "redirectUrl": "https://api-uat.kushkipagos.com/transfer/v1/agent?token=1e26fb158957ba72cea16f9f56e3507e&mid=60000000029523491241151620414038",
+                "trazabilityCode": "1398429",
+                "bankId": "1022",
+                "bankName": "BANCO UNION COLOMBIANO",
+                "transactionReference": "aef8884f-cd4d-4b9b-9efa-ad582629e4f2"
+              }
+            'Chile, Ecuador and Peru':
+              redirectUrl: 'https://api-uat.kushkipagos.com/transfer/v1/agent?token=a0be81f9856540e08ced6f5fd4f5732f&mid=20000000106212540000'
+              transactionReference: aef8884f-cd4d-4b9b-9efa-ad582629e4f2
+            México: |-
+              {
+                "bank": "STP Processor",
+                "referenceNumber": "0000001",
+                "referenceProcessor": "641635442485865989",
+                "ticketNumber": "1635442485866001",
+                "transactionReference": "f3c7f134-fa63-491a-9839-3f877ec026d2"
+              }
+            'Chile, Ecuador and Peru with fullResponse v2':
+              redirectUrl: 'https://api-uat.kushkipagos.com/transfer/v1/agent?token=aaea380f07a944f3981d47998bdd8d80&mid=20000000108850614000'
+              transactionReference: 28e6ac31-0af1-479a-9a6f-1a596bba6aea
+              details:
+                status: initializedTransaction
+                amount:
+                  currency: USD
+                  iva: 0
+                  subtotalIva: 0
+                  subtotalIva0: 90
+                created: 1658349538144
+                description: Description of the payment.
+                documentNumber: '123456789'
+                documentType: RUC
+                email: user@example.com
+                merchantId: '20000000108850614000'
+                merchantName: Tu comercio
+            México with fullResponse v2:
+              bank: STP Processor
+              referenceNumber: '0000001'
+              referenceProcessor: '641658349602287521'
+              ticketNumber: '1658349602287529'
+              transactionReference: b31ac91e-3a9d-4433-aba3-99432279d36e
+              details:
+                status: initializedTransaction
+                amount:
+                  currency: MXN
+                  iva: 0
+                  subtotalIva: 0
+                  subtotalIva0: 1000
+                created: 1658349596248
+                description: '-'
+                email: user@example.com
+                merchantId: '20000000104111374000'
+                merchantName: Merchant MX
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+          examples:
+            GL - T020 - Token utilizado anteriormente:
+              code: T020
+              message: Token utilizado anteriormente.
+            GL - K004 - ID de comercio no válido:
+              message: ID de comercio no válido
+              code: K004
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          examples:
+            application/json:
+              message: Internal server error
+      x-stoplight:
+        id: 9hu4jrbpfn9k4
+  '/transfer/v1/status/{token}':
+    get:
+      operationId: transferInStatus
+      summary: Get Status
+      description: |-
+        Get the status of a transaction created in the `Init Transaction` step.
+        Use  the `token` as a path parameter in the url to obtain the information.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - name: Private-key
+          in: header
+          type: string
+          required: true
+        - in: path
+          name: token
+          type: string
+          required: true
+          description: |-
+            this value has to be added as a path parameter after the status/
+            Example: 
+            https://api-uat.kushkipagos.com/transfer/v1/status/**e55781c753dab86698ff3e29f8050121**
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            properties:
+              ticketNumber:
+                type: string
+              userIp:
+                type: string
+              processorType:
+                type: string
+              userType:
+                type: string
+                example: '0'
+                description: 'User Type: “Persona Natural” (0) o “Persona Jurídica” (1).'
+              documentType:
+                $ref: ../models/documentType.yaml
+              status:
+                type: string
+                enum:
+                  - initializedTransaction
+                  - approvedTransaction
+                  - declinedTransaction
+                  - expiredTransaction
+                description: '`expiredTransaction` status only applies to Mexico'
+              entityCode:
+                type: string
+              responseCode:
+                type: string
+              transactionCycle:
+                type: string
+              token:
+                type: string
+              bankId:
+                type: string
+              userId:
+                type: string
+              processorState:
+                type: string
+                description: 'OK, PENDING, NOT_AUTHORIZED, FAILED'
+              documentNumber:
+                type: string
+              serviceCode:
+                type: string
+              bankurl:
+                type: string
+              created:
+                type: integer
+              publicMerchantId:
+                type: string
+              callbackUrl:
+                type: string
+              returnCode:
+                type: string
+              trazabilityCode:
+                type: string
+              paymentDescription:
+                type: string
+              amount:
+                type: object
+                properties:
+                  iva:
+                    type: integer
+                  subtotalIva:
+                    type: integer
+                  subtotalIva0:
+                    type: integer
+              metadata:
+                type: object
+                properties:
+                  key0:
+                    type: string
+                  key1:
+                    type: string
+                  paymentCode:
+                    type: string
+                    x-stoplight:
+                      id: a7ch5wj5b11em
+                    description: "This field is returned only for transactions in Peru \U0001F1F5\U0001F1EA"
+              completedAt:
+                type: number
+          examples:
+            application/json:
+              ticketNumber: '1553090117637111'
+              userIp: 25.231.22.229
+              processorType: GATEWAY
+              userType: '0'
+              documentType: CC
+              status: declinedTransaction
+              entityCode: '830513384'
+              responseCode: NOT_AUTHORIZED
+              transactionCycle: '1'
+              token: v1FVxo101231ZflWI816453769YsNsSt
+              bankId: '1022'
+              userId: '12345'
+              processorState: NOT_AUTHORIZED
+              documentNumber: '12345'
+              serviceCode: '1'
+              bankurl: 'https://registro.desarrollo.com.co/'
+              created: 1553090116389
+              publicMerchantId: '10000002805386638024151188429456'
+              callbackUrl: 'https://kushki.com'
+              returnCode: SUCCESS
+              trazabilityCode: '1559456'
+              paymentDescription: Description of the payment
+              amount:
+                iva: 0
+                subtotalIva: 0
+                subtotalIva0: 100000
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+          examples:
+            application/json:
+              message: ID de comercio no válido
+              code: K004
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          examples:
+            application/json:
+              message: Internal server error
+      x-stoplight:
+        id: 4iux5va788dp4
+responses:
+  'trait:invalidBin:402':
+    description: Invalid Bin
+    schema:
+      $ref: '#/definitions/InvalidBinResponse'
+  'trait:badRequest:400':
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/BadRequestResponse'
+  'trait:fetchedList:200':
+    description: Fetch a transactions list
+    schema:
+      type: object
+      required:
+        - has_more
+        - data
+      properties:
+        has_more:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            required:
+              - subtotalIVA0
+              - date
+              - lastFourDigitsOfCard
+              - transactionStatus
+              - transactionId
+              - voidedBy
+              - merchantName
+              - cardHolderName
+              - approvedTransactionAmount
+              - numberOfMonths
+              - extraTaxes
+              - saleTicketNumber
+              - ivaValue
+              - isDeferred
+              - ticketNumber
+              - id
+              - dateAndTimeTransaction
+              - cardType
+              - subtotalIVA
+              - requestAmount
+              - currencyCode
+              - transactionType
+              - processorName
+              - iceValue
+              - merchantId
+              - processorBankName
+              - approvalCode
+            properties:
+              subtotalIVA0:
+                type: number
+                example: 10
+              date:
+                type: string
+                example: '2017-03-24T18:52:34.000Z'
+              lastFourDigitsOfCard:
+                type: string
+                example: 1234
+              transactionStatus:
+                type: string
+                example: APPROVAL
+              transactionId:
+                type: string
+                example: 1234567890987654
+              voidedBy:
+                type: string
+                example: 10334120439012934
+              merchantName:
+                type: string
+                example: Some_Merchant_Name
+              cardHolderName:
+                type: string
+                example: John Doe
+              approvedTransactionAmount:
+                type: string
+                example: 135.5
+              numberOfMonths:
+                type: string
+                example: 0
+              ExtraTaxes:
+                type: array
+                items:
+                  required:
+                    - tasaAeroportuaria
+                    - agenciaDeViaje
+                    - iac
+                  properties:
+                    tasaAeroportuaria:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '4'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_AERO
+                    iac:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '5'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: IAC
+                    agenciaDeViaje:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '6'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_ADMIN_AGEN_COD
+              saleTicketNumber:
+                type: string
+                example: 1204493249523
+              ivaValue:
+                type: integer
+                example: 15.5
+              isDeferred:
+                type: string
+                example: 'Y'
+              ticketNumber:
+                type: string
+                example: 1234567890987654
+              id:
+                type: string
+                example: '123456'
+              dateAndTimeTransaction:
+                type: string
+                example: 12345012469
+              cardType:
+                type: string
+                example: Master Card
+              subtotalIVA:
+                type: number
+                example: 10
+              requestAmount:
+                type: string
+                example: 130
+              currencyCode:
+                type: string
+                example: USD
+              transactionType:
+                type: string
+                example: SALE
+              processorName:
+                type: string
+                example: Some_Processor_Name
+              iceValue:
+                type: number
+                example: 10
+              merchantId:
+                type: string
+                example: 1200000432450023
+              processorBankName:
+                type: string
+                example: Some_Bank_Name
+              approvalCode:
+                type: string
+                example: 342347
+              Metadata:
+                type: object
+                properties:
+                  key1:
+                    type: string
+                    example: value1
+              subscription_metadata:
+                type: object
+                properties:
+                  key2:
+                    type: string
+                    example: value2
+    examples:
+      example-1:
+        has_more: true
+        data:
+          - subtotalIVA0: 10
+            date: '2017-03-24T18:52:34.000Z'
+            lastFourDigitsOfCard: 1234
+            transactionStatus: APPROVAL
+            transactionId: 1234567890987654
+            voidedBy: 10334120439012934
+            merchantName: Some_Merchant_Name
+            cardHolderName: John Doe
+            approvedTransactionAmount: 135.5
+            numberOfMonths: 0
+            ExtraTaxes:
+              - tasaAeroportuaria:
+                  taxid: '4'
+                  taxAmount: 2
+                  taxName: TASA_AERO
+                iac:
+                  taxid: '5'
+                  taxAmount: 2
+                  taxName: IAC
+                agenciaDeViaje:
+                  taxid: '6'
+                  taxAmount: 2
+                  taxName: TASA_ADMIN_AGEN_COD
+            saleTicketNumber: 1204493249523
+            ivaValue: 15.5
+            isDeferred: 'Y'
+            ticketNumber: 1234567890987654
+            id: '123456'
+            dateAndTimeTransaction: 12345012469
+            cardType: Master Card
+            subtotalIVA: 10
+            requestAmount: 130
+            currencyCode: USD
+            transactionType: SALE
+            processorName: Some_Processor_Name
+            iceValue: 10
+            merchantId: 1200000432450023
+            processorBankName: Some_Bank_Name
+            approvalCode: 342347
+            Metadata:
+              key1: value1
+            subscription_metadata:
+              key2: value2
+  'trait:created:201':
+    description: Created
+    schema:
+      type: object
+      required:
+        - ticketNumber
+      properties:
+        ticketNumber:
+          type: string
+          example: '123456789012345678'
+    examples:
+      example-1:
+        ticketNumber: '123456789012345678'
+  'trait:unexpectedError:500':
+    description: Unexpected Error
+    schema:
+      $ref: '#/definitions/UnexpectedErrorResponse'
+  'trait:tokenCreated:201':
+    description: TokenCreated
+    schema:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: AbCDef123456Z7Ghi8901234jkLMNopQ
+definitions: {}

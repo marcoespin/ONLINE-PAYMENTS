@@ -1,0 +1,10 @@
+type: string
+title: Country
+enum:
+  - Peru
+  - México
+  - Colombia
+  - Ecuador
+  - Chile
+examples:
+  - Peru

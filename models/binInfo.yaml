@@ -1,0 +1,33 @@
+type: object
+x-examples:
+  example-1:
+    bank: BANCO CONTINENTAL
+    type: credit
+examples:
+  - bank: BANCO CONTINENTAL
+    type: credit
+  - bank: BANCO DE LA PRODUCCION S.A. (PRODUBANCO)
+    lastFourDigits: '5480'
+    type: credit
+  - bank: bank
+    binCard: '445653'
+    lastFourDigits: '0031'
+    type: credit
+title: binInfo
+required:
+  - bank
+  - type
+properties:
+  bank:
+    type: string
+  type:
+    enum:
+      - debit
+      - credit
+      - prepaid
+  lastFourDigits:
+    type: string
+  binCard:
+    type: string
+    x-stoplight:
+      id: tz8mf8q401m95

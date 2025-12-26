@@ -1,0 +1,160 @@
+type: object
+x-examples:
+  example-1:
+    token: AbCDef123456Z7Ghi8901234jkLMNopQ
+    planName: Premium
+    periodicity: daily
+    contactDetails:
+      firstName: John
+      lastName: Doe
+      secondLastName: string
+      email: user@example.com
+      documentType: CC
+      documentNumber: string
+      phoneNumber: '+593988734644'
+    ignoreWarnings: true
+    amount:
+      currency: USD
+      subtotalIva: 0
+      subtotalIva0: 0
+      iva: 0
+      ice: 0
+      extraTaxes:
+        iac: 0
+        tasaAeroportuaria: 0
+        agenciaDeViaje: 0
+    startDate: '2018-09-29'
+    endDate: '2022-09-29'
+    language: es
+    retryConfiguration: Three days in a row starting at startDate
+    metadata:
+      key0: value0
+      key1: value1
+      key2: value2
+examples:
+  - token: AbCDef123456Z7Ghi8901234jkLMNopQ
+    planName: Premium
+    periodicity: daily
+    contactDetails:
+      firstName: John
+      lastName: Doe
+      secondLastName: string
+      email: user@example.com
+      documentType: CC
+      documentNumber: string
+      phoneNumber: '+593988734644'
+    ignoreWarnings: true
+    amount:
+      currency: USD
+      subtotalIva: 0
+      subtotalIva0: 0
+      iva: 0
+      ice: 0
+      extraTaxes:
+        iac: 0
+        tasaAeroportuaria: 0
+        agenciaDeViaje: 0
+    startDate: '2018-09-29'
+    endDate: '2022-09-29'
+    language: es
+    retryConfiguration: Three days in a row starting at startDate
+    metadata:
+      key0: value0
+      key1: value1
+      key2: value2
+properties:
+  token:
+    type: string
+    example: AbCDef123456Z7Ghi8901234jkLMNopQ
+  planName:
+    type: string
+    example: Premium
+  periodicity:
+    type: string
+    enum:
+      - daily
+      - weekly
+      - biweekly
+      - monthly
+      - threefortnights
+      - bimonthly
+      - quarterly
+      - fourmonths
+      - halfYearly
+      - yearly
+      - custom
+    example: monthly
+    description: Use `custom` for one-click subscriptions
+  contactDetails:
+    $ref: ./ContactDetails.yaml
+  ignoreWarnings:
+    type: boolean
+    description: Set this parameter to `true` if you want to continue creating the subscription despite the warning rules
+  amount:
+    $ref: ./Amount.yaml
+  startDate:
+    type: string
+    format: date
+    example: '2018-09-29'
+    description: |-
+      `YYYY-MM-DD` 
+
+      **Note:** Use future date
+  endDate:
+    type: string
+    format: date
+    example: '2022-09-29'
+    description: |-
+      `YYYY-MM-DD` 
+
+      **Note:** Use a future date regarding to `startDate`
+  language:
+    $ref: ./Language.yaml
+  retryConfiguration:
+    type: object
+    description: 'Use this object if you want to configure retries different from default. **Default:** 3 times per day, for 3 consecutive days starting from the collection day originally defined in the `startDate` field.'
+    properties:
+      retryType:
+        type: string
+        description: |-
+          **Schedule:** Specific interval to retry starting at `startDate`. **Ex.** Every 3 days.
+
+          **Fixed:** Specific days of the month to retry. **Ex.** 10th, 20th, 30th.
+        default: schedule
+        enum:
+          - schedule
+          - fixed
+      value:
+        type: array
+        description: |-
+          **Examples:**
+
+          * "schedule": [3]
+          * "fixed": [10,20,30]
+        minItems: 1
+        uniqueItems: true
+        items:
+          type: integer
+          minimum: 1
+          maximum: 31
+          default: 0
+  metadata:
+    $ref: ./Metadata.yaml
+  processorTransactionType:
+    type: string
+    description: 'Only for Oneclick Mall Captura Diferida. Is used to identify when a capture is made. '
+    enum:
+      - CAPTURE
+  fullResponse:
+    type: string
+    enum:
+      - v2
+  threeDomainSecure:
+    $ref: ./threeDomainSecure.yaml
+required:
+  - token
+  - planName
+  - periodicity
+  - contactDetails
+  - amount
+  - startDate

@@ -1,0 +1,20 @@
+type: object
+x-examples:
+  example-1:
+    key0: value0
+    key1: value1
+    key2: value2
+examples:
+  - key0: value0
+    key1: value1
+    key2: value2
+properties:
+  key0:
+    type: string
+    example: value0
+  key1:
+    type: string
+    example: value1
+  key2:
+    type: string
+    example: value2

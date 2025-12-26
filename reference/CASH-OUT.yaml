@@ -1,0 +1,862 @@
+swagger: '2.0'
+x-stoplight:
+  id: c94e5999d0008
+info:
+  version: 1.1.3
+  title: CASH OUT
+  description: |
+    ### Follow this step-by-step guide to learn how payment distribution in cash works on the internet.
+
+    The distribution of funds or money in cash is a service that simplifies financial management. You can make payments so that money is received physically at a cash point.
+
+    <!-- theme: warning -->
+    > #### To keep in mind
+    >Due to our risk policies, the available payment methods and the integration type may vary once you complete the affiliation. We will tell you how to proceed if this process applies to your merchant.
+
+     >This feature is only available in Colombia
+
+    ## The Payment Process
+
+    ## Steps of the Payment Process
+
+    The payment distribution process usually involves 8 stages, which are detailed as follows:
+
+    ![Payment distribution cash EN](//images.ctfassets.net/mmjbm94f6iyd/1MGOKFu8TZ9s89zmiHlpwm/500ec6bc1d3504c2f0eaed71eaff9cb6/Cash_out_EN.svg)
+
+    ### Add Funds to your Kushki Payout account
+
+    Before the distribution process, you must check your merchant balance in Kushki. If you do not have funds, we recommend you add them to your Payout account, so that your payment distribution goes smoothly.
+
+    ### 1. Data Request.
+
+    In this step, the data that identifies the user who will receive the money is collected. These are submitted to Kushki to be validated and processed.
+
+    ### 2. Funds Check.
+
+    Kushki receives the data that you submitted and validates that your business account has enough funds to process the payment distribution. The balance will be immediately discounted from your Kushki Payout account.
+
+    If you do not have funds in your Payout account, you need to add them as soon as possible.
+
+    ### 3. Authorization.
+
+    After we have verified that you have enough funds, we issue a voucher that will serve as a reference for the user to receive the money at a cash point.
+
+    ### 4. Payment Channeling.
+
+    With the voucher in hand, the user will have to go to a cash point and mention the withdrawal reference.
+    Note that if the user does not withdraw his money within the scheduled period, __the payment reference will expire automatically__. If an expiration date is not defined for the payment reference, it will have a default validity of 7 days.
+
+    ### 6. Cash Withdrawal.
+    If the reference was verified and authorized, the money will be given to the user and Kushki will be immediately notified.
+
+    ### 7. Notification to the Merchant.
+    At this point, Kushki has already received a withdrawal notification, we will immediately notify your business of the result of the transaction. 
+
+    ### 8. User Notification.
+    __This step is optional, but very useful__. After we have notified you of the result of the transaction, you may share it to your user.
+    Distribute payments in cash safely.
+
+    Read more on our [documentation page](https://docs.kushkipagos.com/).
+
+    ## Using the API
+
+    To use the API you must ask for your Kushki Sandbox, composed of a `Public-Merchant-Id` and a `Private-Merchant-Id`.
+
+    * The current version of the Kushki API rests at: `https://api.kushkipagos.com/`
+    * The testing version rests at: `https://api-uat.kushkipagos.com/`
+
+
+    ## Endpoints
+
+    We dispose various endpoints to start your payment flows, find our products available:
+
+    * [Request a cash out token](https://api-docs.kushkipagos.com/docs/online-payments/cash-out/operations/create-a-payout-cash-v-1-token)
+    * [Init Transaction](https://api-docs.kushkipagos.com/docs/online-payments/cash-out/operations/create-a-payout-cash-v-1-init)
+    * [Transaction Status](https://api-docs.kushkipagos.com/docs/online-payments/cash-out/operations/get-a-payout-cash-v-1-status)
+    * [Update a cash out transaction](https://api-docs.kushkipagos.com/docs/online-payments/cash-out/operations/modify-a-payout-cash-v-1-charge)
+    * [Delete a cash out transaction](https://api-docs.kushkipagos.com/docs/online-payments/cash-out/operations/delete-a-payout-cash-v-1-charge)
+
+    [Return Home](/)
+
+    > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+host: api-uat.kushkipagos.com
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    scopes: {}
+    authorizationUrl: ''
+paths:
+  /payouts/cash/v1/tokens:
+    post:
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+          examples:
+            application/json:
+              token: a7704cdd12594b9e9236f7c352dbf61e
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+          examples:
+            application/json:
+              code: C001
+              message: Cuerpo de la petición inválido.
+      summary: Request a cash out token
+      description: |-
+        Request a cash out `token` that can later be used to initialize the transaction.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Colombia.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        <!-- theme: danger -->
+        > #### Token expiration
+        >
+        >Tokens will expire in 30 minutes and can be used only for a single transaction (even if the transaction was wrong). You will need to request a new token when it expires.
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: cashOutToken
+      parameters:
+        - in: header
+          name: Public-key
+          type: string
+          required: true
+        - in: header
+          name: Content-Type
+          type: string
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              lastName:
+                type: string
+              documentType:
+                $ref: ../models/documentType.yaml
+              documentNumber:
+                type: string
+                pattern: '[0-9]+'
+              email:
+                type: string
+              totalAmount:
+                type: number
+              currency:
+                type: string
+                enum:
+                  - COP
+              description:
+                type: string
+                description: A description of the payment
+              phoneNumber:
+                type: string
+            required:
+              - name
+              - lastName
+              - documentNumber
+              - totalAmount
+              - currency
+          x-examples:
+            application/json:
+              name: John
+              lastName: Doe
+              documentType: CC
+              documentNumber: '123456789'
+              email: user@example.com
+              totalAmount: 50000
+              currency: COP
+              description: Description of the payment
+              phoneNumber: '+593912345678'
+      x-stoplight:
+        id: birjj0wg5x2jl
+  /payouts/cash/v1/init:
+    post:
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            properties:
+              pdfUrl:
+                type: string
+              pin:
+                type: string
+              ticketNumber:
+                type: string
+          examples:
+            application/json:
+              pdfUrl: 'https://api-uat.kushkipagos.com/payouts/cash/v1/charges/481580406256842218/receipt'
+              pin: '1406256866'
+              ticketNumber: '481580406256842218'
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+          examples:
+            Invalid request body:
+              code: C001
+              message: Cuerpo de la petición inválido.
+            Credentials are not correct or do not match:
+              code: C066
+              message: Las credenciales no son correctas o no coinciden.
+            Merchant does not have an initial balance:
+              code: C024
+              message: El comercio no dispone de un balance inicial
+      summary: Init Transaction
+      description: |-
+        Initialize the transaction with a cash out `token` provided by Kushki.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Colombia.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: header
+          name: Content-Type
+          type: string
+          description: application/json
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              expirationDate:
+                type: string
+                format: date
+                example: '2019-11-19 21:00:00'
+                description: |-
+                  `YYYY-MM-DD HH:mm:ss` 
+
+                  **Note:** Use a future date. If you don't set this property, the pin will expire after 2 days
+              amount:
+                type: object
+                required:
+                  - subtotalIva
+                  - subtotalIva0
+                  - iva
+                properties:
+                  subtotalIva:
+                    type: number
+                    minimum: 0
+                    description: Set it to `0` in case the transaction has no taxes
+                  subtotalIva0:
+                    type: number
+                    minimum: 0
+                    description: 'Set the total amount of the transaction here in case it has no taxes. Otherwise, set it to `0`'
+                  iva:
+                    type: number
+                    minimum: 0
+                    description: Set it to `0` in case the transaction has no taxes
+                  extraTaxes:
+                    $ref: ../models/extraTaxes.yaml
+              metadata:
+                $ref: ../models/Metadata.yaml
+              webhooks:
+                $ref: ../models/webhooks.yaml
+            required:
+              - token
+              - amount
+          x-examples:
+            webhooks:
+              token: 03734cad6320496aa1641697853c57ba
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 5000
+                iva: 0
+              metadata:
+                ref1: Kushki test
+              webhooks:
+                - events:
+                    - approvedTransaction
+                    - declinedTransaction
+                  headers:
+                    - label: json
+                      value: '12'
+                  urls:
+                    - 'https://eof2hhkrta4ooo1.m.pipedream.net'
+            application/json:
+              token: 03734cad6320496aa1641697853c57ba
+              amount:
+                subtotalIva: 0
+                subtotalIva0: 44000
+                iva: 0
+                extraTaxes:
+                  iac: 0
+                  tasaAeroportuaria: 0
+                  agenciaDeViaje: 0
+              metadata:
+                ref1: Kushki test
+      operationId: cashOutInit
+      x-stoplight:
+        id: e5h8n2qwl9o1j
+  '/payouts/cash/v1/status/{ticketNumber}':
+    get:
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            properties:
+              ticketNumber:
+                type: string
+              metadata:
+                $ref: ../models/Metadata.yaml
+              currency:
+                type: string
+              documentType:
+                $ref: ../models/documentType.yaml
+              documentNumber:
+                type: string
+              name:
+                type: string
+              lastname:
+                type: string
+              phoneNumber:
+                type: string
+              email:
+                type: string
+              amount:
+                type: object
+                properties:
+                  subtotalIva0:
+                    type: number
+                  subtotalIva:
+                    type: number
+                  iva:
+                    type: number
+                  extraTaxes:
+                    $ref: ../models/Metadata.yaml
+              totalAmount:
+                type: number
+              kushkiAmount:
+                type: number
+              expiration:
+                type: number
+                description: Expirations date in timestamp format
+              token:
+                type: string
+              transactionId:
+                type: string
+              pin:
+                type: string
+              created:
+                type: number
+                description: Timestamp format
+              description:
+                type: string
+              paymentMethod:
+                type: string
+              transactionStatus:
+                type: string
+                enum:
+                  - initializedTransaction
+                  - approvedTransaction
+                  - declinedTransaction
+              transactionType:
+                type: string
+              merchantName:
+                type: string
+              merchantId:
+                type: string
+              processorName:
+                type: string
+          examples:
+            application/json:
+              ticketNumber: '481580406256842218'
+              metadata:
+                ref1: Kushki test
+              currency: COP
+              documentType: CC
+              name: John
+              lastName: Doe
+              expiration: 1580579006578
+              merchantName: Tu comercio
+              email: user@example.com
+              transactionType: PAYOUT
+              'aws:rep:deleting': false
+              token: 03734cad6320496aa1641697853c57ba
+              documentNumber: '123456789'
+              processorName: Punto Red Processor
+              phoneNumber: '+593912345678'
+              totalAmount: 50000
+              transactionStatus: initializedTransaction
+              created: 1580406206578
+              kushkiAmount: 0
+              transactionId: 9960b59e-b0a7-4446-a704-abebaa9dd879
+              pin: '1406256866'
+              amount:
+                subtotalIva0: 44000
+                iva: 0
+                subtotalIva: 0
+              paymentMethod: cash
+              'aws:rep:updateregion': us-east-1
+              'aws:rep:updatetime': 1580406257.816001
+              description: Kushki Test
+              merchantId: '20000000107321580000'
+        '400':
+          description: Bad Request
+          schema:
+            description: ''
+            type: object
+            x-examples:
+              example-1:
+                code: C005
+                message: Id de transacción no válido.
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            Invalid transaction id:
+              code: C005
+              message: Id de transacción no válido.
+      summary: Transaction Status
+      description: |-
+        Get the status of a transaction created at the Init Transaction endpoint.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Colombia.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: path
+          name: ticketNumber
+          type: string
+          required: true
+      operationId: cashOutStatus
+      x-stoplight:
+        id: lsm4u9ytc5adg
+    parameters:
+      - name: ticketNumber
+        in: path
+        type: string
+        required: true
+  '/payouts/cash/v1/charges/{ticketNumber}':
+    patch:
+      responses:
+        '204':
+          description: ''
+          schema: {}
+        '400':
+          description: ''
+          examples:
+            Merchant has insufficient funds:
+              code: C009
+              message: El comercio no tiene fondos suficientes
+            Merchant does not have an initial balance:
+              code: C024
+              message: El comercio no dispone de un balance inicial
+            Invalid transaction id:
+              code: C005
+              message: Id de transacción no válido.
+            Invalid request body:
+              code: C001
+              message: Cuerpo de la petición inválido.
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+      summary: Update a cash out transaction
+      operationId: cashOutUpdate
+      description: |-
+        Update the amount of a Cash Out transaction.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Colombia.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - in: path
+          name: ticketNumber
+          type: string
+          required: true
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: header
+          name: Content-Type
+          type: string
+          required: true
+          description: application/json
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              totalAmount:
+                type: number
+            required:
+              - totalAmount
+          x-examples:
+            application/json:
+              totalAmount: 10000
+      x-stoplight:
+        id: bxf8502dm7l3v
+    parameters:
+      - name: ticketNumber
+        in: path
+        type: string
+        required: true
+    delete:
+      responses:
+        '204':
+          description: ''
+          schema: {}
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+          examples:
+            Invalid merchant ID or credential:
+              code: K004
+              message: ID de comercio o credencial no válido
+            Invalid ticket number:
+              code: C021
+              message: Ticket number inválido.
+      summary: Delete a cash out transaction
+      description: |-
+        Delete a Cash Out transaction.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Colombia.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com) 
+      operationId: cashOutDelete
+      parameters:
+        - in: path
+          name: ticketNumber
+          type: string
+          required: true
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+      x-stoplight:
+        id: 3fazuyqpoo1py
+responses:
+  'trait:invalidBin:402':
+    description: Invalid Bin
+    schema:
+      $ref: '#/definitions/InvalidBinResponse'
+  'trait:badRequest:400':
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/BadRequestResponse'
+  'trait:fetchedList:200':
+    description: Fetch a transactions list
+    schema:
+      type: object
+      required:
+        - has_more
+        - data
+      properties:
+        has_more:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            required:
+              - subtotalIVA0
+              - date
+              - lastFourDigitsOfCard
+              - transactionStatus
+              - transactionId
+              - voidedBy
+              - merchantName
+              - cardHolderName
+              - approvedTransactionAmount
+              - numberOfMonths
+              - extraTaxes
+              - saleTicketNumber
+              - ivaValue
+              - isDeferred
+              - ticketNumber
+              - id
+              - dateAndTimeTransaction
+              - cardType
+              - subtotalIVA
+              - requestAmount
+              - currencyCode
+              - transactionType
+              - processorName
+              - iceValue
+              - merchantId
+              - processorBankName
+              - approvalCode
+            properties:
+              subtotalIVA0:
+                type: number
+                example: 10
+              date:
+                type: string
+                example: '2017-03-24T18:52:34.000Z'
+              lastFourDigitsOfCard:
+                type: string
+                example: 1234
+              transactionStatus:
+                type: string
+                example: APPROVAL
+              transactionId:
+                type: string
+                example: 1234567890987654
+              voidedBy:
+                type: string
+                example: 10334120439012934
+              merchantName:
+                type: string
+                example: Some_Merchant_Name
+              cardHolderName:
+                type: string
+                example: John Doe
+              approvedTransactionAmount:
+                type: string
+                example: 135.5
+              numberOfMonths:
+                type: string
+                example: 0
+              ExtraTaxes:
+                type: array
+                items:
+                  required:
+                    - tasaAeroportuaria
+                    - agenciaDeViaje
+                    - iac
+                  properties:
+                    tasaAeroportuaria:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '4'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_AERO
+                    iac:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '5'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: IAC
+                    agenciaDeViaje:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '6'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_ADMIN_AGEN_COD
+              saleTicketNumber:
+                type: string
+                example: 1204493249523
+              ivaValue:
+                type: integer
+                example: 15.5
+              isDeferred:
+                type: string
+                example: 'Y'
+              ticketNumber:
+                type: string
+                example: 1234567890987654
+              id:
+                type: string
+                example: '123456'
+              dateAndTimeTransaction:
+                type: string
+                example: 12345012469
+              cardType:
+                type: string
+                example: Master Card
+              subtotalIVA:
+                type: number
+                example: 10
+              requestAmount:
+                type: string
+                example: 130
+              currencyCode:
+                type: string
+                example: USD
+              transactionType:
+                type: string
+                example: SALE
+              processorName:
+                type: string
+                example: Some_Processor_Name
+              iceValue:
+                type: number
+                example: 10
+              merchantId:
+                type: string
+                example: 1200000432450023
+              processorBankName:
+                type: string
+                example: Some_Bank_Name
+              approvalCode:
+                type: string
+                example: 342347
+              Metadata:
+                type: object
+                properties:
+                  key1:
+                    type: string
+                    example: value1
+              subscription_metadata:
+                type: object
+                properties:
+                  key2:
+                    type: string
+                    example: value2
+    examples:
+      example-1:
+        has_more: true
+        data:
+          - subtotalIVA0: 10
+            date: '2017-03-24T18:52:34.000Z'
+            lastFourDigitsOfCard: 1234
+            transactionStatus: APPROVAL
+            transactionId: 1234567890987654
+            voidedBy: 10334120439012934
+            merchantName: Some_Merchant_Name
+            cardHolderName: John Doe
+            approvedTransactionAmount: 135.5
+            numberOfMonths: 0
+            ExtraTaxes:
+              - tasaAeroportuaria:
+                  taxid: '4'
+                  taxAmount: 2
+                  taxName: TASA_AERO
+                iac:
+                  taxid: '5'
+                  taxAmount: 2
+                  taxName: IAC
+                agenciaDeViaje:
+                  taxid: '6'
+                  taxAmount: 2
+                  taxName: TASA_ADMIN_AGEN_COD
+            saleTicketNumber: 1204493249523
+            ivaValue: 15.5
+            isDeferred: 'Y'
+            ticketNumber: 1234567890987654
+            id: '123456'
+            dateAndTimeTransaction: 12345012469
+            cardType: Master Card
+            subtotalIVA: 10
+            requestAmount: 130
+            currencyCode: USD
+            transactionType: SALE
+            processorName: Some_Processor_Name
+            iceValue: 10
+            merchantId: 1200000432450023
+            processorBankName: Some_Bank_Name
+            approvalCode: 342347
+            Metadata:
+              key1: value1
+            subscription_metadata:
+              key2: value2
+  'trait:created:201':
+    description: Created
+    schema:
+      type: object
+      required:
+        - ticketNumber
+      properties:
+        ticketNumber:
+          type: string
+          example: '123456789012345678'
+    examples:
+      example-1:
+        ticketNumber: '123456789012345678'
+  'trait:unexpectedError:500':
+    description: Unexpected Error
+    schema:
+      $ref: '#/definitions/UnexpectedErrorResponse'
+  'trait:tokenCreated:201':
+    description: TokenCreated
+    schema:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: AbCDef123456Z7Ghi8901234jkLMNopQ
+definitions: {}

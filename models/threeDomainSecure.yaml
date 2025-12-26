@@ -1,0 +1,93 @@
+title: threeDomainSecure
+x-stoplight:
+  id: i7cuiwubnkxjm
+type: object
+description: "Send this object if you have your own 3DS authentication engine. **Applies to \U0001F1F2\U0001F1FD Mexico, \U0001F1F5\U0001F1EA Peru, \U0001F1E8\U0001F1F1 Chile, \U0001F1EA\U0001F1E8 Ecuador, and \U0001F1E8\U0001F1F4Colombia.**\n\n**VISA (Required)**:\n* cavv\n* eci\n* xid\n* specificationVersion\n\n**Mastercard (Required)**:\n* directoryServerTransactionID\n* eci\n* ucaf\n* specificationVersion\n* collectionIndicator\n\n**Electronic Commerce Indicator (ECI) allowed values:**\n\n* Visa\n  * eci: `05` and `06` represent a secure transaction.\n  * eci: `07` represents a risky transaction. For processing risky transactions, also set the `acceptRisk` field to `true`. **By sending `true`, in the `acceptRisk` field, merchants will assume responsibility in case of chargebacks.**\n* Mastercard:\n  * eci: `01` and `02` represent a secure transaction.\n  * eci: `00` represents a risky transaction. For processing risky transactions, also set the `acceptRisk` field to `true`. **By sending `true`, in the `acceptRisk` field, merchants will assume responsibility in case of chargebacks.**\n\n\n\n<!-- theme: warning -->\n> #### Important notice about support for version 1 of 3D Secure!\n>**NOTE**: Support for 3D Secure 1.0.2 and related technology ended in October 2022. Merchants will need to migrate to version 2 of the protocol to avoid any impact on their transactions.\n"
+examples:
+  - threeDomainSecure:
+      cavv: AAABBoVBaZKAR3BkdkFpELpWIiE=
+      eci: '07'
+      xid: NEpab1F1MEdtaWJ2bEY3ckYxQzE=
+      specificationVersion: 2.2.0
+      acceptRisk: true
+  - threeDomainSecure:
+      collectionIndicator: '1'
+      directoryServerTransactionID: f639774c-8e7c-4966-8eba-b8bae060a6ce
+      eci: '00'
+      ucaf: kEP6n7HiTM/4h4ZhSEFIOB6iQTpv
+      specificationVersion: 2.2.0
+      acceptRisk: true
+required:
+  - cavv
+  - eci
+  - specificationVersion
+  - ucaf
+  - collectionIndicator
+  - directoryServerTransactionID
+properties:
+  cavv:
+    type: string
+    description: '**Required only for Visa.** Cardholder Authentication Verification Value. For Visa Secure transactions, the issuer''s access control generates a CAVV. **Base 64 encoded.**'
+    minLength: 28
+    maxLength: 28
+  xid:
+    type: string
+    description: Transaction XID of the 3D Secure provider. This field is not returned when the 3DS version is 1.0. **Base 64 encoded.**
+    minLength: 28
+    maxLength: 28
+  eci:
+    type: string
+    description: 'The Electronic Commerce Indicator (ECI) is a value returned by the directory servers (i.e. Visa, Mastercard, JCB and American Express) indicating the result of the attempted authentication.'
+    enum:
+      - '01'
+      - '02'
+      - '05'
+      - '06'
+      - '00'
+      - '07'
+    example: '06'
+    minLength: 2
+    maxLength: 2
+  specificationVersion:
+    type: string
+    description: |-
+      3DS protocol version to implement
+
+      **NOTE: Support for 3D Secure 1.0.2 and related technology ended in October 2022. Merchants will need to migrate to version 2 of the protocol to avoid any impact on their transactions.**
+    enum:
+      - 2.0.0
+      - 2.2.0
+    minLength: 5
+    maxLength: 5
+    pattern: '[1-2].[0-9].[0-9]'
+  acceptRisk:
+    type: boolean
+    description: 'Indicates whether risky transactions are required to be processed or not. For processing high-risk transactions, set this parameter to `true` and send `07` in the case of Visa or `00` for Mastercard in the `eci` field. **By sending `true` in this field, merchants will assume responsibility for chargebacks.**'
+    enum:
+      - true
+      - false
+    default: false
+  ucaf:
+    type: string
+    description: '**Required only for Mastercard.** Universal Cardholder Authentication Field. **It´s the equivalent to the CAVV. Base 64 encoded.**'
+    maxLength: 32
+  collectionIndicator:
+    type: string
+    enum:
+      - '0'
+      - '1'
+      - '2'
+    minLength: 1
+    maxLength: 1
+    description: |-
+      **Required only for Mastercard**
+
+      * 0 (for ECI 00) = 3DS authentication failed or could not be attempted, this may be due to technical problems, the user entered the authentication code wrong, etc.
+      * 1 (for ECI 01) = The issuer is not ready, however the transaction has a liability shift because the merchant did request 3DS.
+      * 2 (for ECI 02) = Transaction authenticated by the issuer with liability shift.
+  directoryServerTransactionID:
+    type: string
+    description: '**Only required for Mastercard.** Transaction ID of the 3D Secure provider''s directory server. Applies only for version 2 of 3DS.'
+    example: b23e0264-1209-41L6-Jca4-b82143c1a782
+    minLength: 36
+    maxLength: 36

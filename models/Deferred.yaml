@@ -1,0 +1,31 @@
+description: "\nUse the `deferred` object to create deferred transactions in Ecuador \U0001F1EA\U0001F1E8 and Mexico \U0001F1F2\U0001F1FD. In Chile \U0001F1E8\U0001F1F1, Colombia \U0001F1E8\U0001F1F4, and Peru \U0001F1F5\U0001F1EA, the `deferred` object is also used for deferred transactions **only when the merchant is integrated under Kushki’s acquiring model**\n\n\n\n\n\n"
+type: object
+x-examples:
+  example-1:
+    graceMonths: '02'
+    creditType: '01'
+    months: 3
+examples:
+  - graceMonths: '02'
+    creditType: '01'
+    months: 3
+required:
+  - graceMonths
+  - creditType
+  - months
+properties:
+  graceMonths:
+    type: string
+    pattern: '^[0-9]{2}$'
+  creditType:
+    type: string
+    pattern: '^[0-9]{2}$'
+    description: |-
+      Send `03` for Mexico's Months Without Interest (MSI) and Chile's Merchant Installments (Cuotas Comercio).
+
+      If [Request Deferred Options](https://api-docs.kushkipagos.com/docs/online-payments/card/operations/get-a-card-v-1-deferred) method returns `all` for Issuer Installments (in **Chile**, **Colombia**, and **Peru**), you must send `01` when using the **Kushki Acquiring** model.
+
+      For all other cases, send the specific value returned in the `type` field of the [Request Deferred Options](https://api-docs.kushkipagos.com/docs/online-payments/card/operations/get-a-card-v-1-deferred) response.
+  months:
+    type: number
+    description: 'For merchant''s installments in Chile: 2-12'

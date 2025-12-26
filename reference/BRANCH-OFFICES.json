@@ -1,0 +1,1374 @@
+{
+  "openapi": "3.1.0",
+  "x-stoplight": {
+    "id": "cnpu1um7rfsbm"
+  },
+  "info": {
+    "title": "API Branch Offices",
+    "version": "1.0",
+    "description": "### Make it possible to create branch offices in a massive, fast and safe way.\n\nIf you are a PSP merchant this service will help you create and update your branch offices in a faster and easier way. Through this integration you can massively manage your branch offices.\n\n<!-- theme: warning -->\n> #### To keep in mind\n>At the moment, only the functionalities to create and update branch offices are active.\n>\n>You can also create or update branch offices of your merchant, either individually or in bulk, through the following form: \n>* [Sub-merchants or branch office affiliation form](https://soporte.kushkipagos.com/hc/en-us/articles/21820962629267-Affiliate-your-sub-merchants-or-branch-offices). \n>Additionally, we enable the following forms, so your merchant can share additional documentation with us during the affiliation process of your branch offices. Check the following links:\n>* [Additional branch office documentation form](https://soporte.kushkipagos.com/hc/en-us/articles/21822197307539-Additional-branch-office-documentation)\n>\n>* [Branch office performance report form](https://soporte.kushkipagos.com/hc/en-us/articles/21823560721427-Branch-office-performance-report) \n>\n>* [Daily branch office registration report](https://soporte.kushkipagos.com/hc/en-us/articles/21823673038739-Daily-branch-office-registration-report) \n>\n>If you have any questions about the branch office affiliation process, please check our [Branch office affiliation process FAQs guide](https://soporte.kushkipagos.com/hc/en-us/articles/22027439629715-Branch-office-affiliation-process-FAQs).\n\n\n## Integration process\n\nBelow we show you the steps to follow to achieve a successful integration so you can create your branch offices.\n\n\n >You must have a customer account in Kushki to use this feature.\n\n### 1. Credentials\n\nAs a customer, you must contact your account manager to get credentials to integrate this service.\n\nYou will receive an email with the subject **“Welcome to Kushki | Your username has been created successfully\"** which will contain your username and password required to use this service.\n\n>This password is temporary, so you must change it when you enter your account for the first time from the Kushki console.\n\n![Correo de creacion usuario](../assets/images/correo_credenciales.png)\n\n### 2. Branch offices creation: \n\nFollow the steps below to integrate the service:\n\n#### Step 1: Token generation\n\nGenerate a token by sending the credentials obtained in the previous step.\n\nThis token will be used to consume the [Create Branches Offices](https://api-docs.kushkipagos.com/docs/online-payments/branch/operations/create-a-automation-v-1-branch) or [Update Branches Offices](https://api-docs.kushkipagos.com/docs/online-payments/branch/operations/modify-a-automation-v-1-branch) endpoints.\n\n**NOTE**: the token has an expiration of 60 minutes and can only be used once.\n\n#### Step 2: Create branch offices\n\nUse the previously obtained token to create up to 500 branch offices per request. It is necessary to submit all the required fields with the correct information to correctly process your request.\n\n**Note**: each request will be reviewed and validated by the Kushki team before being approved or declined.\n\n#### Step 3: Update branch offices (optional)\n\nYou can submit a request to update information for one or more branch offices.\n\n**Note**: each request will be reviewed and validated by the Kushki team before being approved or declined.\n\n### 3. Validations\n \nOnce the information is received, Kushki reviews and validates each request to create or update a branch office.\n\n### 4. User notification \n \nOnce the request has been reviewed by Kushki, the user will be notified by email if the request was successful or failed. **Kushki's response time is within 24 hours, there may be eventual cases that may exceed this time.**\n\nA file will be attached to the email with detailed information about the request. **This file will be available for download within the next seven days, after which time it will not be available for download.**\n\n![Notification email](../assets/images/CorreoCustomer.png)\n\nDownload \n[here](https://docs.google.com/spreadsheets/d/12YvQdaJpph4U3C7tnBJBDtTAEAj92Hrt/edit?usp=sharing&ouid=104276169672653654470&rtpof=true&sd=true) an example of the file you will receive.\n\n\n## Using the API\n\nTo use the API you must ask for your Kushki credentials, composed by a `username` and a `password`.\n\n* The current version of the Kushki API rests at: `https://api.kushkipagos.com/`\n* The testing version rests at: `https://api-uat.kushkipagos.com/`\n\n\n## Endpoints\n\nWe dispose various endpoints to start your payment flows, find our products available:\n\n* [Request token](https://api-docs.kushkipagos.com/docs/online-payments/branch/operations/get-a-automation-v-1-token)\n* [Create branch offices](https://api-docs.kushkipagos.com/docs/online-payments/branch/operations/create-a-automation-v-1-branch)\n* [Update branch offices](https://api-docs.kushkipagos.com/docs/online-payments/branch/operations/modify-a-automation-v-1-branch)\n\n\n\n[Return Home](/)\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)"
+  },
+  "servers": [
+    {
+      "url": "https://api-uat.kushkipagos.com",
+      "description": "Test server"
+    }
+  ],
+  "paths": {
+    "/automation/v1/token": {
+      "parameters": [],
+      "get": {
+        "summary": "Branch Office Creation Token",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "Example 1": {
+                      "token": "XYZ"
+                    }
+                  },
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "{ \"token\": \"eyJraWQiOiIydDh2ZHpHd0tqeEdiOVV3WVZOWlhYdWNyUmlVMVYxMXNJQW9zM3Q5eFBjPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJhOGM5YzI1OS04M2FiLTQ1N2MtOThlMC04ZjM3NWExMDhjYzYiLCJjb2duaXRvOmdyb3VwcyI6WyJCYWNrb2ZmaWNlQ29uY2lsaWF0aW9uVmFsaWRhdG9yIiwiQmFja29mZmljZUZpbkV4ZWN1dG9yIiwiQmFja29mZmljZUdsb2JhbFJlcG9ydHMiLCJCYWNrb2ZmaWNlTW9uaXRvcmluZyIsIkJhY2tvZmZpY2VBZG1pbiIsIk1ndWF5YXF1aWxSZXZpZXdlciIsIkJhY2tvZmZpY2VCYW5rIiwiQ3VzdG9tZXJVc2VyTWFzdGVyIiwiQmFja29mZmljZUZpblZhbGlkYXRvciIsIkJhY2tvZmZpY2VDb25jaWxpYXRpb25FeGVjdXRvciIsIkJhY2tvZmZpY2VNYXN0ZXJDdXN0b21lciJdLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV9VSXA5ZW5HaXEiLCJjbGllbnRfaWQiOiIzbWQyMm1nZDVsdWR0YmRzMmdqaXNnajNydSIsImV2ZW50X2lkIjoiNjgzNzk3YWQtNzIzMy00NDFjLThiZjctMGZmYzgyNDk3ZWFjIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY3ODkxMzg0NCwiZXhwIjoxNjc4OTE3NDQ0LCJpYXQiOjE2Nzg5MTM4NDQsImp0aSI6IjZhYjg0NTViLTBmY2UtNGVmZi1hMWRhLThjNTVhNDg2NzU0MiIsInVzZXJuYW1lIjoiYmFja29mZmljZSJ9.BmPCZS6zxHH1M2io2N66J6XkA0t6XQucJuHbx5Y3I4ut1BS1ckLVHuYXPPFe6TYFLfFoiXbJaTh8XWYr0EdLHWe25PVMrZOGX2_7rrF1xzlEUz_ZlzKfJXdxe1tNEvS5xezJrZwKCrg7VYQJV1GCSy_7i7OgqJ7--WHzIeSJhqzFlAcTWYhaP-T-kFmlyiqlad7ivcLZtr78mgaQScDfqmV_eUS4LNiUW5qyNOZfGlx4tVxyytASCRKGPl7hc_8A7QQQvzWUi0r343BMLan_zoq4uVn2fvf1akqXjUwrfIRY9H57ZlUgNIIN6BaySE-QmoWitMtWZtuAyNhKCcWQ0g\" }"
+                    }
+                  }
+                },
+                "examples": {
+                  "Success": {
+                    "value": {
+                      "token": "eyJraWQiOiIydDh2ZHpHd0tqeEdiOVV3WVZOWlhYdWNyUmlVMVYxMXNJQW9zM3Q5eFBjPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJhOGM5YzI1OS04M2FiLTQ1N2MtOThlMC04ZjM3NWExMDhjYzYiLCJjb2duaXRvOmdyb3VwcyI6WyJCYWNrb2ZmaWNlQ29uY2lsaWF0aW9uVmFsaWRhdG9yIiwiQmFja29mZmljZUZpbkV4ZWN1dG9yIiwiQmFja29mZmljZUdsb2JhbFJlcG9ydHMiLCJCYWNrb2ZmaWNlTW9uaXRvcmluZyIsIkJhY2tvZmZpY2VBZG1pbiIsIk1ndWF5YXF1aWxSZXZpZXdlciIsIkJhY2tvZmZpY2VCYW5rIiwiQ3VzdG9tZXJVc2VyTWFzdGVyIiwiQmFja29mZmljZUZpblZhbGlkYXRvciIsIkJhY2tvZmZpY2VDb25jaWxpYXRpb25FeGVjdXRvciIsIkJhY2tvZmZpY2VNYXN0ZXJDdXN0b21lciJdLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV9VSXA5ZW5HaXEiLCJjbGllbnRfaWQiOiIzbWQyMm1nZDVsdWR0YmRzMmdqaXNnajNydSIsImV2ZW50X2lkIjoiNjgzNzk3YWQtNzIzMy00NDFjLThiZjctMGZmYzgyNDk3ZWFjIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY3ODkxMzg0NCwiZXhwIjoxNjc4OTE3NDQ0LCJpYXQiOjE2Nzg5MTM4NDQsImp0aSI6IjZhYjg0NTViLTBmY2UtNGVmZi1hMWRhLThjNTVhNDg2NzU0MiIsInVzZXJuYW1lIjoiYmFja29mZmljZSJ9.BmPCZS6zxHH1M2io2N66J6XkA0t6XQucJuHbx5Y3I4ut1BS1ckLVHuYXPPFe6TYFLfFoiXbJaTh8XWYr0EdLHWe25PVMrZOGX2_7rrF1xzlEUz_ZlzKfJXdxe1tNEvS5xezJrZwKCrg7VYQJV1GCSy_7i7OgqJ7--WHzIeSJhqzFlAcTWYhaP-T-kFmlyiqlad7ivcLZtr78mgaQScDfqmV_eUS4LNiUW5qyNOZfGlx4tVxyytASCRKGPl7hc_8A7QQQvzWUi0r343BMLan_zoq4uVn2fvf1akqXjUwrfIRY9H57ZlUgNIIN6BaySE-QmoWitMtWZtuAyNhKCcWQ0g"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "Example 1": {
+                      "code": "E001",
+                      "message": "Usuario o Contraseña incorrecto."
+                    }
+                  },
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "example": "E001"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Usuario o Contraseña incorrecto"
+                    }
+                  }
+                },
+                "examples": {
+                  "Usuario incorrecto": {
+                    "value": {
+                      "code": "E001",
+                      "message": "Usuario o Contraseña incorrecto."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "Example 1": {
+                      "code": "E015",
+                      "message": "Usuario bloqueado, favor de ingresar a la consola para solicitar desbloqueo."
+                    }
+                  },
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "example": "E015"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Usuario bloqueado, favor de ingresar a la consola para solicitar desbloqueo"
+                    }
+                  }
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "code": "E015",
+                      "message": "Usuario bloqueado, favor de ingresar a la consola para solicitar desbloqueo"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "branchCreationToken",
+        "description": "Generate a token required to make a request to create or update branch offices.\n\n#### Authentication\n\nTo generate the token and consume the API, you need to enter the `username` and `password` for a user type *Maestro Customer* (customer User Master). This user is provided by Kushki.\n\n\n<!-- theme: warning -->\n> #### User lock:\n>If you enter your password incorrectly more than 5 times, your user will be blocked and you will have to unlock through the console.\n\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Ecuador, Chile, Colombia, México, Perú.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n<!-- theme: danger -->\n> #### Token expiration\n>\n>Tokens will expire in 60 minutes and can be used only for a single transaction (even if the transaction was wrong). You will need to request a new token when it expires.\n\n\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "almaaldanatest5"
+            },
+            "in": "header",
+            "name": "USERNAME",
+            "description": "Username obtained by email provided by Kushki. ",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "PASSWORD",
+            "description": "Password obtained by email provided by Kushki.",
+            "required": true
+          }
+        ],
+        "x-internal": true,
+        "x-stoplight": {
+          "id": "rg9oavfcywk3q"
+        }
+      }
+    },
+    "/automation/v1/branches": {
+      "post": {
+        "summary": "Create Branch Offices",
+        "operationId": "createBranches",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "status": 200,
+                      "message": "Tu petición se encuentra en proceso y serás notificado en cuanto los branches solicitados sean creados"
+                    }
+                  }
+                },
+                "examples": {
+                  "Respuesta correcta": {
+                    "value": {
+                      "status": 200,
+                      "message": "Tu petición se encuentra en proceso y serás notificado en cuanto los branches solicitados sean creados"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "Example 1": {
+                      "code": "E006",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Error al validar los campos.",
+                        "Error": [
+                          "La propiedad Branches[0].Shareholder debe tener al menos un elemento"
+                        ]
+                      },
+                      "message": "Error al validar los campos."
+                    }
+                  },
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "example": "Eoo6"
+                    },
+                    "details": {
+                      "type": "object",
+                      "properties": {
+                        "Origin": {
+                          "type": "string",
+                          "example": "validation process Service"
+                        },
+                        "Message": {
+                          "type": "string",
+                          "example": "Error al validar los campos"
+                        },
+                        "Error": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "Campo requerido: ReportingDate"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error al validar los campos."
+                    }
+                  }
+                },
+                "examples": {
+                  "Limite de branches superado": {
+                    "value": {
+                      "code": "E003",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Se superó el máximo de branches permitido."
+                      },
+                      "message": "Se superó el máximo de branches permitido."
+                    }
+                  },
+                  "Mínimo 1 representa legal": {
+                    "value": {
+                      "code": "E006",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Error al validar los campos.",
+                        "Error": [
+                          "La propiedad Branches[0].LegalRepresentative debe tener al menos un elemento"
+                        ]
+                      },
+                      "message": "Error al validar los campos."
+                    }
+                  },
+                  "Mínimo 1 accionista": {
+                    "value": {
+                      "code": "E006",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Error al validar los campos.",
+                        "Error": [
+                          "La propiedad Branches[0].Shareholder debe tener al menos un elemento"
+                        ]
+                      },
+                      "message": "Error al validar los campos."
+                    }
+                  },
+                  "Branches duplicadas en request o en base de datos": {
+                    "value": {
+                      "code": "E007",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Registro duplicado",
+                        "Error": [
+                          {
+                            "currency": "USD",
+                            "countryTaxResidency": "RUS",
+                            "name": "Eli branch review 2",
+                            "companyRegistrationNumber": "929",
+                            "taxId": "970499999",
+                            "legalName": "Legal name",
+                            "legalEntityType": "entity",
+                            "mcc": 4829,
+                            "legalRepresentative": [
+                              {
+                                "firstName": "José",
+                                "lastName": "ñañ@",
+                                "idNumber": "lt id number",
+                                "birthDate": "02-May-2022",
+                                "residencyCountry": "COL"
+                              }
+                            ],
+                            "shareholder": [
+                              {
+                                "firstName": "sh name",
+                                "lastName": "sh lastname",
+                                "idNumber": "sh id number",
+                                "birthDate": "30-May-2022",
+                                "residencyCountry": "COL"
+                              }
+                            ],
+                            "AMLRiskCategory": "H",
+                            "settlementBankCountry": "RUS",
+                            "settlementBankName": "stl bank name",
+                            "regulatedBusiness": "Y",
+                            "concurrenceNeeded": "N",
+                            "url": "google.com",
+                            "id": "Elibranchreview2970499999pspCustomerIdDaveJean23",
+                            "createdAt": 1677773307703
+                          },
+                          {
+                            "currency": "USD",
+                            "countryTaxResidency": "RUS",
+                            "name": "Eli branch review 2",
+                            "companyRegistrationNumber": "929",
+                            "taxId": "970499999",
+                            "legalName": "Legal name",
+                            "legalEntityType": "entity",
+                            "mcc": 4829,
+                            "legalRepresentative": [
+                              {
+                                "firstName": "José",
+                                "lastName": "ñañ@",
+                                "idNumber": "lt id number",
+                                "birthDate": "02-May-2022",
+                                "residencyCountry": "COL"
+                              }
+                            ],
+                            "shareholder": [
+                              {
+                                "firstName": "sh name",
+                                "lastName": "sh lastname",
+                                "idNumber": "sh id number",
+                                "birthDate": "30-May-2022",
+                                "residencyCountry": "COL"
+                              }
+                            ],
+                            "AMLRiskCategory": "H",
+                            "settlementBankCountry": "RUS",
+                            "settlementBankName": "stl bank name",
+                            "regulatedBusiness": "Y",
+                            "concurrenceNeeded": "N",
+                            "url": "google.com",
+                            "id": "Elibranchreview2970499999pspCustomerIdDaveJean23",
+                            "createdAt": 1677773307703
+                          }
+                        ]
+                      },
+                      "message": "Registro duplicado"
+                    }
+                  },
+                  "Campo inválido": {
+                    "value": {
+                      "code": "E006",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Error al validar los campos.",
+                        "Error": [
+                          "La propiedad ClientType solo permite los siguientes elementos 'KUSHKI MUNDIAL' 'LATAM'"
+                        ]
+                      },
+                      "message": "Error al validar los campos."
+                    }
+                  },
+                  "Limite superado de email": {
+                    "value": {
+                      "code": "Eoo6",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Error al validar los campos",
+                        "Error": [
+                          "La propiedad pspNotificationEmail debe ser menor o igual a 10"
+                        ]
+                      },
+                      "message": "Error al validar los campos."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "Example 1": {
+                      "Message": "User is not authorized to access this resource with an explicit deny"
+                    }
+                  },
+                  "properties": {
+                    "Message": {
+                      "type": "string",
+                      "example": "User is not authorized to access this resource with an explicit deny"
+                    }
+                  }
+                },
+                "examples": {
+                  "Credenciales inválidas": {
+                    "value": {
+                      "Message": "User is not authorized to access this resource with an explicit deny"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "x-examples": {
+                  "Example 1": {
+                    "clientType": "KUSHKI MUNDIAL",
+                    "reportingDate": "01-May-2022",
+                    "pspTaxId": "pspTaxId",
+                    "pspName": "pspName",
+                    "pspCustomerId": "pspCustomerId",
+                    "pspNotificationEmail": "b@b.com",
+                    "pspUserEmail": "b@b.com",
+                    "branches": [
+                      {
+                        "currency": "USD",
+                        "countryTaxResidency": "MEX",
+                        "name": "Comercio Eli",
+                        "companyRegistrationNumber": "929",
+                        "taxId": "0202020",
+                        "legalName": "Legal name",
+                        "legalEntityType": "entity",
+                        "mcc": 1231,
+                        "legalRepresentative": [
+                          {
+                            "firstName": "José",
+                            "lastName": "ñañ@",
+                            "idNumber": "lt id number",
+                            "birthDate": "02-May-2022",
+                            "residencyCountry": "COL"
+                          }
+                        ],
+                        "shareholder": [
+                          {
+                            "firstName": "sh name",
+                            "lastName": "sh lastname",
+                            "idNumber": "sh id number",
+                            "birthDate": "30-May-2022",
+                            "residencyCountry": "COL"
+                          }
+                        ],
+                        "AMLRiskCategory": "H",
+                        "settlementBankCountry": "AGO",
+                        "settlementBankName": "stl bank name",
+                        "regulatedBusiness": "Y",
+                        "concurrenceNeeded": "N",
+                        "url": "google.com"
+                      }
+                    ]
+                  }
+                },
+                "properties": {
+                  "clientType": {
+                    "type": "string",
+                    "example": "KUSHKI MUNDIAL",
+                    "enum": [
+                      "KUSHKI MUNDIAL",
+                      "LATAM"
+                    ]
+                  },
+                  "reportingDate": {
+                    "type": "string",
+                    "example": "01-May-2022",
+                    "format": "date",
+                    "description": "Format `DD-MMM-YYYY`"
+                  },
+                  "pspTaxId": {
+                    "type": "string",
+                    "example": "20552103816",
+                    "description": "Refers to the RUC"
+                  },
+                  "pspName": {
+                    "type": "string",
+                    "example": "SAC DE TRAUMA"
+                  },
+                  "pspCustomerId": {
+                    "type": "string",
+                    "example": "00010040103416507045",
+                    "enum": [
+                      "PSP identifier created by Kushki"
+                    ]
+                  },
+                  "pspNotificationEmail": {
+                    "type": "array",
+                    "example": "user@example.com",
+                    "format": "email",
+                    "description": "Allows a maximum of 10 emails",
+                    "maxItems": 10,
+                    "items": {
+                      "x-stoplight": {
+                        "id": "361vu5i1ck1y2"
+                      },
+                      "type": "string"
+                    }
+                  },
+                  "branches": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "currency": {
+                          "type": "string",
+                          "example": "USD",
+                          "description": "PE: `USD` or `PEN`\nMX: `MXN`\nCL: `CLP`\nEC: `USD`\nCO: `COP`",
+                          "enum": [
+                            "USD",
+                            "COP",
+                            "CLP",
+                            "PEN",
+                            "MXN"
+                          ]
+                        },
+                        "countryTaxResidency": {
+                          "type": "string",
+                          "example": "MEX"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Comercio Eli"
+                        },
+                        "companyRegistrationNumber": {
+                          "type": "string",
+                          "example": "929",
+                          "description": "Optional for \n **clientType**  `LATAM ` \n \nconsider ISO 3166 numeric `https://www.iban.com/country-codes`"
+                        },
+                        "taxId": {
+                          "type": "string",
+                          "example": "0202020"
+                        },
+                        "legalName": {
+                          "type": "string",
+                          "example": "Legal name"
+                        },
+                        "pspUserEmail": {
+                          "type": "string",
+                          "x-stoplight": {
+                            "id": "2xw6gaowcc1s7"
+                          },
+                          "format": "email"
+                        },
+                        "legalEntityType": {
+                          "type": "string",
+                          "example": "entity"
+                        },
+                        "mcc": {
+                          "type": "integer",
+                          "example": 1231
+                        },
+                        "legalRepresentative": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "firstName": {
+                                "type": "string",
+                                "example": "John"
+                              },
+                              "lastName": {
+                                "type": "string",
+                                "example": "Doe"
+                              },
+                              "idNumber": {
+                                "type": "string",
+                                "example": "1234",
+                                "description": "Optional for \n **clientType**  `KUSHKI MUNDIAL `"
+                              },
+                              "birthDate": {
+                                "type": "string",
+                                "example": "02-May-2022",
+                                "description": "Optional for \n **clientType**  `LATAM `\n \nFormat `DD-MMM-YYYY`",
+                                "format": "date"
+                              },
+                              "residencyCountry": {
+                                "type": "string",
+                                "example": "COL",
+                                "description": "consider ISO 3166 ALPHA-3 `https://www.iban.com/country-codes`"
+                              }
+                            },
+                            "required": [
+                              "firstName",
+                              "lastName",
+                              "idNumber",
+                              "birthDate",
+                              "residencyCountry"
+                            ]
+                          }
+                        },
+                        "shareholder": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "firstName": {
+                                "type": "string",
+                                "example": "John",
+                                "description": "Optional for \n **clientType**  `LATAM `"
+                              },
+                              "lastName": {
+                                "type": "string",
+                                "example": "Doe",
+                                "description": "Optional for \n **clientType**  `LATAM `"
+                              },
+                              "idNumber": {
+                                "type": "string",
+                                "example": "4321",
+                                "description": "Optional for \n **clientType**  `LATAM `"
+                              },
+                              "birthDate": {
+                                "type": "string",
+                                "example": "20-May-2022",
+                                "description": "Optional for \n **clientType**  `LATAM `\n\nFormat `DD-MMM-YYYY`",
+                                "format": "date"
+                              },
+                              "residencyCountry": {
+                                "type": "string",
+                                "example": "COL",
+                                "description": "Optional for \n **clientType**  `LATAM `\n \nconsider ISO 3166 ALPHA-3 `https://www.iban.com/country-codes`"
+                              }
+                            },
+                            "required": [
+                              "firstName",
+                              "lastName",
+                              "idNumber",
+                              "birthDate",
+                              "residencyCountry"
+                            ]
+                          }
+                        },
+                        "AMLRiskCategory": {
+                          "type": "string",
+                          "example": "H",
+                          "enum": [
+                            "H",
+                            "M",
+                            "L"
+                          ],
+                          "description": "Allowed values:\n`H`: High\n`M`: Medium\n`L`: Low"
+                        },
+                        "settlementBankCountry": {
+                          "type": "string",
+                          "example": "AGO",
+                          "description": "consider ISO 3166 ALPHA-3 `https://www.iban.com/country-codes`"
+                        },
+                        "settlementBankName": {
+                          "type": "string",
+                          "example": "stl bank name",
+                          "description": "Optional for \n **clientType**  `KUSHKI MUNDIAL `"
+                        },
+                        "regulatedBusiness": {
+                          "type": "string",
+                          "example": "Y",
+                          "description": "If the Sub-merchant requires a license to operate its business: **Y**es or **N**o",
+                          "enum": [
+                            "Y",
+                            "N"
+                          ]
+                        },
+                        "concurrenceNeeded": {
+                          "type": "string",
+                          "example": "N",
+                          "enum": [
+                            "Y",
+                            "N"
+                          ]
+                        },
+                        "url": {
+                          "type": "string",
+                          "example": "google.com"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "countryTaxResidency",
+                        "name",
+                        "companyRegistrationNumber",
+                        "taxId",
+                        "legalName",
+                        "pspUserEmail",
+                        "mcc",
+                        "AMLRiskCategory",
+                        "settlementBankCountry",
+                        "settlementBankName",
+                        "regulatedBusiness",
+                        "concurrenceNeeded",
+                        "url"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "clientType",
+                  "reportingDate",
+                  "pspTaxId",
+                  "pspName",
+                  "pspCustomerId"
+                ]
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "clientType": "KUSHKI MUNDIAL",
+                    "reportingDate": "01-May-2023",
+                    "pspTaxId": "20552103816",
+                    "pspName": "SAC DE TRAUMA",
+                    "pspCustomerId": "00010040103416507045",
+                    "pspNotificationEmail": [
+                      "user@example.com",
+                      "user2@domain.com"
+                    ],
+                    "branches": [
+                      {
+                        "currency": "MXN",
+                        "countryTaxResidency": "MEX",
+                        "name": "Comercio Eli",
+                        "companyRegistrationNumber": "484",
+                        "pspUserEmail": "user@example.com",
+                        "taxId": "0202020",
+                        "legalName": "My company",
+                        "legalEntityType": "Entity example",
+                        "mcc": 1231,
+                        "legalRepresentative": [
+                          {
+                            "firstName": "John",
+                            "lastName": "Doe",
+                            "idNumber": "1234",
+                            "birthDate": "02-May-1990",
+                            "residencyCountry": "MEX"
+                          }
+                        ],
+                        "shareholder": [
+                          {
+                            "firstName": "John",
+                            "lastName": "Doe",
+                            "idNumber": "1234",
+                            "birthDate": "02-May-1990",
+                            "residencyCountry": "MEX"
+                          }
+                        ],
+                        "AMLRiskCategory": "M",
+                        "settlementBankCountry": "MEX",
+                        "settlementBankName": "BBVA",
+                        "regulatedBusiness": "Y",
+                        "concurrenceNeeded": "N",
+                        "url": "https://kushki.com"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          },
+          "description": "Send the necessary fields for the API to create a branch"
+        },
+        "description": "Use this endpoint to request the creation of branch offices.\n\nUse the previously obtained token to create up to 500 branches per request. It is necessary to submit all the required fields with the correct information to correctly process your request.\n\n**Note**: each request will be reviewed and validated by the Kushki team before being approved or declined.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Ecuador, Chile, Colombia, México, Perú.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n### Kushki Mundial\n\nProvides payment services in LATAM to companies that are outside this area and want to reach these consumers in a simple way, through a single integration. For more information you can check the page about [KUSHKI MUNDIAL](https://www.kushkimundial.com/).\n\n### Kushki LATAM\n\nLocal payment processing in Latin America. Countries like Ecuador, Perú, México, Colombia, Chile.\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Authorization ",
+            "description": "JWT token obtained from the Branch Creation Token endpoint.",
+            "required": true
+          }
+        ],
+        "x-stoplight": {
+          "id": "h4ji1cn03un02"
+        },
+        "x-internal": true
+      },
+      "parameters": [],
+      "patch": {
+        "summary": "Update Branch Offices",
+        "operationId": "updateBranches",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "status": 200,
+                      "message": "Tu petición se encuentra en proceso y serás notificado en cuanto los branches solicitados sean actualizados."
+                    }
+                  }
+                },
+                "examples": {
+                  "Respuesta correcta": {
+                    "value": {
+                      "status": 200,
+                      "message": "Tu petición se encuentra en proceso y serás notificado en cuanto los branches solicitados sean actualizados."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "Example 1": {
+                      "code": "E006",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Error al validar los campos.",
+                        "Error": [
+                          "Campo requerido: ReportingDate"
+                        ]
+                      },
+                      "message": "Error al validar los campos."
+                    }
+                  },
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "example": "E003"
+                    },
+                    "details": {
+                      "type": "object",
+                      "properties": {
+                        "Origin": {
+                          "type": "string",
+                          "example": "validation process Service"
+                        },
+                        "Message": {
+                          "type": "string",
+                          "example": "Se superó el máximo de branches permitido"
+                        },
+                        "Error": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Se superó el máximo de branches permitido"
+                    }
+                  }
+                },
+                "examples": {
+                  "Límite de branches excedidos": {
+                    "value": {
+                      "code": "E003",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Se superó el máximo de branches permitido."
+                      },
+                      "message": "Se superó el máximo de branches permitido"
+                    }
+                  },
+                  "El branchID no existe": {
+                    "value": {
+                      "code": "E014",
+                      "details": {
+                        "Origin": "ValidationProcessService",
+                        "Message": "",
+                        "Error": [
+                          "20000000107724194060"
+                        ]
+                      },
+                      "message": "No se encuentran coincidencias con la información proporcionada."
+                    }
+                  },
+                  "Validación campo requerido": {
+                    "value": {
+                      "code": "E006",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Error al validar los campos.",
+                        "Error": [
+                          "Campo requerido: ReportingDate"
+                        ]
+                      },
+                      "message": "Error al validar los campos."
+                    }
+                  },
+                  "Formato no válido": {
+                    "value": {
+                      "code": "E006",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Error al validar los campos.",
+                        "Error": [
+                          "Fecha inválida: 'ReportingDate 01-Ma022'"
+                        ]
+                      },
+                      "message": "Error al validar los campos."
+                    }
+                  },
+                  "Límite superado": {
+                    "value": {
+                      "code": "E006",
+                      "details": {
+                        "Origin": "validation process Service",
+                        "Message": "Error al validar los campos.",
+                        "Error": [
+                          "Límite permitido superado: 'PspName(50) pspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspNamepspName'"
+                        ]
+                      },
+                      "message": "Error al validar los campos."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "Example 1": {
+                      "Message": "User is not authorized to access this resource with an explicit deny"
+                    }
+                  },
+                  "properties": {
+                    "Message": {
+                      "type": "string",
+                      "example": "User is not authorized to access this resource with an explicit deny"
+                    }
+                  }
+                },
+                "examples": {
+                  "Token no válido ": {
+                    "value": {
+                      "Message": "User is not authorized to access this resource with an explicit deny"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "Example 1": {
+                      "code": "E014",
+                      "details": {
+                        "Origin": "ValidationProcessService",
+                        "Message": "",
+                        "Error": [
+                          "20000000107724194060"
+                        ]
+                      },
+                      "message": "No se encuentran coincidencias con la información proporcionada."
+                    }
+                  },
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "example": "E014"
+                    },
+                    "details": {
+                      "type": "object",
+                      "properties": {
+                        "Origin": {
+                          "type": "string",
+                          "example": "ValidationProcessService"
+                        },
+                        "Message": {
+                          "type": "string"
+                        },
+                        "Error": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "20000000107724194060"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "No se encuentran coincidencias con la información proporcionada"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Authorization",
+            "description": "JWT token obtained from the Branch Creation Token endpoint.",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "x-examples": {
+                  "Example 1": {
+                    "reportingDate": "01-Mar-2023",
+                    "pspTaxId": "pspTaxIdEli",
+                    "pspName": "pspNameEliReviewMarzo",
+                    "pspCustomerId": "pspCustomerIdEliMarzo",
+                    "pspNotificationEmail": "b@b.com",
+                    "pspUserEmail": "b@b.com",
+                    "branches": [
+                      {
+                        "branchId": "20000000107724194000",
+                        "currency": "USD",
+                        "countryTaxResidency": "RUS",
+                        "name": "Eli branch marzo",
+                        "legalName": "Legal name",
+                        "legalEntityType": "entity",
+                        "mcc": 4829,
+                        "legalRepresentative": [
+                          {
+                            "firstName": "José",
+                            "lastName": "ñañ@",
+                            "idNumber": "lt id number",
+                            "birthDate": "02-May-2022",
+                            "residencyCountry": "COL"
+                          }
+                        ],
+                        "shareholder": [
+                          {
+                            "firstName": "sh name",
+                            "lastName": "sh lastname",
+                            "idNumber": "sh id number",
+                            "birthDate": "30-May-2022",
+                            "residencyCountry": "COL"
+                          }
+                        ],
+                        "AMLRiskCategory": "H",
+                        "settlementBankCountry": "RUS",
+                        "settlementBankName": "stl bank name",
+                        "regulatedBusiness": "Y",
+                        "concurrenceNeeded": "N",
+                        "url": "google.com"
+                      }
+                    ]
+                  }
+                },
+                "properties": {
+                  "reportingDate": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Format: `DD-MMM-YYYY`",
+                    "example": "19-May-1977"
+                  },
+                  "pspTaxId": {
+                    "type": "string",
+                    "example": "20552103816"
+                  },
+                  "pspName": {
+                    "type": "string",
+                    "example": "SAC DE TRAUMA"
+                  },
+                  "pspCustomerId": {
+                    "type": "string",
+                    "example": "00010040103416507045"
+                  },
+                  "pspNotificationEmail": {
+                    "type": "array",
+                    "example": "user@example.com",
+                    "format": "email",
+                    "description": "Allows a maximum of 10 emails",
+                    "maxItems": 10,
+                    "items": {
+                      "x-stoplight": {
+                        "id": "jebt7au0jmtuh"
+                      },
+                      "type": "string"
+                    }
+                  },
+                  "branches": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "branchId": {
+                          "type": "string",
+                          "example": "20000000107724194000"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "example": "USD",
+                          "enum": [
+                            "CLP",
+                            "USD",
+                            "PEN",
+                            "COP",
+                            "MXN"
+                          ],
+                          "description": "\nPE: `USD` or `PEN`\nMX: `MXN`\nCL: `CLP`\nEC: `USD`\nCO: `COP`"
+                        },
+                        "name": {
+                          "type": "string",
+                          "x-stoplight": {
+                            "id": "9rydmlv4idwfc"
+                          },
+                          "example": "Comercio UIO"
+                        },
+                        "companyRegistrationNumber": {
+                          "type": "string",
+                          "x-stoplight": {
+                            "id": "xw7v9826n99pd"
+                          },
+                          "example": "92929"
+                        },
+                        "legalName": {
+                          "type": "string",
+                          "example": "legal name"
+                        },
+                        "pspUserEmail": {
+                          "type": "string",
+                          "x-stoplight": {
+                            "id": "pk85pio92yjyt"
+                          },
+                          "format": "email"
+                        },
+                        "legalEntityType": {
+                          "type": "string",
+                          "example": "entity"
+                        },
+                        "mcc": {
+                          "type": "integer",
+                          "example": 1231
+                        },
+                        "legalRepresentative": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "firstName": {
+                                "type": "string",
+                                "example": "José"
+                              },
+                              "lastName": {
+                                "type": "string",
+                                "example": "Ramirez"
+                              },
+                              "idNumber": {
+                                "type": "string",
+                                "example": "1123904949292"
+                              },
+                              "birthDate": {
+                                "type": "string",
+                                "description": "format: `DD-MMM-YYYY`",
+                                "format": "date",
+                                "example": "02-May-2022"
+                              },
+                              "residencyCountry": {
+                                "type": "string",
+                                "example": "COL",
+                                "description": "consider ISO 3166 ALPHA-3 `https://www.iban.com/country-codes` "
+                              }
+                            }
+                          }
+                        },
+                        "shareholder": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "firstName": {
+                                "type": "string",
+                                "example": "Lucio"
+                              },
+                              "lastName": {
+                                "type": "string",
+                                "example": "Gutierrez"
+                              },
+                              "idNumber": {
+                                "type": "string",
+                                "example": "1721333446567"
+                              },
+                              "birthDate": {
+                                "type": "string",
+                                "description": "format: `DD-MMM-YYYY`",
+                                "format": "date",
+                                "example": "30-May-2022"
+                              },
+                              "residencyCountry": {
+                                "type": "string",
+                                "example": "ECU ",
+                                "description": "consider ISO 3166 ALPHA-3 `https://www.iban.com/country-codes`"
+                              }
+                            }
+                          }
+                        },
+                        "AMLRiskCategory": {
+                          "type": "string",
+                          "example": "H",
+                          "enum": [
+                            "H",
+                            "M",
+                            "L"
+                          ],
+                          "description": "\n`H`: High\n`M`: Medium\n`L`: Low"
+                        },
+                        "settlementBankCountry": {
+                          "type": "string",
+                          "description": "consider ISO 3166 ALPHA-3 `https://www.iban.com/country-codes`",
+                          "example": "RUS"
+                        },
+                        "settlementBankName": {
+                          "type": "string",
+                          "example": "stl bank name"
+                        },
+                        "regulatedBusiness": {
+                          "type": "string",
+                          "description": "If the Submerchant requires a license to operate its business activity: Yes(`Y`)\nIf not: No (`N`)",
+                          "enum": [
+                            "Y",
+                            "N"
+                          ],
+                          "example": "Y"
+                        },
+                        "concurrenceNeeded": {
+                          "type": "string",
+                          "enum": [
+                            "Y",
+                            "N"
+                          ],
+                          "example": "N"
+                        },
+                        "url": {
+                          "type": "string",
+                          "example": "google.com"
+                        },
+                        "subMerchantStatus": {
+                          "type": "string",
+                          "x-stoplight": {
+                            "id": "d9fmqnuz3b8wk"
+                          },
+                          "enum": [
+                            "ACTIVE",
+                            "INACTIVE"
+                          ],
+                          "description": "Activate or deactivate a sub-merchant"
+                        }
+                      },
+                      "required": [
+                        "branchId",
+                        "pspUserEmail"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "reportingDate",
+                  "pspCustomerId",
+                  "pspNotificationEmail"
+                ]
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "reportingDate": "19-May-1977",
+                    "pspTaxId": "20552103816",
+                    "pspName": "SAC DE TRAUMA",
+                    "pspCustomerId": "00010040103416507045",
+                    "pspNotificationEmail": [
+                      "user@example.com",
+                      "user1@domain.com"
+                    ],
+                    "branches": [
+                      {
+                        "branchId": "20000000107724194000",
+                        "currency": "COP",
+                        "name": "Comercio UIO",
+                        "companyRegistrationNumber": "92929",
+                        "legalName": "legal name",
+                        "pspUserEmail": "user@example.com",
+                        "legalEntityType": "entity",
+                        "mcc": 1231,
+                        "legalRepresentative": [
+                          {
+                            "firstName": "José",
+                            "lastName": "Ramirez",
+                            "idNumber": "1123904949292",
+                            "birthDate": "02-May-2022",
+                            "residencyCountry": "COL"
+                          }
+                        ],
+                        "shareholder": [
+                          {
+                            "firstName": "Lucio",
+                            "lastName": "Gutierrez",
+                            "idNumber": "1721333446567",
+                            "birthDate": "30-May-2022",
+                            "residencyCountry": "ECU "
+                          }
+                        ],
+                        "AMLRiskCategory": "H",
+                        "settlementBankCountry": "RUS",
+                        "settlementBankName": "stl bank name",
+                        "regulatedBusiness": "Y",
+                        "concurrenceNeeded": "Y",
+                        "url": "google.com"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        },
+        "description": "In this endpoint you can activate, deactivate or update information of one or more branch offices.\n\n**Note**: each request will be reviewed and validated by the Kushki team before being approved or declined.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Ecuador, Chile, Colombia, México, Perú.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)",
+        "x-stoplight": {
+          "id": "0gywrbrldukce"
+        },
+        "x-internal": true
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  },
+  "x-internal": true
+}

@@ -1,0 +1,1886 @@
+swagger: '2.0'
+x-stoplight:
+  id: 798ab89d20f76
+info:
+  version: 1.1.3
+  title: Kushki API
+  description: |
+    # Welcome!
+
+    Our API will allow you to integrate with Kushki Payment Gateway using an HTTPS or REST client in your preferred programming
+    language. For the frontend integration, please refer to [this documentation](https://api-docs.kushkipagos.com/kushki-libraries).
+
+    # Overview
+
+    This section contains an overview of the Kushki API purpose.
+
+    Our API allows the greatest technical adaptability to your existing systems. We also offer [libraries](/kushki-libraries) in several programming languages to save resources by integrating it to all types of applications you already have on the market.
+
+    # Using the API
+
+    To use the API you must ask for your Kushki Sandbox, composed by a `Public-Merchant-Id` and a `Private-Merchant-Id`.
+
+    * The current version of the Kushki API rests at: `https://api.kushkipagos.com/`
+    * The testing version rests at: `https://api-uat.kushkipagos.com/`
+
+
+    ## Endpoints
+
+    We dispose various endpoints to start your payment flows, find our products available:
+
+    * Card Payments
+    * Card Subscriptions
+    * Subscriptions with Transfer Debit
+    * Transfer Payments
+    * Cash Payments
+    * Card Async Payments
+    * Smartlinks
+
+
+    [Return Home](/)
+
+    > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+host: api-uat.kushkipagos.com
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    scopes: {}
+    authorizationUrl: ''
+paths:
+  /smartlink/v1/smart-link:
+    post:
+      operationId: POST_smartlink-v1-smart-link
+      summary: Create a Smartlink
+      description: |
+        Request a smartLink that can later be shared to a customer in order to complete the payment process.
+        In the form you can include 3 different type of items: 1) Inputs - useful to create tags so customers can include name, email and other important information for the business. 2) Selects - useful to select from a list of available options. 3) Dates - A calendar if you need the customer to select a specfic date.
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - name: body
+          in: body
+          schema:
+            title: SmartLinkRequest
+            type: object
+            properties:
+              publicMerchantId:
+                type: string
+              colors:
+                type: object
+                properties:
+                  banner:
+                    type: string
+                    pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+                  buttons:
+                    type: string
+                    pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+                  steps:
+                    type: string
+                    pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+              logo:
+                type: string
+                pattern: '^https://(.*)$'
+              paymentMethod:
+                type: array
+                enum:
+                  - credit-card
+                  - transfer
+                  - subscription
+                  - card-async
+                items:
+                  type: string
+              terms:
+                type: string
+                description: Terms and Conditions
+              transferOptions:
+                type: object
+                description: Required only for transfer payment method
+                properties:
+                  nit:
+                    type: string
+                    example: '121324252525'
+                  socialReason:
+                    type: string
+                    example: Comercio SAS
+                  contact:
+                    type: string
+                    example: name@yourdomain.com
+                required:
+                  - nit
+                  - socialReason
+                  - contact
+              subscriptionOptions:
+                type: object
+                description: Required only for subscriptions
+                properties:
+                  planName:
+                    type: string
+                  periodicity:
+                    type: string
+                    enum:
+                      - daily
+                      - weekly
+                      - biweekly
+                      - monthly
+                      - quarterly
+                      - halfYearly
+                      - yearly
+                    example: monthly
+                  terms:
+                    type: string
+                    description: Terms and Conditions
+                  startDate:
+                    type: string
+                    format: date
+                    example: '2018-09-29'
+                    description: |-
+                      `YYYY-MM-DD` 
+
+                      **Note:** Use future date
+                  endDate:
+                    type: string
+                    format: date
+                    example: '2022-09-29'
+                    description: |-
+                      `YYYY-MM-DD` 
+
+                      **Note:** Use a future date regarding to `startDate`
+                  amount:
+                    type: object
+                    required:
+                      - subtotalIva0
+                      - subtotalIva
+                      - iva
+                      - currency
+                    properties:
+                      subtotalIva0:
+                        type: number
+                      subtotalIva:
+                        type: number
+                      iva:
+                        type: number
+                      currency:
+                        $ref: '#/definitions/Currency'
+                  retryConfiguration:
+                    type:
+                      - object
+                    default: Three days in a row starting at startDate
+                    description: Use this object if you want to configure retries different than default
+                    properties:
+                      retryType:
+                        type: string
+                        default: schedule
+                        description: |-
+                          **Schedule:** Number of days to retry, starting at `startDate`. **Ex.** 5 days in a row.
+                          **Fixed:** Specific days of the month to retry. **Ex.** 10th, 20th, 30th.
+                        enum:
+                          - scheduled
+                          - fixed
+                      value:
+                        type: array
+                        minItems: 1
+                        uniqueItems: true
+                        default: 3
+                        description: |-
+                          **Examples:**
+
+                          * "schedule": [5]
+                          * "fixed": [10,20,30]
+                        items:
+                          type: integer
+                          minimum: 1
+                          maximum: 31
+                required:
+                  - planName
+                  - periodicity
+                  - terms
+                  - startDate
+                  - amount
+              expiration:
+                type: integer
+                description: Expiration date in timestamp format (in milliseconds)
+                example: 1560384000000
+              executionLimit:
+                type: integer
+              metadata:
+                type: object
+                required:
+                  - title
+                properties:
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  image:
+                    type: string
+                    pattern: '^https://(.*)$'
+              amount:
+                type: object
+                required:
+                  - subtotalIva0
+                  - subtotalIva
+                  - iva
+                  - currency
+                properties:
+                  subtotalIva0:
+                    type: number
+                    minimum: 0
+                  subtotalIva:
+                    type: number
+                    minimum: 0
+                  iva:
+                    type: number
+                    minimum: 0
+                  currency:
+                    $ref: '#/definitions/Currency'
+              form:
+                type: array
+                items:
+                  anyOf:
+                    - title: DateForm
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - date
+                        label:
+                          type: string
+                        name:
+                          type: string
+                          pattern: '[a-zA-Z0-9-_]{1,30}'
+                        placeholder:
+                          type: string
+                        validation:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - required
+                      required:
+                        - type
+                        - label
+                        - name
+                        - placeholder
+                    - title: InputForm
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - input
+                        label:
+                          type: string
+                        name:
+                          type: string
+                          pattern: '[a-zA-Z0-9-_]{1,30}'
+                        placeholder:
+                          type: string
+                        validation:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - required
+                              - minLength
+                              - maxLength
+                        value:
+                          type: string
+                        disabled:
+                          type: boolean
+                      required:
+                        - type
+                        - label
+                        - name
+                        - placeholder
+                        - disabled
+                    - title: SelectForm
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - select
+                        label:
+                          type: string
+                        name:
+                          type: string
+                          pattern: '[a-zA-Z0-9-_]{1,30}'
+                        placeholder:
+                          type: string
+                        validation:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - required
+                        options:
+                          type: array
+                          minItems: 1
+                          items:
+                            type: string
+                      required:
+                        - type
+                        - label
+                        - name
+                        - placeholder
+                        - options
+                  type: object
+            required:
+              - publicMerchantId
+              - logo
+              - paymentMethod
+              - terms
+              - executionLimit
+              - metadata
+              - amount
+              - form
+          x-examples:
+            application/json:
+              publicMerchantId: '1000000345538273545715308123173'
+              colors:
+                banner: '#002c61'
+                buttons: '#36b3a8'
+                steps: '#36b3a8'
+              executionLimit: 100
+              logo: 'https://static1.squarespace.com/static/58c6cff0e58c62bef0acefee/t/58d84f263a041137d4605639/1529436431642/?format=1500w'
+              amount:
+                subtotalIva: 2784.25
+                subtotalIva0: 0
+                iva: 334.11
+                currency: USD
+              paymentMethod: credit-card
+              metadata:
+                title: Kushki Pagos
+                description: Kushki pagos
+                image: 'https://static1.squarespace.com/static/58c6cff0e58c62bef0acefee/t/58d84f263a041137d4605639/1529436431642/?format=1500w'
+              form:
+                - type: input
+                  label: RUC
+                  name: RUC
+                  disabled: true
+                  value: '1790004724001'
+                  placeholder: ' '
+                  validation:
+                    - required
+                - type: input
+                  label: Nombre Empresa
+                  name: nombreEmpresa
+                  disabled: true
+                  value: Kushki
+                  placeholder: ' '
+                  validation: []
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+      responses:
+        '201':
+          description: ''
+          schema:
+            title: SmartLinkRequest
+            type: object
+            properties:
+              smartLinkUrl:
+                type: string
+            required:
+              - smartLinkUrl
+          examples:
+            application/json:
+              smartLinkUrl: 'https://uat.kshk.co/ryfnFoTUm'
+        '400':
+          description: ''
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                example: K001
+              message:
+                type: string
+                example: El cuerpo de la petición es inválido
+          examples:
+            application/json:
+              code: WCH001
+              message: El cuerpo de la petición es inválido
+        '500':
+          description: ''
+          schema:
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+                example: K001
+              message:
+                type: string
+                example: El cuerpo de la petición es inválido
+          examples:
+            application/json:
+              code: WCH002
+              message: Ha ocurrido un error inesperado
+      deprecated: true
+      x-private: true
+      x-internal: true
+      x-stoplight:
+        id: gmpv89jw3iqi4
+  '/smartlink/v1/smart-link/{smartlinkId}':
+    get:
+      operationId: GET_v1-smartlink-v1smart-link-smartLinkId
+      summary: Get a Smartlink
+      description: |-
+        Get a Smartlink information that can be used to render the form in a website hosted by Kushki. 
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            properties:
+              metadata:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  image:
+                    type: string
+              executionLimit:
+                type: integer
+              months:
+                type: array
+                items:
+                  type: integer
+              totalAmount:
+                type: number
+              created:
+                type: integer
+              publicMerchantId:
+                type: string
+              logo:
+                type: string
+              executionCount:
+                type: integer
+              colors:
+                type: object
+                properties:
+                  banner:
+                    type: string
+                  steps:
+                    type: string
+                  buttons:
+                    type: string
+              amount:
+                type: object
+                properties:
+                  subtotalIva0:
+                    type: integer
+                  currency:
+                    type: string
+                  iva:
+                    type: number
+                  subtotalIva:
+                    type: number
+              paymentMethod:
+                type: string
+              form:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    disabled:
+                      type: boolean
+                    label:
+                      type: string
+                    placeholder:
+                      type: string
+                    type:
+                      type: string
+                    value:
+                      type: string
+                    validation:
+                      type: array
+                      items:
+                        type: object
+          examples:
+            application/json:
+              metadata:
+                title: Kushki Pagos
+                description: Kushki pagos
+                image: 'https://static1.squarespace.com/static/58c6cff0e58c62bef0acefee/t/58d84f263a041137d4605639/1529436431642/?format=1500w'
+              executionLimit: 100
+              months:
+                - 1
+                - 3
+                - 6
+              created: 1535125929760
+              publicMerchantId: '1000000345538273545715308123173'
+              logo: 'https://static1.squarespace.com/static/58c6cff0e58c62bef0acefee/t/58d84f263a041137d4605639/1529436431642/?format=1500w'
+              executionCount: 0
+              colors:
+                banner: '#002c61'
+                steps: '#36b3a8'
+                buttons: '#36b3a8'
+              amount:
+                subtotalIva0: 0
+                currency: USD
+                iva: 334.11
+                subtotalIva: 2784.25
+              paymentMethod: credit-card
+              form:
+                - name: RUC
+                  disabled: true
+                  label: RUC
+                  placeholder: ' '
+                  type: input
+                  value: '1790004724001'
+                  validation: []
+                - name: Nombre Empresa
+                  disabled: true
+                  label: Nombre Empresa
+                  placeholder: ' '
+                  type: input
+                  value: TESTING
+                  validation: []
+              totalAmount: 3118.36
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            application/json:
+              code: WCH003
+              message: Smartlink no encontrado o no disponible
+        '500':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            application/json:
+              code: WCH002
+              message: Ha ocurrido un error inesperado.
+      parameters:
+        - in: path
+          name: smartlinkId
+          type: string
+          required: true
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+      deprecated: true
+      x-private: true
+      x-internal: true
+      x-stoplight:
+        id: k9ld2olpkq02p
+    patch:
+      operationId: PATCH_v1-smart-link-smartLinkId
+      summary: Update a Smartlink
+      description: |-
+        Update a Smartlink information will allow to update the new view of your Smartlink. 
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            example:
+              logo: officia
+              publicMerchantId: '10000002036955013614148494909956'
+              amount:
+                subtotalIva: 1
+                subtotalIva0: 0
+                iva: 0.12
+                currency: USD
+              months:
+                - 1
+                - 3
+                - 6
+              paymentMethod: credit-card
+              form:
+                - type: date
+                  label: do magna
+                  name: Duis ex labore
+                  placeholder: irure aliqua incididunt
+                  validation:
+                    - required
+                    - required
+                    - required
+                    - required
+                - type: date
+                  label: do veniam
+                  name: esse
+                  placeholder: q
+                  validation:
+                    - required
+                    - required
+                    - required
+                    - required
+                    - required
+                - type: date
+                  label: sit ad id
+                  name: laborum dolore enim minim
+                  placeholder: enim laboris ut ut exercitation
+                - type: date
+                  label: minim cupidatat labore
+                  name: proi
+                  placeholder: anim laborum in irure
+                  validation:
+                    - required
+                    - required
+                    - required
+            properties:
+              logo:
+                type: string
+              publicMerchantId:
+                type: string
+              amount:
+                type: object
+                properties:
+                  subtotalIva:
+                    type: integer
+                  subtotalIva0:
+                    type: integer
+                  iva:
+                    type: number
+                  currency:
+                    type: string
+              paymentMethod:
+                type: string
+              form:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    label:
+                      type: string
+                    name:
+                      type: string
+                    placeholder:
+                      type: string
+                    validation:
+                      type: array
+                      items:
+                        type: string
+              expiration:
+                type: number
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+        - in: path
+          name: smartlinkId
+          type: string
+          required: true
+      responses:
+        '204':
+          description: No Content
+          schema: {}
+          examples: {}
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+          examples:
+            application/json:
+              code: WCH003
+              message: Smartlink no encontrado o no disponible
+        '500':
+          description: ''
+          examples:
+            application/json:
+              code: WCH002
+              message: Ha ocurrido un error inesperado.
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+      deprecated: true
+      x-private: true
+      x-internal: true
+      x-stoplight:
+        id: 0l5jxqygw1z7c
+    delete:
+      operationId: DELETE_smartlink-v1-smart-link-smartLinkId
+      summary: Delete a Smartlink
+      description: |-
+        Remember once you delete a Smartlink it won't be available!
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      responses:
+        '204':
+          description: No Content
+          schema: {}
+        '400':
+          description: ''
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+          examples:
+            application/json:
+              code: WCH003
+              message: Smartlink no encontrado o no disponible
+        '500':
+          description: ''
+          examples:
+            application/json:
+              code: WCH002
+              message: Ha ocurrido un error inesperado.
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            required:
+              - code
+              - message
+      parameters:
+        - in: path
+          name: smartlinkId
+          type: string
+          required: true
+        - in: header
+          name: Private-key
+          type: string
+          required: true
+      deprecated: true
+      x-private: true
+      x-internal: true
+      x-stoplight:
+        id: 7qnfy581wyn5w
+responses:
+  'trait:invalidBin:402':
+    description: Invalid Bin
+    schema:
+      $ref: '#/definitions/InvalidBinResponse'
+  'trait:badRequest:400':
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/BadRequestResponse'
+  'trait:fetchedList:200':
+    description: Fetch a transactions list
+    schema:
+      type: object
+      required:
+        - has_more
+        - data
+      properties:
+        has_more:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            required:
+              - subtotalIVA0
+              - date
+              - lastFourDigitsOfCard
+              - transactionStatus
+              - transactionId
+              - voidedBy
+              - merchantName
+              - cardHolderName
+              - approvedTransactionAmount
+              - numberOfMonths
+              - extraTaxes
+              - saleTicketNumber
+              - ivaValue
+              - isDeferred
+              - ticketNumber
+              - id
+              - dateAndTimeTransaction
+              - cardType
+              - subtotalIVA
+              - requestAmount
+              - currencyCode
+              - transactionType
+              - processorName
+              - iceValue
+              - merchantId
+              - processorBankName
+              - approvalCode
+            properties:
+              subtotalIVA0:
+                type: number
+                example: 10
+              date:
+                type: string
+                example: '2017-03-24T18:52:34.000Z'
+              lastFourDigitsOfCard:
+                type: string
+                example: 1234
+              transactionStatus:
+                type: string
+                example: APPROVAL
+              transactionId:
+                type: string
+                example: 1234567890987654
+              voidedBy:
+                type: string
+                example: 10334120439012934
+              merchantName:
+                type: string
+                example: Some_Merchant_Name
+              cardHolderName:
+                type: string
+                example: John Doe
+              approvedTransactionAmount:
+                type: string
+                example: 135.5
+              numberOfMonths:
+                type: string
+                example: 0
+              ExtraTaxes:
+                type: array
+                items:
+                  required:
+                    - tasaAeroportuaria
+                    - agenciaDeViaje
+                    - iac
+                  properties:
+                    tasaAeroportuaria:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '4'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_AERO
+                    iac:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '5'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: IAC
+                    agenciaDeViaje:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '6'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_ADMIN_AGEN_COD
+              saleTicketNumber:
+                type: string
+                example: 1204493249523
+              ivaValue:
+                type: integer
+                example: 15.5
+              isDeferred:
+                type: string
+                example: 'Y'
+              ticketNumber:
+                type: string
+                example: 1234567890987654
+              id:
+                type: string
+                example: askasdkask
+              dateAndTimeTransaction:
+                type: string
+                example: 12345012469
+              cardType:
+                type: string
+                example: Master Card
+              subtotalIVA:
+                type: number
+                example: 10
+              requestAmount:
+                type: string
+                example: 130
+              currencyCode:
+                type: string
+                example: USD
+              transactionType:
+                type: string
+                example: SALE
+              processorName:
+                type: string
+                example: Some_Processor_Name
+              iceValue:
+                type: number
+                example: 10
+              merchantId:
+                type: string
+                example: 1200000432450023
+              processorBankName:
+                type: string
+                example: Some_Bank_Name
+              approvalCode:
+                type: string
+                example: 342347
+              Metadata:
+                type: object
+                properties:
+                  key1:
+                    type: string
+                    example: value1
+              subscription_metadata:
+                type: object
+                properties:
+                  key2:
+                    type: string
+                    example: value2
+    examples:
+      example-1:
+        has_more: true
+        data:
+          - subtotalIVA0: 10
+            date: '2017-03-24T18:52:34.000Z'
+            lastFourDigitsOfCard: 1234
+            transactionStatus: APPROVAL
+            transactionId: 1234567890987654
+            voidedBy: 10334120439012934
+            merchantName: Some_Merchant_Name
+            cardHolderName: John Doe
+            approvedTransactionAmount: 135.5
+            numberOfMonths: 0
+            ExtraTaxes:
+              - tasaAeroportuaria:
+                  taxid: '4'
+                  taxAmount: 2
+                  taxName: TASA_AERO
+                iac:
+                  taxid: '5'
+                  taxAmount: 2
+                  taxName: IAC
+                agenciaDeViaje:
+                  taxid: '6'
+                  taxAmount: 2
+                  taxName: TASA_ADMIN_AGEN_COD
+            saleTicketNumber: 1204493249523
+            ivaValue: 15.5
+            isDeferred: 'Y'
+            ticketNumber: 1234567890987654
+            id: askasdkask
+            dateAndTimeTransaction: 12345012469
+            cardType: Master Card
+            subtotalIVA: 10
+            requestAmount: 130
+            currencyCode: USD
+            transactionType: SALE
+            processorName: Some_Processor_Name
+            iceValue: 10
+            merchantId: 1200000432450023
+            processorBankName: Some_Bank_Name
+            approvalCode: 342347
+            Metadata:
+              key1: value1
+            subscription_metadata:
+              key2: value2
+  'trait:created:201':
+    description: Created
+    schema:
+      type: object
+      required:
+        - ticketNumber
+      properties:
+        ticketNumber:
+          type: string
+          example: '123456789012345678'
+    examples:
+      example-1:
+        ticketNumber: '123456789012345678'
+  'trait:unexpectedError:500':
+    description: Unexpected Error
+    schema:
+      $ref: '#/definitions/UnexpectedErrorResponse'
+  'trait:tokenCreated:201':
+    description: TokenCreated
+    schema:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: AbCDef123456Z7Ghi8901234jkLMNopQ
+definitions:
+  Amount:
+    $schema: 'http://json-schema.org/draft-04/schema#'
+    id: Amount
+    title: Amount
+    additionalProperties: false
+    type: object
+    x-examples:
+      example-1:
+        currency: USD
+        subtotalIva: 0
+        subtotalIva0: 10
+        iva: 0
+        ice: 0
+        extraTaxes:
+          iac: 0
+          tasaAeroportuaria: 0
+          agenciaDeViaje: 0
+    properties:
+      currency:
+        $ref: '#/definitions/Currency'
+      subtotalIva:
+        type: number
+        description: Set it to `0` in case the transaction has no taxes
+      subtotalIva0:
+        type: number
+        description: 'Set the total amount of the transaction here in case the it has no taxes. Otherwise, set it to `0`'
+      iva:
+        type: number
+        description: Set it to `0` in case the transaction has no taxes
+      ice:
+        type: number
+        description: Set it to `0` in case the transaction has no ICE (Impuesto a Consumos Especiales)
+      extraTaxes:
+        $ref: '#/definitions/Extrataxes'
+    required:
+      - subtotalIva
+      - subtotalIva0
+      - iva
+      - ice
+    x-stoplight:
+      id: jrbccxf1i0jkg
+  BadRequestResponse:
+    title: BadRequestResponse
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        example: K001
+      message:
+        type: string
+        example: El cuerpo de la petición es inválido
+    x-stoplight:
+      id: ln7764ljrg5yp
+  Billing-address:
+    title: Billing Address
+    type: object
+    example:
+      name: John Doe
+      phone: '+593912345678'
+      address1: Eloy Alfaro 139 y Catalina Aldaz
+      address2: centro 123
+      city: Quito
+      region: Pichincha
+      country: Ecuador
+      zipcode: '170402'
+    x-examples:
+      example-1:
+        name: John Doe
+        phone: '+593912345678'
+        address1: Eloy Alfaro 139 y Catalina Aldaz
+        address2: centro 123
+        city: Quito
+        region: Pichincha
+        country: Ecuador
+        zipcode: '170402'
+    properties:
+      name:
+        type: string
+      phone:
+        type: string
+      address1:
+        type: string
+      address2:
+        type: string
+      city:
+        type: string
+      region:
+        type: string
+      country:
+        type: string
+      zipcode:
+        type: string
+    required:
+      - name
+      - phone
+      - address1
+      - city
+      - region
+      - country
+    x-stoplight:
+      id: 38t8gpvnal6wg
+  Card:
+    description: ''
+    type: object
+    x-examples:
+      example-1:
+        name: John Doe
+        number: '5451951574925480'
+        expiryMonth: '08'
+        expiryYear: '23'
+        cvv: '121'
+    properties:
+      name:
+        type: string
+      number:
+        type: string
+        pattern: '^[0-9]{14,19}$'
+      expiryMonth:
+        type: string
+      expiryYear:
+        type: string
+      cvv:
+        type: string
+        pattern: '^[0-9]{3,4}$'
+        description: Optional only for Chilean merchants
+    required:
+      - name
+      - number
+      - expiryMonth
+      - expiryYear
+      - cvv
+    x-stoplight:
+      id: 54d3rscsrsoct
+  ChargesVoidCardResponse:
+    id: ChargesCardResponse
+    title: ChargesVoidCardResponse
+    type: object
+    additionalProperties: true
+    properties:
+      ticketNumber:
+        type: string
+        pattern: '^[0-9]{10,18}$'
+      details:
+        type: object
+        required:
+          - paymentBrand
+          - transactionId
+          - cardHolderName
+          - lastFourDigits
+          - binCard
+          - processorName
+          - processorBankName
+          - transactionType
+          - merchantName
+          - approvalCode
+        properties:
+          responseCode:
+            type: string
+          responseText:
+            type: string
+          approvedTransactionAmount:
+            type: number
+          transactionId:
+            type: string
+          approvalCode:
+            type: string
+          cardHolderName:
+            type: string
+          lastFourDigits:
+            type: string
+          binCard:
+            type: string
+          processorName:
+            type: string
+          processorBankName:
+            type: string
+          merchantName:
+            type: string
+          currencyCode:
+            type: string
+          taxes:
+            type: object
+          transactionType:
+            type: string
+          numberOfMonths:
+            type: integer
+          processorId:
+            type: string
+          merchantId:
+            type: string
+          paymentBrand:
+            type: string
+          created:
+            type: number
+          requestAmount:
+            type: number
+          subtotalIva:
+            type: number
+          subtotalIva0:
+            type: number
+          ivaValue:
+            type: number
+          iceValue:
+            type: number
+          transactionStatus:
+            type: string
+          metadata:
+            type: object
+          subscriptionMetadata:
+            type: object
+          subscriptionId:
+            type: string
+          method:
+            type: string
+          syncMode:
+            enum:
+              - api
+              - file
+              - online
+          saleTicketNumber:
+            type: string
+          graceMonths:
+            type: string
+    required:
+      - ticketNumber
+    x-stoplight:
+      id: g646j5nmioq7h
+  ContactDetails:
+    title: ContactDetails
+    type: object
+    properties:
+      firstName:
+        type: string
+        example: John
+      lastName:
+        type: string
+        example: Doe
+      secondLastName:
+        type: string
+        description: Required for fraud validation checks in Colombia
+      email:
+        type: string
+        example: user@example.com
+      documentType:
+        type: string
+        description: |-
+          Set this parameter if you want to validate the warning rules when creating the subscription.
+
+          - CC: Identity Document
+          - NIT: Tax Id number in Colombia
+          - CE: Foreing resident card in Colombia and Peru 
+          - TI: Identity Card in Colombia
+          - PP: Passport
+          - RUC: Tax Id number in Ecuador and Peru
+          - CURP: Unique Population Registry Code in Mexico
+          - RFC: Tax Id number in Mexico
+          - RUT: Tax Id number in Chile
+          - DNI: Identity Document in Peru
+          - PAS: Passport in Peru
+        example: CC
+      documentNumber:
+        type: string
+        description: Set this parameter if you want to validate the warning rules when creating the subscription
+      phoneNumber:
+        type: string
+        description: 'Use E.164 standard: `[+][country code][area code][local phone number]`'
+        example: '+593988734644'
+    required:
+      - firstName
+      - lastName
+      - email
+      - phoneNumber
+    x-examples:
+      example-1:
+        firstName: John
+        lastName: Doe
+        secondLastName: ''
+        email: user@example.com
+        documentType: CC
+        documentNumber: '123456789'
+        phoneNumber: '+593912345678'
+    x-stoplight:
+      id: 274gw957bbs97
+  Currency:
+    type: string
+    title: currency
+    default: USD
+    enum:
+      - USD
+      - COP
+      - CLP
+      - UF
+      - PEN
+      - MXN
+    x-examples: {}
+    x-stoplight:
+      id: sa4gf81eo0lpi
+  Deferred:
+    description: For deferred transactions in Ecuador
+    type: object
+    x-examples:
+      example-1:
+        graceMonths: '02'
+        creditType: '01'
+        months: 3
+    properties:
+      graceMonths:
+        type: string
+        pattern: '^[0-9]{2}$'
+      creditType:
+        type: string
+        pattern: '^[0-9]{2}$'
+      months:
+        type: number
+    required:
+      - graceMonths
+      - creditType
+      - months
+    x-stoplight:
+      id: 506oz7f81zvy3
+  ErrorResponse:
+    title: ErrorResponse
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    description: Response error
+    x-stoplight:
+      id: oou24jtb8wwwg
+  Extrataxes:
+    title: extraTaxes
+    type: object
+    example:
+      iac: 0
+      tasaAeroportuaria: 0
+      agenciaDeViaje: 0
+    description: ''
+    properties:
+      iac:
+        type: number
+      tasaAeroportuaria:
+        type: number
+      agenciaDeViaje:
+        type: number
+    x-stoplight:
+      id: unbqhp3qr0iz1
+  InvalidBinResponse:
+    title: InvalidBinResponse
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        example: K003
+      message:
+        type: string
+        example: Tarjeta no habilitada por el emisor
+    x-stoplight:
+      id: mw6m26kpvsggl
+  Language:
+    title: Language
+    type: string
+    enum:
+      - es
+      - en
+    x-stoplight:
+      id: pk7bgysuqssfi
+  Metadata:
+    title: Metadata
+    type: object
+    properties:
+      key0:
+        type: string
+        example: value0
+      key1:
+        type: string
+        example: value1
+      key2:
+        type: string
+        example: value2
+    x-stoplight:
+      id: 52mi37fs3vxwp
+  Multi-merchant-common:
+    title: GetConfigurationRequest
+    description: The properties that are shared amongst all versions of the Multi-Merchant model.
+    type: object
+    properties:
+      totalAmount:
+        type: number
+      currency:
+        type: string
+        enum:
+          - USD
+          - COP
+          - CLP
+          - UF
+          - PEN
+    $schema: 'http://json-schema.org/draft-04/schema#'
+    id: 'http://ksh/GetConfigurationRequest'
+    required:
+      - totalAmount
+      - currency
+    x-stoplight:
+      id: 0p9uqp7dhns12
+  Product:
+    description: ''
+    type: object
+    x-examples:
+      example-1:
+        id: 198952AB
+        title: eBook Digital Services
+        price: 6990000
+        sku: '10101042'
+        quantity: 1
+    properties:
+      id:
+        type: string
+        description: The item's unique identifier according to your system. Use the same ID that you would use to look up items on your website's database
+      title:
+        type: string
+        description: The item's name
+      price:
+        type: number
+        description: 'The item unit price in micros, in the base unit of the `currency` code'
+      sku:
+        type: string
+        description: 'Stock-keeping Unit ID: code that refers to the particular stock keeping unit'
+      quantity:
+        type: number
+        description: Quantity of the item
+    required:
+      - id
+      - title
+      - price
+      - sku
+      - quantity
+    title: product
+    x-stoplight:
+      id: t236v9j1uzg0k
+  Promotions:
+    title: Promotions
+    type: object
+    properties:
+      promotionId:
+        type: string
+      status:
+        type: string
+      description:
+        type: string
+      discount:
+        type: object
+        properties:
+          amount:
+            type: number
+            example: 50
+          currency:
+            $ref: '#/definitions/Currency'
+          minimumPurchaseAmount:
+            type: number
+            example: 349.99
+    x-stoplight:
+      id: 0xwjbqfjagq2q
+  Shipping-address:
+    title: Shipping Address
+    type: object
+    x-examples:
+      example-1:
+        name: John Doe
+        phone: '+593912345678'
+        address1: Eloy Alfaro 139 y Catalina Aldaz
+        address2: centro 123
+        city: Quito
+        region: Pichincha
+        country: Ecuador
+        zipcode: '170402'
+    properties:
+      name:
+        type: string
+      phone:
+        type: string
+      address1:
+        type: string
+      address2:
+        type: string
+      city:
+        type: string
+      region:
+        type: string
+      country:
+        type: string
+      zipcode:
+        type: string
+    required:
+      - name
+      - phone
+      - address1
+      - city
+      - region
+      - country
+    x-stoplight:
+      id: upbffq875yao8
+  Subscription:
+    title: Subscription
+    type: object
+    properties:
+      token:
+        type: string
+        example: AbCDef123456Z7Ghi8901234jkLMNopQ
+      planName:
+        type: string
+        example: Premium
+      periodicity:
+        type: string
+        enum:
+          - daily
+          - weekly
+          - biweekly
+          - monthly
+          - threefortnights
+          - bimonthly
+          - quarterly
+          - fourmonths
+          - halfYearly
+          - yearly
+          - custom
+        example: monthly
+        description: Use `custom` for one-click subscriptions
+      contactDetails:
+        $ref: '#/definitions/ContactDetails'
+      ignoreWarnings:
+        type: boolean
+        description: Set this parameter to `true` if you want to continue creating the subscription despite de warning rules
+      amount:
+        $ref: '#/definitions/Amount'
+      startDate:
+        type: string
+        format: date
+        example: '2018-09-29'
+        description: |-
+          `YYYY-MM-DD` 
+
+          **Note:** Use future date
+      endDate:
+        type: string
+        format: date
+        example: '2022-09-29'
+        description: |-
+          `YYYY-MM-DD` 
+
+          **Note:** Use a future date regarding to `startDate`
+      language:
+        $ref: '#/definitions/Language'
+      retryConfiguration:
+        type:
+          - object
+        default: Three days in a row starting at startDate
+        description: Use this object if you want to configure retries different than default
+        properties:
+          retryType:
+            type: string
+            default: schedule
+            description: |-
+              **Schedule:** Specific interval to retry starting at `startDate`. **Ex.** Every 3 days.
+
+              **Fixed:** Specific days of the month to retry. **Ex.** 10th, 20th, 30th.
+            enum:
+              - scheduled
+              - fixed
+          value:
+            type: array
+            minItems: 1
+            uniqueItems: true
+            default: 3
+            description: |-
+              **Examples:**
+
+              * "schedule": [3]
+              * "fixed": [10,20,30]
+            items:
+              type: integer
+              minimum: 1
+              maximum: 31
+      metadata:
+        $ref: '#/definitions/Metadata'
+    required:
+      - token
+      - planName
+      - periodicity
+      - contactDetails
+      - amount
+      - startDate
+    x-stoplight:
+      id: dtp7he30b1o33
+  SubscriptionAdjustment:
+    title: SubscriptionAdjustmentRequest
+    type: object
+    properties:
+      amount:
+        type: object
+        required:
+          - subtotalIva
+          - subtotalIva0
+          - iva
+        properties:
+          currency:
+            $ref: '#/definitions/Currency'
+          subtotalIva:
+            type: number
+            minimum: 0
+            description: Set it to `0` in case the transaction has no taxes
+          subtotalIva0:
+            type: number
+            minimum: 0
+            description: 'Set the total amount of the transaction here in case the it has no taxes. Otherwise, set it to `0`'
+          iva:
+            type: number
+            minimum: 0
+            description: Set it to `0` in case the transaction has no taxes
+          ice:
+            type: number
+            minimum: 0
+            description: Set it to `0` in case the transaction has no ICE (Impuesto a consumos especiales)
+          extraTaxes:
+            $ref: '#/definitions/Extrataxes'
+      periods:
+        type: integer
+        minimum: 1
+        maximum: 12
+    required:
+      - amount
+      - periods
+    x-stoplight:
+      id: z122vtqzaud6i
+  SubscriptionUpdate:
+    title: SubscriptionUpdate
+    type: object
+    properties:
+      planName:
+        type: string
+        example: Premium
+      periodicity:
+        type: string
+        enum:
+          - daily
+          - weekly
+          - biweekly
+          - monthly
+          - quarterly
+          - halfYearly
+          - yearly
+          - custom
+        example: monthly
+        description: Use `custom` for one-click subscriptions
+      contactDetails:
+        $ref: '#/definitions/ContactDetails'
+      amount:
+        $ref: '#/definitions/Amount'
+      startDate:
+        type: string
+        format: date
+        description: |-
+          `YYYY-MM-DD`
+
+          **Note:** Use future date
+        example: '2018-09-29'
+      endDate:
+        type: string
+        format: date
+        description: |-
+          `YYYY-MM-DD`
+
+          **Note:** Use future date
+        example: '2018-09-29'
+      language:
+        $ref: '#/definitions/Language'
+      metadata:
+        $ref: '#/definitions/Metadata'
+      retryConfiguration:
+        type:
+          - object
+        default: Three days in a row starting at startDate
+        description: Use this object if you want to configure retries different than default
+        properties:
+          retryType:
+            type: string
+            default: schedule
+            description: |-
+              **Schedule:** Number of days to retry starting at `startDate`. **Ex.** 5 days in a row.
+
+              **Fixed:** Specific days of the month to retry. **Ex.** 10th, 20th, 30th.
+            enum:
+              - scheduled
+              - fixed
+          value:
+            type: array
+            minItems: 1
+            uniqueItems: true
+            default: 3
+            description: |-
+              **Examples:**
+
+              * "schedule": [5]
+              * "fixed": [10,20,30]
+            items:
+              type: integer
+              minimum: 1
+              maximum: 31
+    x-stoplight:
+      id: grm69i8gns6wx
+  UnexpectedErrorResponse:
+    title: UnexpectedErrorResponse
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        example: K002
+      message:
+        type: string
+        example: Ha ocurrido un error inesperado
+    x-stoplight:
+      id: 0yucx3pmhyajt
+  OrderDetails:
+    description: ''
+    type: object
+    x-examples:
+      example-1:
+        siteDomain: example.com
+        shippingDetails:
+          name: John Doe
+          phone: '+593912345678'
+          address1: Eloy Alfaro 139 y Catalina Aldaz
+          address2: centro 123
+          city: Quito
+          region: Pichincha
+          country: Ecuador
+        billingDetails:
+          name: John Doe
+          phone: '+593912345678'
+          address1: Eloy Alfaro 139 y Catalina Aldaz
+          address2: centro 123
+          city: Quito
+          region: Pichincha
+          country: Ecuador
+    properties:
+      siteDomain:
+        type: string
+      shippingDetails:
+        $ref: '#/definitions/Shipping-address'
+      billingDetails:
+        $ref: '#/definitions/Billing-address'
+    required:
+      - siteDomain
+      - shippingDetails
+      - billingDetails
+    title: orderDetails
+    x-stoplight:
+      id: 4az2ocrdn0o1j
+  BinInfo:
+    description: ''
+    type: object
+    x-examples:
+      example-1:
+        bank: BANCO CONTINENTAL
+        type: credit
+    properties:
+      bank:
+        type: string
+      type:
+        type: string
+    required:
+      - bank
+      - type
+    title: binInfo
+    x-stoplight:
+      id: 2ivxpaq8mypme
+  Channel:
+    type: string
+    description: ''
+    x-examples:
+      example-1: WOOCOMMERCE
+    enum:
+      - PRESTASHOP
+      - WOOCOMMERCE
+      - MAGENTO
+      - WEBCHECKOUTPLUS
+      - WEBCHECKOUT
+    title: ''
+    x-stoplight:
+      id: 3ya2ea0h8vb4n
+  Country:
+    type: string
+    title: Country
+    enum:
+      - Peru
+      - México
+      - Colombia
+      - Ecuador
+      - Chile
+    x-stoplight:
+      id: bbkgd2zyk5kpj
+  PaymentMethod:
+    type: string
+    title: paymentMethod
+    description: ''
+    enum:
+      - card
+      - cash
+      - transfer
+    x-stoplight:
+      id: gtsctdk9iqhrh

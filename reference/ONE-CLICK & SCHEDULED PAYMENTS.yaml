@@ -1,0 +1,3074 @@
+openapi: 3.1.0
+x-stoplight:
+  id: 4hi5vhxg9vu0y
+info:
+  title: ONE-CLICK & SCHEDULED PAYMENTS
+  description: |
+    ### Discover a bit more about the recurring payment process
+
+    Credit cards have global coverage and are one of the most popular ways to pay online. There are different types of cards and several steps in the process. Learn how it works, the parties involved, and the stages of a subscription payment.
+
+    <!-- theme: warning -->
+    > #### To keep in mind
+    >Due to our risk policies, the available payment methods and the integration type may vary once you complete the affiliation. We will tell you how to proceed if this process applies to your merchant.
+
+    > **NOTE: This service is also known as Tokenization and recurrent charge execution.**
+
+    ## Payment process
+
+    A credit card payment for a subscription is made in 2 main steps: Credit or debit card registration and execution of the recurring charge.
+
+    ![Recurrent_payment](//images.ctfassets.net/mmjbm94f6iyd/15KWLOArxWJzDNhJ3Z42hk/33608498728de7aea4b4c13a50958365/Cards_recurrent_payment__optional_.svg)
+
+    ### Credit or Debit Card Registration
+
+    #### 1. Selecting a Payment Method
+
+    In your website or app, the user will select the payment method. Make sure that it is clear for the payer that their credit or debit card will be registered for paying a recurring value.
+
+    #### 2. Providing Card Data
+
+    At this step, the user provides the data of the card that he/she will use to pay. Your website or app should be capable of verifying that the card information is correct (for example, that the expiration date is not outdated, or that the card number can be validated using Luhn's algorithm). In this step, it cannot be yet warranted that the card is valid.
+
+    #### 3. Submitting Data to Kushki
+
+    Kushki will receive this data and will verify whether there are enough funds in the account associated with the credit or debit card by using a __charge for subscription validation__. This small fee is charged by Kushki and is automatically reversed if successful. This fee ensures that your client's credit card can be charged after registration.
+
+    #### 4. Creating a Subscription Notification
+
+    At this step, we will inform you about the result of the card registration process, so that you can show it on screen to the user.
+
+    ### Recurring Payment
+
+    #### 1. Payment Execution
+
+    Kushki processes __recurring charges to the registered card automatically__. Payments will be executed and repeated according to the amount and period indicated in the subscription. 
+
+    The billing logic starts running every day __from 6am GMT-5__. Make sure that the subscription was created before this time if you want the first payment to be executed on the same day of registration. Alternatively, your customer can register his/her card some days in advance, before Kushki executes the first charge. When creating a subscription, you must indicate the __start date__ `startDate`.
+
+    #### Retries
+
+    If a payment is rejected, Kushki has a retry logic to try to recover the charge. By default, __there are 3 retries for 3 days in a row from the payment day originally defined in `startDate`__. For example, for a monthly subscription with start date: `10-01-2021`, with a rejection on `10-02-2021`, payment will be retried until `13-02-2021`, 3 times each day, for a total of 9 payment attempts.
+
+    You can modify the retry days for a subscription and also define specific charging days.
+
+    ##### Customized retry logic
+
+    You can customize the collection retry logic by submitting the `retryConfiguration` object as follows:
+
+    1. `retryType`:"schedule". If you choose a schedule, you can specify in the `value` field you can specify in `value` how often the collection will be reattempted. 
+    In the next example, the collection will be reattempted 3 times per day every 2 days for the entire month.
+    ```json
+    {
+       "retryConfiguration":{
+          "retryType":"scheduled",
+          "value":[2]
+       }
+    }
+    ```
+
+    2. `retryType`:"fixed". Send the specific days of the month to retry. Ex. 10th, 20th, 30th.
+      In the following example, the charge will only be reattempted 3 times a day, on the 10th, 20th and 30th of the corresponding month.
+     ```json
+    {
+       "retryConfiguration":{
+          "retryType":"fixed",
+          "value":[10,20,30]
+       }
+    }
+    ```
+    >Send the `retryType` as `fixed` if you do not want to retry the collection for the entire month.
+    If the __last charge attempt was declined__, we may send you a notification via WebHook informing you about it. In these cases, we recommend you to contact the card owner and offer him/her a set of alternatives for paying the fee that could not be charged; for example, changing the registered credit card and generating an [One-click payment](https://docs.kushki.com/mx/en/one-time-payments/card/on-demand) only for one time. Kushki will continue executing automatic charges over the following periods.
+
+    #### 2. Transaction Status Notification
+
+    At this step, you will be notified of the status of each automatic charge. You may receive the __Webhook notifications__ that you expose for Kushki to consume. You also use Kushki's console to verify transactions, as well as their details and their status.
+
+    Start your integration and accept recurring payments online safely.
+
+    ## Using the API
+
+    To use the API you must ask for your Kushki Sandbox, composed of a `Public-Merchant-Id` and a `Private-Merchant-Id`.
+
+    * The current version of the Kushki API rests at: `https://api.kushkipagos.com/`
+    * The testing version rests at: `https://api-uat.kushkipagos.com/`
+
+    ## Idempotency
+
+    Kushki’s API supports **idempotent requests** to safely retry operations without the risk of executing the same transaction twice. This feature is especially useful when network issues, timeouts, or client retries might otherwise create duplicate records.
+
+    ### How it works
+
+    To perform an idempotent request, include the header `Idempotency-Key` with a unique value when calling one of the supported endpoints.
+
+    - Kushki stores the resulting status code and response body **only if the original request succeeds**.  
+    - If the same key is sent again within the validity window, the **same successful response is returned**.  
+    - If the original request failed with a `4XX` or `5XX` error, **no idempotency record is stored**, and the client can safely retry the entire process with the same `Idempotency-Key`.  
+
+    ### Header
+
+    ```http
+    Idempotency-Key: <unique-key>
+    ```
+
+    ### Rules
+
+    - **Valid for:** 24 hours. After this period, if the same `Idempotency-Key` is sent again, a new transaction will be generated.  
+    - **Maximum length:** 56 characters.  
+    - **Uniqueness:** must be unique per transaction type.  
+    - **Scope:** applies only to supported endpoints (see below).  
+    - **Generation:** clients are responsible for generating keys. We recommend UUIDv4 or another random string generator with sufficient entropy.  
+
+    ### Supported endpoints
+
+    The `Idempotency-Key` header is currently supported in:
+
+    - **Void a transaction** (one-time charges, preauthorizations, and subscription charges).  
+    - **Refund a transaction** (one-time charges, preauthorizations, and subscription charges).  
+    - **Subscription preauthorizations**.  
+
+    ### Error scenarios
+
+    #### `5XX` errors (server-side issues)
+    - No idempotency record is stored.  
+    - The client may retry with the same `Idempotency-Key`.  
+    - Retrying is at the integrator’s discretion.  
+
+    #### `4XX` errors (client-side issues)
+    - No idempotency record is stored.  
+    - The client may retry with the same `Idempotency-Key` after correcting the input.  
+    - Retrying is at the integrator’s discretion.  
+
+    ### Best practices
+    - Always generate a new `Idempotency-Key` for each unique transaction attempt.  
+    - Use a UUID or another strong random string generator to ensure uniqueness.  
+
+    ## Endpoints
+
+    We dispose various endpoints to start your payment flows, find our products available:
+
+    * [Request a recurring charge token](https://api-docs.kushkipagos.com/docs/online-payments/one-click-and-scheduled-payments/operations/create-a-subscription-v-1-card-token)
+    * [Create a recurring charge](https://api-docs.kushkipagos.com/docs/online-payments/one-click-and-scheduled-payments/operations/create-a-subscription-v-1-card)
+    * [Update recurring charge card data](https://api-docs.kushkipagos.com//docs/online-payments/one-click-and-scheduled-payments/operations/update-a-subscription-v-1-card-card)
+    * [Make an One-click payment](https://api-docs.kushkipagos.com/docs/online-payments/one-click-and-scheduled-payments/operations/create-a-subscription-v-1-card-1)
+    * [Cancel a recurring charge](https://api-docs.kushkipagos.com/docs/online-payments/one-click-and-scheduled-payments/operations/delete-a-subscription-v-1-card)
+    * [Update a recurring charge](https://api-docs.kushkipagos.com/docs/online-payments/one-click-and-scheduled-payments/operations/modify-a-subscription-v-1-card)
+    * [Add a temporary charge or discount](https://api-docs.kushkipagos.com//docs/online-payments/one-click-and-scheduled-payments/operations/update-a-subscription-v-1-card)
+    * [Authorize payments](https://api-docs.kushkipagos.com/docs/online-payments/one-click-and-scheduled-payments/operations/create-a-subscription-v-1-card-authorize)
+    * [Capture an authorized payment](https://api-docs.kushkipagos.com/docs/online-payments/one-click-and-scheduled-payments/operations/create-a-subscription-v-1-card-capture)
+    * [Get recurring charge Info](https://api-docs.kushkipagos.com/docs/online-payments/one-click-and-scheduled-payments/operations/get-a-subscription-v-1-card-search)
+
+    [Return Home](/)
+
+    > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+  version: 1.1.3
+tags: []
+paths:
+  /subscriptions/v1/card/tokens:
+    post:
+      summary: Request a recurring charge token
+      deprecated: false
+      description: "<!-- theme: none -->\n> #### This functionality is available for the following models:\n>\n> ☑ Acquirer</br>\n> ☑ Aggregator\n\n<!-- theme: danger -->\n> **Important Notice about Transactions with BBVA Peru** \U0001F1F5\U0001F1EA<br>\n> Starting January 1, 2025, BBVA Peru will only accept card transactions with dynamic CVV as part of its measures to enhance the security of online transactions.\n\n\nRequest a recurring charge `token` that can later be used to create a recurring charge of a customer using the `/subscriptions/v1/card` endpoint.\n<div class=\"danger\">\n  <p><strong>Important to consider:</strong> If you are using this option to request the token, <strong>be sure to comply</strong> with all the PCI requirements to handle card data on your servers.</p>\n</div>\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Ecuador, Chile, Colombia, México, Perú.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n<!-- theme: danger -->\n> #### Token expiration\n>\n>Tokens will expire in 30 minutes and can be used only for a single transaction (even if the transaction was wrong). You will need to request a new token when it expires.\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)"
+      operationId: requestSubscriptionToken
+      tags: []
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            required:
+              - card
+            properties:
+              card:
+                type: object
+                required:
+                  - name
+                  - number
+                  - expiryMonth
+                  - expiryYear
+                  - cvv
+                properties:
+                  name:
+                    type: string
+                    x-stoplight:
+                      id: v4aoys2w8k37u
+                  number:
+                    type: string
+                    x-stoplight:
+                      id: ssbketxle6zs0
+                    pattern: '^[0-9]{14,19}$'
+                  expiryMonth:
+                    type: string
+                    x-stoplight:
+                      id: 08en7gi7jesrg
+                  expiryYear:
+                    type: string
+                    x-stoplight:
+                      id: hc3jkjrj03y33
+                  cvv:
+                    type: string
+                    x-stoplight:
+                      id: 6zub9e8im3hop
+                  cryptogram:
+                    type: string
+                    x-stoplight:
+                      id: 96nlw5o2c2cpi
+                    example: AwAAAAkCnw2wBbgDqQA+gLBQEEA=
+                    description: "Only available in Chile \U0001F1E8\U0001F1F1 and Peru \U0001F1F5\U0001F1EA.  \nCryptogram required when using a network token, obtained from digital wallets or issuer token services.  \n- It does not replace the CVV; sending the CVV is still recommended.  \n- If only the cryptogram is provided without CVV, the acceptance rate may vary.  \n"
+              currency:
+                $ref: ../models/currency.yaml
+              jwt:
+                type: string
+                description: 'Obtain this Json Web Token (JWT) from the [kushki.js](https://api-docs.kushkipagos.com/docs/libraries/kushkijs) library to execute 3DS authentication'
+              isNetworkToken:
+                type: boolean
+                x-stoplight:
+                  id: 33a429y0zkf7t
+                default: false
+                description: "Only available in Chile \U0001F1E8\U0001F1F1 and Perú\U0001F1F5\U0001F1EA. Indicates whether the card number provided in the `number` field is a **network token** (i.e., provisioned by Visa, Mastercard, or another card network), rather than a traditional PAN.\n\n\nIf this field is omitted or set to `false`, the system will treat the card number as a traditional PAN."
+              networkToken:
+                $ref: ../models/networkToken.yaml
+          x-examples:
+            application/json:
+              card:
+                name: John Doe
+                number: '4242424242424242'
+                expiryMonth: '03'
+                expiryYear: '25'
+                cvv: '071'
+              currency: USD
+        - name: Public-key
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: application/json
+          required: true
+          example: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - card
+              properties:
+                card:
+                  type: object
+                  required:
+                    - name
+                    - number
+                    - expiryMonth
+                    - expiryYear
+                    - cvv
+                  properties:
+                    name:
+                      type: string
+                      x-stoplight:
+                        id: v4aoys2w8k37u
+                    number:
+                      type: string
+                      x-stoplight:
+                        id: ssbketxle6zs0
+                      pattern: '^[0-9]{14,19}$'
+                    expiryMonth:
+                      type: string
+                      x-stoplight:
+                        id: 08en7gi7jesrg
+                    expiryYear:
+                      type: string
+                      x-stoplight:
+                        id: hc3jkjrj03y33
+                    cvv:
+                      type: string
+                      x-stoplight:
+                        id: 6zub9e8im3hop
+                    cryptogram:
+                      type: string
+                      x-stoplight:
+                        id: 9v7jib5ltk6em
+                      description: "<b style=\"background-color:#0366d6; color:white; border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 600;\">BETA</b>Only available in Chile \U0001F1E8\U0001F1F1 and Peru \U0001F1F5\U0001F1EA.\n\nCryptogram required when using a network token, obtained from digital wallets or issuer token services.\n\n- It does not replace the CVV; sending the CVV is still recommended.\n- If only the cryptogram is provided without CVV, the acceptance rate may vary."
+                currency:
+                  $ref: ../models/currency.yaml
+                jwt:
+                  type: string
+                  description: 'Obtain this Json Web Token (JWT) from the [kushki.js](https://api-docs.kushkipagos.com/docs/libraries/kushkijs) library to execute 3DS authentication'
+                isNetworkToken:
+                  type: boolean
+                  x-stoplight:
+                    id: 19pmhseingo4v
+                  description: "<b style=\"background-color:#0366d6; color:white; border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 600;\">BETA</b>  Only available in Chile \U0001F1E8\U0001F1F1 and Perú\U0001F1F5\U0001F1EA. Indicates whether the card number provided in the number field is a network token (i.e., provisioned by Visa, Mastercard, or another card network), rather than a traditional PAN.\n\nIf this field is omitted or set to false, the system will treat the card number as a traditional PAN."
+                networkToken:
+                  $ref: ../models/networkToken.yaml
+                  x-stoplight:
+                    id: smsbaed6wseat
+            examples:
+              application/json:
+                value:
+                  card:
+                    name: John Doe
+                    number: '4242424242424242'
+                    expiryMonth: '03'
+                    expiryYear: '25'
+                    cvv: '071'
+                  currency: USD
+      responses:
+        '201':
+          description: TokenCreated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    examples:
+                      - AbCDef123456Z7Ghi8901234jkLMNopQ
+                  secureService:
+                    type: string
+                  secureId:
+                    type: string
+                  security:
+                    type: object
+                    description: You can expect this object when 3DS is activated in your account and you send the `jwt` obtained from the `requestSecureInit` method of kushki.js library
+                    properties:
+                      acsURL:
+                        type: string
+                        description: Refers to the URL of the challenge page that the user must pass (Access Control System)
+                      authenticationTransactionId:
+                        type: string
+                        description: Transaction ID verified from brands
+                      authRequired:
+                        type: boolean
+                        description: This field indicates whether a 3DS challenge is required
+                      paReq:
+                        type: string
+                        description: Payer Authentication Request
+                      specificationVersion:
+                        type: string
+                        description: Refers to the applicable 3DS version
+                required:
+                  - token
+              examples:
+                GL - Generated token:
+                  value:
+                    token: AbCDef123456Z7Ghi8901234jkLMNopQ
+                GL - Generated token with 3DS authentication required:
+                  value:
+                    token: b50441ae5fb94e96842df33020d2dc29
+                    secureId: 4c0f9371-20c1-4bc2-ae9e-38a360c5e763
+                    secureService: 3dsecure
+                    security:
+                      acsURL: ''
+                      authenticationTransactionId: OWgXwASsYPW4hr1ATcf0
+                      authRequired: true
+                      paReq: sandbox
+                      specificationVersion: 2.2.0
+                GL - Token generated with 3DS authentication not required:
+                  value:
+                    token: 93643f2cbfee46db9187eaab949fc83e
+                    secureId: a3c99fbb-7738-468e-9fd6-8bdb85df6df2
+                    secureService: 3dsecure
+                    security:
+                      acsURL: ''
+                      authenticationTransactionId: ''
+                      authRequired: false
+                      paReq: ''
+                      specificationVersion: ''
+          headers: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K001
+                  message:
+                    type: string
+                    examples:
+                      - El cuerpo de la petición es inválido
+              examples:
+                GL - K001 - El cuerpo de la petición es inválido:
+                  value:
+                    code: K001
+                    message: El cuerpo de la petición es inválido
+                GL - K055 - Tipo de moneda no permitido:
+                  value:
+                    code: K055
+                    message: Tipo de moneda no permitido
+          headers: {}
+        '402':
+          description: Invalid Bin
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K003
+                  message:
+                    type: string
+                    examples:
+                      - Tarjeta no habilitada por el emisor
+          headers: {}
+        '500':
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K002
+                  message:
+                    type: string
+                    examples:
+                      - Ha ocurrido un error inesperado
+          headers: {}
+      security: []
+      x-stoplight:
+        id: qpty4xoio97ti
+  /subscriptions/v1/card:
+    post:
+      summary: Create a recurring charge
+      deprecated: false
+      description: "<!-- theme: none -->\n> #### This functionality is available for the following models:\n>\n> ☑ Acquirer</br>\n> ☑ Aggregator\n\nCreate a recurring charge with a `token` provided by Kushki which represents the customer's credit card.\n\n### Payment Execution\n\nKushki processes __recurring charges to the registered card automatically__. Payments will be executed and repeated according to the amount and period indicated in the subscription. \n\nThe billing logic starts running every day __from 6am GMT-5__. Make sure that the subscription was created before this time if you want the first payment to be executed on the same day of registration. Alternatively, your customer can register his/her card some days in advance, before Kushki executes the first charge. When creating a subscription, you must indicate the __start date `startDate`__.\n\n#### Retries\n\nIf a payment is rejected, Kushki has a retry logic to try to recover the charge. By default, __there are 3 retries for 3 days in a row from the payment day originally defined in `startDate`__. For example, for a monthly subscription with start date: `10-01-2021`, with a rejection on `10-02-2021`, payment will be retried until `13-02-2021`, 3 times each day, for a total of 9 payment attempts.\n\nYou can modify the retry days for a subscription and also define specific charging days.\n\nIf the __last charge attempt was declined__, we may send you a notification via WebHook informing you about it. In these cases, we recommend you to contact the card owner and offer him/her a set of alternatives for paying the fee that could not be charged; for example, changing the registered credit card and generating a [charge on demand](https://api-docs.kushkipagos.com/docs/online-payments/one-click-and-scheduled-payments%2Foperations%2Fcreate-a-subscription-v-1-card-1) only for one time. Kushki will continue executing automatic charges over the following periods.\n\n##### Customize retry logic\n\nYou can customize the collection retry logic by submitting the `retryConfiguration` object as follows:\n\n1. `retryType`:\"schedule\". If you choose schedule, you can specify in the `value` field you can specify in `value` how often the collection will be reattempted. \nIn the next example, the collection will be reattempted 3 times per day every 2 days for the entire month.\n```json\n{\n   \"retryConfiguration\":{\n      \"retryType\":\"schedule\",\n      \"value\":[2]\n   }\n}\n```\n\n2. `retryType`:\"fixed\". Send the specific days of the month to retry. Ex. 10th, 20th, 30th.\n  In the following example, the charge will only be reattempted 3 times a day, on the 10th, 20th and 30th of the corresponding month.\n ```json\n{\n   \"retryConfiguration\":{\n      \"retryType\":\"fixed\",\n      \"value\":[10,20,30]\n   }\n}\n```\n>Send the `retryType` as `fixed` if you do not want to retry collection for the entire month.\nIf the __last charge attempt was declined__, we may send you a notification via WebHook informing you about it. In these cases, we recommend you to contact the card owner and offer them a set of alternatives for paying the fee that could not be charged; for example, changing the registered credit card and generating an [One-click payment](https://docs.kushki.com/mx/en/one-time-payments/card/on-demand) only for one time. Kushki will continue executing automatic charges over the following periods.\n\n<!-- theme: warning -->\n> #### Important!\n>\n> When customizing retries it should be noted that once the first collection is initiated, if it fails and retries are initiated, any updates to retries will be applied until the next subscription period (weekly, monthly, yearly).\n\n#### Periodicity\n\nYou can choose the frequency of recurring charges by submitting any of these values in the required `periodicity` field:\n\n* **daily**: every 1 day.\n* **weekly**: every 7 days.\n* **biweekly**: every 15 days.\n* **monthly**: every 30 days.\n* **threefortnights**: every six weeks or 42 days.\n* **bimonthly**: every 60 days.\n* **quarterly**: every 90 days.\n* **fourmonths**: every 120 days.\n* **halfyearly**: every 180 days\n* **yearly**: every 360 days.\n* **custom**: for [one click payments](https://api-docs.kushkipagos.com/docs/online-payments/one-click-and-scheduled-payments%2Foperations%2Fcreate-a-subscription-v-1-card-1).\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Ecuador, Chile, Colombia, México, Perú. </br>\n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)\n\n### Do you have your own 3DS authentication engine?\n\n\n<!-- theme: warning -->\n> #### Product in beta version in Ecuador \U0001F1EA\U0001F1E8   \U0001F510\U0001F468‍\U0001F4BB\n>\n> We are working on our beta version. Stay tuned for its official release! You can also contact your account manager for more information.\n\n\nMake sure you include the `threeDomainSecure` object in your request.\n"
+      operationId: createSubscription
+      tags: []
+      parameters:
+        - name: Private-key
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: application/json
+          required: true
+          example: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../models/Subscription.yaml
+            examples:
+              application/json:
+                value:
+                  token: gV3ox6100000sAxClU033646vnnJsT83
+                  planName: Premium
+                  periodicity: monthly
+                  contactDetails:
+                    documentType: CC
+                    documentNumber: '1009283738'
+                    email: user@example.com
+                    firstName: John
+                    lastName: Doe
+                    phoneNumber: '+593912345678'
+                  amount:
+                    subtotalIva: 1
+                    subtotalIva0: 0
+                    ice: 0
+                    iva: 0.14
+                    currency: USD
+                  startDate: '2022-05-25'
+                  metadata:
+                    plan:
+                      fitness:
+                        cardio: include
+                        rumba: include
+                        pool: include
+              CL - Oneclick Mall Captura Diferida:
+                value:
+                  token: e309bbd555ed416980baa10dbd1c9441
+                  processorTransactionType: CAPTURE
+                  planName: Premium
+                  periodicity: custom
+                  contactDetails:
+                    firstName: John
+                    lastName: Doe
+                    email: user@example.com
+                  amount:
+                    subtotalIva: 0
+                    subtotalIva0: 1100
+                    iva: 0
+                    currency: CLP
+                  startDate: '2022-03-29'
+                  metadata:
+                    plan:
+                      fitness:
+                        cardio: include
+                        rumba: include
+                        pool: include
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    details:
+                      amount:
+                        subtotalIva: 0
+                        subtotalIva0: 150
+                        ice: 0
+                        iva: 0
+                        currency: USD
+                      binCard: '445652'
+                      binInfo:
+                        bank: ''
+                        type: credit
+                      cardHolderName: John Doe
+                      contactDetails:
+                        documentType: RUC
+                        documentNumber: '123456789'
+                        email: user@example.com
+                        firstName: John
+                        lastName: Doe
+                        phoneNumber: '+593912345678'
+                      created: '2022-07-20'
+                      lastFourDigits: '9860'
+                      maskedCreditCard: 445652XXXXXX9860
+                      merchantId: '20000000108850614000'
+                      merchantName: Tu comercio
+                      paymentBrand: VISA
+                      periodicity: custom
+                      planName: Premium
+                      processorBankName: ''
+                      startDate: '2022-08-25'
+                    subscriptionId: '1658356540437000'
+                required:
+                  - subscriptionId
+                properties:
+                  details:
+                    type: object
+                    properties:
+                      amount:
+                        $ref: ../models/Amount.yaml
+                      binCard:
+                        type: string
+                      binInfo:
+                        $ref: ../models/binInfo.yaml
+                      cardHolderName:
+                        type: string
+                      contactDetails:
+                        $ref: ../models/ContactDetails.yaml
+                      created:
+                        type: string
+                      lastFourDigits:
+                        type: string
+                      maskedCreditCard:
+                        type: string
+                      merchantId:
+                        type: string
+                      merchantName:
+                        type: string
+                      paymentBrand:
+                        type: string
+                      periodicity:
+                        type: string
+                      planName:
+                        type: string
+                      processorBankName:
+                        type: string
+                      startDate:
+                        type: string
+                  subscriptionId:
+                    type: string
+              example:
+                subscriptionId: '1601594972296000'
+              examples:
+                application/json:
+                  value:
+                    subscriptionId: '1601594972296000'
+                fullResponse v2:
+                  value:
+                    details:
+                      amount:
+                        subtotalIva: 0
+                        subtotalIva0: 150
+                        ice: 0
+                        iva: 0
+                        currency: USD
+                      binCard: '445652'
+                      binInfo:
+                        bank: ''
+                        type: credit
+                      cardHolderName: John Doe
+                      contactDetails:
+                        documentType: RUC
+                        documentNumber: '123456789'
+                        email: user@example.com
+                        firstName: John
+                        lastName: Doe
+                        phoneNumber: '+593912345678'
+                      created: '2022-07-20'
+                      lastFourDigits: '9860'
+                      maskedCreditCard: 445652XXXXXX9860
+                      merchantId: '20000000108850614000'
+                      merchantName: Tu comercio
+                      paymentBrand: VISA
+                      periodicity: custom
+                      planName: Premium
+                      processorBankName: ''
+                      startDate: '2022-08-25'
+                    subscriptionId: '1658356540437000'
+                Declined Subscription:
+                  value:
+                    id: '1645814237533000'
+                    amount:
+                      currency: MXN
+                      ice: 0
+                      iva: 0
+                      subtotalIva: 0
+                      subtotalIva0: 0
+                    binInfo:
+                      bank: CACAO PAYCARD SOLUTIONS
+                      bin: '543924'
+                      brand: MASTER CARD
+                      consortiumName: PROSA
+                      info:
+                        brand: MASTERCARD
+                        country:
+                          name: Mexico
+                        number:
+                          prefix: '543924'
+                        scheme: MASTERCARD
+                        type: DEBIT
+                      processor: NA
+                    cardHolderName: Mariel  Sabas Villar
+                    contactDetails:
+                      documentNumber: TOCT870817MDFRRR06
+                      documentType: CURP
+                      email: torrescruzteresa4@gmail.com
+                      firstName: Teresa
+                      lastName: Torres Cruz
+                      phoneNumber: '+525567398217'
+                    created: 1645814237
+                    dayOfMonth: -2
+                    dayOfWeek: '-'
+                    expiryMonth: '01'
+                    expiryYear: '27'
+                    ip: 189.203.96.156
+                    lastFourDigits: '7534'
+                    maskedCardNumber: 543924XXXXXX7534
+                    merchantCountry: Mexico
+                    merchantId: '20000000102295230000'
+                    metadata: {}
+                    month: '-'
+                    periodicity: custom
+                    planName: Aplazo
+                    startDate: 1645747200
+                    token: 77d9e29e34f84b85bb4b1a023d1a731a
+                    userAgent: 'Mozilla/5.0 (Linux; Android 11; SM-A217F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.101 Mobile Safari/537.36'
+                    vaultToken: EQ4TMMRUG4YTSNZZGY4TKOJZHEZDONJWGY3DONZUGY4DSNBQGA3TAMRTHEZTAMZXGMYDAOJXGI3TSNRXGMYDANRXHEYTSOBSGUYDAMRVERADCMRVGIZTOMRQGE4TSOJZGAYDEOBQGU4TQNZTG43DMOBWGE3DKNRYGIZTMNZQGQ3TAOJXGI3DEOBZGY3DOMBQG42TSNZQGQ4TKMRVHE2EAIZZGQZDGNRYGY3TGMBSGU3TAOJWGAZDSMRXGI3TINRYHEZDSNZWHEZDEOJXGI4TMNBXGI4TMMRXG4YDOMZTGI3TCMRXGY4TSNJQGA4TGIY=
+                    status: DECLINED
+                    code: K021
+                    message: Rechazo seguridad SiftScience
+                    description: Rechazo seguridad Bines
+                    transactionReference: 52685c9e-3ec1-4a42-874d-10b11ca9d6a4
+          headers: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K001
+                  message:
+                    type: string
+                    examples:
+                      - El cuerpo de la petición es inválido
+              examples:
+                GL - K055 - Tipo de moneda no permitido:
+                  value:
+                    code: K055
+                    message: Tipo de moneda no permitido
+                GL - The request body is invalid:
+                  value:
+                    code: K001
+                    message: El cuerpo de la petición es inválido
+                GL - Already used token:
+                  value:
+                    code: K022
+                    message: Token utilizado anteriormente
+                GL - 3DS validation failed:
+                  value:
+                    code: K322
+                    message: Transacción rechazada.
+          headers: {}
+        '500':
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K002
+                  message:
+                    type: string
+                    examples:
+                      - Ha ocurrido un error inesperado
+          headers: {}
+      security: []
+      x-stoplight:
+        id: risabpriv5s5w
+  '/subscriptions/v1/card/{subscriptionId}/card':
+    put:
+      summary: Update recurring charge card data
+      deprecated: false
+      description: "<!-- theme: none -->\n> #### This functionality is available for the following models:\n>\n> ☑ Acquirer</br>\n> ☑ Aggregator\n\nUpdate a card information used in a recurring charge, identified by its `subscriptionId`.\nStart generating a `token` with the new card information.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Ecuador, Chile, Colombia, México, Perú.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)\n\n\n### Do you have your own 3DS authentication engine?*\n\n<!-- theme: warning -->\n> #### Product in beta version in Ecuador \U0001F1EA\U0001F1E8   \U0001F510\U0001F468‍\U0001F4BB\n>\n> We are working on our beta version. Stay tuned for its official release! You can also contact your account manager for more information.\n\nMake sure you include the `threeDomainSecure` object in your request.\n\n"
+      operationId: updateSubscriptionCard
+      tags: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Private-key
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: application/json
+          required: true
+          example: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  examples:
+                    - AbCDef123456Z7Ghi8901234jkLMNopQ
+                threeDomainSecure:
+                  $ref: ../models/threeDomainSecure.yaml
+      responses:
+        '204':
+          description: No Content
+          headers: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K001
+                  message:
+                    type: string
+                    examples:
+                      - El cuerpo de la petición es inválido
+              example:
+                code: K001
+                message: El cuerpo de la petición es inválido
+              examples:
+                K001:
+                  value:
+                    code: K001
+                    message: El cuerpo de la petición es inválido
+          headers: {}
+        '500':
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K002
+                  message:
+                    type: string
+                    examples:
+                      - Ha ocurrido un error inesperado
+              example:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+          headers: {}
+      security: []
+      x-stoplight:
+        id: mhunq36em1agp
+  '/subscriptions/v1/card/{subscriptionId}':
+    post:
+      summary: Make an One-click payment
+      deprecated: false
+      description: "<!-- theme: none -->\n> #### This functionality is available for the following models:\n>\n> ☑ Acquirer</br>\n> ☑ Aggregator\n\nMake an *One-click payment* on an existing recurring charge identified by its `subscriptionId` that was created in the **Create a recurring charge** endpoint.\n\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Ecuador, Chile, Colombia, México, Perú.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n### Do you have your own 3DS authentication engine?*\n\n<!-- theme: warning -->\n> #### Product in beta version in Ecuador \U0001F1EA\U0001F1E8   \U0001F510\U0001F468‍\U0001F4BB\n>\n> We are working on our beta version. Stay tuned for its official release! You can also contact your account manager for more information.\n\n\nMake sure you include the `threeDomainSecure` object in your request.\n\n### Deferred charges in Ecuador \U0001F1EA\U0001F1E8 and Mexico \U0001F1F2\U0001F1FD\n\n\nIf you perform a deferred charge with credentials of an Ecuadorian or Mexican merchant, you have to set the `deferred` object that has the `creditType`, `graceMonths` and `months`.\n #### How to obtain the available deferred options?\n\n As soon as your customer’s card number is entered, you must use the method [Request deferred options](https://api-docs.kushkipagos.com/docs/online-payments/card/operations/get-a-card-v-1-deferred) to verify if there are deferred payment options for the BIN of the card entered by the user.\n <br>In response to this call, you will receive the name of the deferral, the type (corresponds to the `creditType` when executing the charge), the available months and the months of grace, as shown in the following example response. \n```json\n  {\n      name: \"Diferido con intereses\",\n      type: \"002\",\n      months: [\"3\", \"6\"],\n      monthsOfGrace: [\"1\", \"2\", \"3\"]\n    }\n```\n\nSome types of deferrals that may be returned in the response are:\n#### Ecuador\n\n* Diferido con meses de gracia sin intereses.\n* Diferido con meses de gracia con intereses.\n* Diferido cuota fija con intereses.\n* Diferido cuota fija sin intereses.\n* Diferido con intereses.\n* Diferido sin intereses.\n\n#### México\n\n* \"03\" = Months with no interest. (MSI)\n\nFor **months with no interest** in México, there is a minimum amount depending on the term to defer the transaction.\n\n* 3 months: $300 MXN\n* 6 months: $600 MXN\n* 9 months: $900 MXN\n* 12 months: $1,200 MXN\n* 18 months: $,1800 MXN\n\n### Chile, Colombia and Peru\n\nFor Chile, Colombia and Peru, deferred transactions vary depending on the affiliation model:\n\n#### For Acquiring\n\nFor deferred charges in **Colombian**, **Peruvian**, and **Chilean** merchants, you have to set the `deferred` object that includes the `creditType`, `graceMonths`, and `months` parameters.\n\nIn all countries, `graceMonths` must be sent with the value of **`00`**.\n\n### Example: Credit Type `01` (Colombia, Perú, and Chile's Issuer Installments)\n\n```json\n\_ \"deferred\": {\n\_ \_ \"graceMonths\": \"00\",\n\_ \_ \"creditType\": \"01\",\n\_ \_ \"months\": 6\n\_ }\n```\n\n\n### Example: Credit Type 03 (Chile's \"Cuotas Comercio\" Installments)\n\n```json\n\"deferred\": {\n\_ \_ \"graceMonths\": \"00\",\n\_ \_ \"creditType\": \"03\",\n\_ \_ \"months\": 3\n\_ }\n```\n\n\n\n#### For Aggregator model\n\nFor deferred charges in Colombian, Chilean or Peruvian merchants in aggregator model, you can send the number of installments in the `months` parameter.\n ```\n \"months\": 3,\n  ```\n<!-- theme: warning -->\n> #### Important!\n>\n> In any case, you should consult the request deferred options method as these vary according to the BIN of the card.\n"
+      operationId: chargeSubscription
+      tags: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Private-key
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: application/json
+          required: true
+          example: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              id: SubscriptionChargesRequest
+              title: SubscriptionChargesRequest
+              type: object
+              required:
+                - token
+                - amount
+                - contactDetails
+                - orderDetails
+                - productDetails
+              properties:
+                token:
+                  type: string
+                  description: '**Get this token from your front-end using the requestDeviceToken() method available in kushki.js**'
+                amount:
+                  $ref: ../models/Amount.yaml
+                language:
+                  $ref: ../models/Language.yaml
+                metadata:
+                  $ref: ../models/Metadata.yaml
+                cvv:
+                  type: string
+                  pattern: '^\d{3,4}$'
+                  description: '>Before sending the CVV on your one-click transactions, inform the Kushki integration team or your pre-sales engineer to evaluate feasibility.'
+                fullResponse:
+                  type: string
+                  enum:
+                    - v2
+                ignoreWarnings:
+                  type: boolean
+                  description: Set this parameter to `true` if you want to continue with the charge despite the warning rules
+                deferred:
+                  $ref: ../models/Deferred.yaml
+                contactDetails:
+                  $ref: ../models/ContactDetails.yaml
+                orderDetails:
+                  type: object
+                  required:
+                    - siteDomain
+                    - shippingDetails
+                    - billingDetails
+                  properties:
+                    siteDomain:
+                      type: string
+                    shippingDetails:
+                      type: object
+                      required:
+                        - name
+                        - phone
+                        - address
+                        - city
+                        - region
+                        - country
+                        - zipCode
+                      properties:
+                        name:
+                          type: string
+                        phone:
+                          type: string
+                          description: 'Use E.164 standard: `[+][country code][area code][local phone number]`'
+                          examples:
+                            - '+593988734644'
+                        address:
+                          type: string
+                        city:
+                          type: string
+                        region:
+                          type: string
+                        country:
+                          type: string
+                        zipCode:
+                          type: string
+                    billingDetails:
+                      type: object
+                      required:
+                        - name
+                        - phone
+                        - address
+                        - city
+                        - region
+                        - country
+                        - zipCode
+                      properties:
+                        name:
+                          type: string
+                        phone:
+                          type: string
+                          description: 'Use E.164 standard: `[+][country code][area code][local phone number]`'
+                          examples:
+                            - '+593988734644'
+                        address:
+                          type: string
+                        city:
+                          type: string
+                        region:
+                          type: string
+                        country:
+                          type: string
+                        zipCode:
+                          type: string
+                productDetails:
+                  type: object
+                  required:
+                    - product
+                  properties:
+                    product:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - id
+                          - title
+                          - price
+                          - sku
+                          - quantity
+                        properties:
+                          id:
+                            type: string
+                            description: The item's unique identifier according to your system. Use the same ID that you would use to look up items on your website's database
+                          title:
+                            type: string
+                            description: The item's name
+                          price:
+                            type: number
+                            description: 'The item unit price in micros, in the base unit of the `currency` code'
+                          sku:
+                            type: string
+                            description: 'Stock-keeping Unit ID: code that refers to the particular stock keeping unit'
+                          quantity:
+                            type: number
+                            description: Quantity of the item
+                threeDomainSecure:
+                  $ref: ../models/threeDomainSecure.yaml
+            examples:
+              'Mexico: Mastercard - Own 3DS authentication engine':
+                value:
+                  language: es
+                  amount:
+                    subtotalIva: 0
+                    subtotalIva0: 5000
+                    ice: 0
+                    iva: 0
+                    currency: MXN
+                  metadata:
+                    customerId: '123'
+                  contactDetails:
+                    documentType: CURP
+                    documentNumber: ABCD123456EF78
+                    email: user@example.com
+                    firstName: John
+                    lastName: Doe
+                    phoneNumber: '+523912345678'
+                  orderDetails:
+                    siteDomain: tuebook.com
+                    shippingDetails:
+                      name: John Doe
+                      phone: '+523912345678'
+                      address: Centro 123
+                      city: Monterrey
+                      region: Nuevo León
+                      country: Mexico
+                      zipCode: '64000'
+                    billingDetails:
+                      name: John Doe
+                      phone: '+523912345678'
+                      address: Centro 123
+                      city: Monterrey
+                      region: Nuevo León
+                      country: Mexico
+                      zipCode: '64000'
+                  productDetails:
+                    product:
+                      - id: 198952AB
+                        title: eBook Digital Services
+                        price: 6990000
+                        sku: '10101042'
+                        quantity: 1
+                      - id: 198953AB
+                        title: eBook Virtual Selling
+                        price: 9990000
+                        sku: 004834GQ
+                        quantity: 1
+                  threeDomainSecure:
+                    collectionIndicator: '1'
+                    directoryServerTransactionID: f639774c-8e7c-4966-8eba-b8bae060a6ce
+                    eci: '01'
+                    ucaf: kEP6n7HiTM/4h4ZhSEFIOB6iQTpv
+                    specificationVersion: 2.2.0
+                  fullResponse: v2
+              Simple charge:
+                value:
+                  language: es
+                  amount:
+                    subtotalIva: 15.16
+                    subtotalIva0: 0
+                    ice: 0
+                    iva: 1.82
+                    currency: USD
+                  metadata:
+                    customerId: '123'
+                  contactDetails:
+                    documentType: CC
+                    documentNumber: '1009283738'
+                    email: user@example.com
+                    firstName: John
+                    lastName: Doe
+                    phoneNumber: '+593912345678'
+                  orderDetails:
+                    siteDomain: tuebook.com
+                    shippingDetails:
+                      name: John Doe
+                      phone: '+593912345678'
+                      address: Eloy Alfaro 139 y Catalina Aldaz
+                      city: Quito
+                      region: Pichincha
+                      country: Ecuador
+                      zipCode: '170402'
+                    billingDetails:
+                      name: John Doe
+                      phone: '+593912345678'
+                      address: Eloy Alfaro 139 y Catalina Aldaz
+                      city: Quito
+                      region: Pichincha
+                      country: Ecuador
+                      zipCode: '170402'
+                  productDetails:
+                    product:
+                      - id: 198952AB
+                        title: eBook Digital Services
+                        price: 6990000
+                        sku: '10101042'
+                        quantity: 1
+                      - id: 198953AB
+                        title: eBook Virtual Selling
+                        price: 9990000
+                        sku: 004834GQ
+                        quantity: 1
+                  fullResponse: v2
+              Charge when working with Sift:
+                value:
+                  token: V0OzRB100000xhxQB8035251pHLBQsq5
+                  amount:
+                    subtotalIva: 0
+                    subtotalIva0: 16.98
+                    ice: 0
+                    iva: 0
+                    currency: USD
+                  metadata:
+                    contractID: 157AB
+                  contactDetails:
+                    documentType: CC
+                    documentNumber: '1009283738'
+                    email: user@example.com
+                    firstName: John
+                    lastName: Doe
+                    phoneNumber: '+593912345678'
+                  orderDetails:
+                    siteDomain: tuebook.com
+                    shippingDetails:
+                      name: John Doe
+                      phone: '+593912345678'
+                      address: Eloy Alfaro 139 y Catalina Aldaz
+                      city: Quito
+                      region: Pichincha
+                      country: Ecuador
+                      zipCode: '170402'
+                    billingDetails:
+                      name: John Doe
+                      phone: '+593912345678'
+                      address: Eloy Alfaro 139 y Catalina Aldaz
+                      city: Quito
+                      region: Pichincha
+                      country: Ecuador
+                      zipCode: '170402'
+                  productDetails:
+                    product:
+                      - id: 198952AB
+                        title: eBook Digital Services
+                        price: 6990000
+                        sku: '10101042'
+                        quantity: 1
+                      - id: 198953AB
+                        title: eBook Virtual Selling
+                        price: 9990000
+                        sku: 004834GQ
+                        quantity: 1
+                  fullResponse: v2
+              'Deferred Charge Aggregator: CL, CO, and PE':
+                value:
+                  token: string
+                  amount:
+                    currency: USD
+                    subtotalIva: 0
+                    subtotalIva0: 10
+                    iva: 0
+                    ice: 0
+                    extraTaxes:
+                      iac: 0
+                      tasaAeroportuaria: 0
+                      agenciaDeViaje: 0
+                  language: es
+                  metadata:
+                    key0: value0
+                    key1: value1
+                    key2: value2
+                  cvv: string
+                  fullResponse: v2
+                  ignoreWarnings: true
+                  deferred:
+                    months: 2
+                    graceMonths: string
+                    creditType: string
+                  contactDetails:
+                    firstName: John
+                    lastName: Doe
+                    secondLastName: ''
+                    email: user@example.com
+                    documentType: CC
+                    documentNumber: '123456789'
+                    phoneNumber: '+593912345678'
+                  orderDetails:
+                    siteDomain: string
+                    shippingDetails:
+                      name: string
+                      phone: '+593988734644'
+                      address: string
+                      city: string
+                      region: string
+                      country: string
+                      zipCode: string
+                    billingDetails:
+                      name: string
+                      phone: '+593988734644'
+                      address: string
+                      city: string
+                      region: string
+                      country: string
+                      zipCode: string
+                  productDetails:
+                    product:
+                      - id: string
+                        title: string
+                        price: 0
+                        sku: string
+                        quantity: 0
+                  threeDomainSecure:
+                    threeDomainSecure:
+                      cavv: AAABBoVBaZKAR3BkdkFpELpWIiE=
+                      eci: '07'
+                      xid: NEpab1F1MEdtaWJ2bEY3ckYxQzE=
+                      specificationVersion: 2.2.0
+                      acceptRisk: true
+              'Deferred charge: Ecuador and Mexico':
+                value:
+                  language: es
+                  amount:
+                    subtotalIva: 16.98
+                    subtotalIva0: 0
+                    ice: 0
+                    iva: 0
+                    currency: MXN
+                  deferred:
+                    graceMonths: '02'
+                    creditType: '01'
+                    months: 6
+                  metadata:
+                    customerId: '123'
+                  contactDetails:
+                    documentType: CC
+                    documentNumber: '1009283738'
+                    email: user@example.com
+                    firstName: John
+                    lastName: Doe
+                    phoneNumber: '+523912345678'
+                  orderDetails:
+                    siteDomain: tuebook.com
+                    shippingDetails:
+                      name: John Doe
+                      phone: '+523912345678'
+                      address: Av. Siempre Viva
+                      city: Monterrey
+                      region: Nuevo León
+                      country: Mexico
+                      zipCode: '64000'
+                    billingDetails:
+                      name: John Doe
+                      phone: '+523912345678'
+                      address: Av. Siempre Viva
+                      city: Monterrey
+                      region: Nuevo León
+                      country: Mexico
+                      zipCode: '64000'
+                  productDetails:
+                    product:
+                      - id: 198952AB
+                        title: eBook Digital Services
+                        price: 6990000
+                        sku: '10101042'
+                        quantity: 1
+                      - id: 198953AB
+                        title: eBook Virtual Selling
+                        price: 9990000
+                        sku: 004834GQ
+                        quantity: 1
+                  fullResponse: v2
+              'Mexico: Visa - Own 3DS authentication engine':
+                value:
+                  language: es
+                  amount:
+                    subtotalIva: 0
+                    subtotalIva0: 5000
+                    ice: 0
+                    iva: 0
+                    currency: MXN
+                  metadata:
+                    customerId: '123'
+                  contactDetails:
+                    documentType: CURP
+                    documentNumber: ABCD123456EF78
+                    email: user@example.com
+                    firstName: John
+                    lastName: Doe
+                    phoneNumber: '+523912345678'
+                  orderDetails:
+                    siteDomain: tuebook.com
+                    shippingDetails:
+                      name: John Doe
+                      phone: '+523912345678'
+                      address: Centro 123
+                      city: Monterrey
+                      region: Nuevo León
+                      country: Mexico
+                      zipCode: '64000'
+                    billingDetails:
+                      name: John Doe
+                      phone: '+523912345678'
+                      address: Centro 123
+                      city: Monterrey
+                      region: Nuevo León
+                      country: Mexico
+                      zipCode: '64000'
+                  productDetails:
+                    product:
+                      - id: 198952AB
+                        title: eBook Digital Services
+                        price: 6990000
+                        sku: '10101042'
+                        quantity: 1
+                      - id: 198953AB
+                        title: eBook Virtual Selling
+                        price: 9990000
+                        sku: 004834GQ
+                        quantity: 1
+                  threeDomainSecure:
+                    cavv: AAABBoVBaZKAR3BkdkFpELpWIiE=
+                    eci: '01'
+                    xid: NEpab1F1MEdtaWJ2bEY3ckYxQzE=
+                    specificationVersion: 2.2.0
+                  fullResponse: v2
+              'Deferred charge Acquiring CO, PE, and CL':
+                value:
+                  token: string
+                  amount:
+                    currency: USD
+                    subtotalIva: 0
+                    subtotalIva0: 10
+                    iva: 0
+                    ice: 0
+                    extraTaxes:
+                      iac: 0
+                      tasaAeroportuaria: 0
+                      agenciaDeViaje: 0
+                  language: es
+                  metadata:
+                    key0: value0
+                    key1: value1
+                    key2: value2
+                  cvv: string
+                  fullResponse: v2
+                  ignoreWarnings: true
+                  deferred:
+                    graceMonths: '00'
+                    creditType: '01'
+                    months: 3
+                  contactDetails:
+                    firstName: John
+                    lastName: Doe
+                    secondLastName: ''
+                    email: user@example.com
+                    documentType: CC
+                    documentNumber: '123456789'
+                    phoneNumber: '+593912345678'
+                  orderDetails:
+                    siteDomain: string
+                    shippingDetails:
+                      name: string
+                      phone: '+593988734644'
+                      address: string
+                      city: string
+                      region: string
+                      country: string
+                      zipCode: string
+                    billingDetails:
+                      name: string
+                      phone: '+593988734644'
+                      address: string
+                      city: string
+                      region: string
+                      country: string
+                      zipCode: string
+                  productDetails:
+                    product:
+                      - id: string
+                        title: string
+                        price: 0
+                        sku: string
+                        quantity: 0
+                  threeDomainSecure:
+                    threeDomainSecure:
+                      cavv: AAABBoVBaZKAR3BkdkFpELpWIiE=
+                      eci: '07'
+                      xid: NEpab1F1MEdtaWJ2bEY3ckYxQzE=
+                      specificationVersion: 2.2.0
+                      acceptRisk: true
+              MX - Deferred charge with CVV:
+                value:
+                  language: es
+                  amount:
+                    subtotalIva: 16.98
+                    subtotalIva0: 0
+                    ice: 0
+                    iva: 0
+                    currency: MXN
+                  cvv: '123'
+                  deferred:
+                    graceMonths: '02'
+                    creditType: '01'
+                    months: 6
+                  metadata:
+                    customerId: '123'
+                  contactDetails:
+                    documentType: CC
+                    documentNumber: '1009283738'
+                    email: user@example.com
+                    firstName: John
+                    lastName: Doe
+                    phoneNumber: '+523912345678'
+                  orderDetails:
+                    siteDomain: tuebook.com
+                    shippingDetails:
+                      name: John Doe
+                      phone: '+523912345678'
+                      address: Av. Siempre Viva
+                      city: Monterrey
+                      region: Nuevo León
+                      country: Mexico
+                      zipCode: '64000'
+                    billingDetails:
+                      name: John Doe
+                      phone: '+523912345678'
+                      address: Av. Siempre Viva
+                      city: Monterrey
+                      region: Nuevo León
+                      country: Mexico
+                      zipCode: '64000'
+                  productDetails:
+                    product:
+                      - id: 198952AB
+                        title: eBook Digital Services
+                        price: 6990000
+                        sku: '10101042'
+                        quantity: 1
+                      - id: 198953AB
+                        title: eBook Virtual Selling
+                        price: 9990000
+                        sku: 004834GQ
+                        quantity: 1
+                  fullResponse: v2
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    details:
+                      amount:
+                        subtotalIva: 8928.57
+                        subtotalIva0: 0
+                        ice: 0
+                        iva: 1071.43
+                        currency: CLP
+                      approvalCode: '000000'
+                      approvedTransactionAmount: 10000
+                      binInfo:
+                        bank: BANCO DE LA PRODUCCION S.A. (PRODUBANCO)
+                        lastFourDigits: '5480'
+                        type: credit
+                      cardHolderName: 'Cliente suscripcion '
+                      created: 1663791518000
+                      maskedCreditCard: 545195XXXXXX5480
+                      merchantId: '20000000104903344000'
+                      merchantName: Tu comercio CL
+                      paymentBrand: Master Card
+                      processorBankName: 0032~BANCO INTERNACIONAL
+                      requestAmount: 10000
+                      responseCode: '000'
+                      responseText: Transacción aprobada
+                      transactionId: '808757803108013083'
+                      transactionStatus: APPROVAL
+                      transactionType: SALE
+                      contactDetails:
+                        email: ireri.maldonado@kushkipagos.com
+                    ticketNumber: '595599907181702055'
+                    transactionReference: d28578a3-bd00-4b11-b79a-820e61ea1bff
+                required:
+                  - ticketNumber
+                  - transactionReference
+                properties:
+                  details:
+                    type: object
+                    properties:
+                      amount:
+                        $ref: ../models/Amount.yaml
+                      approvalCode:
+                        type: string
+                      approvedTransactionAmount:
+                        type: number
+                      binInfo:
+                        $ref: ../models/binInfo.yaml
+                      cardHolderName:
+                        type: string
+                      created:
+                        type: integer
+                      maskedCreditCard:
+                        type: string
+                      merchantId:
+                        type: string
+                      merchantName:
+                        type: string
+                      paymentBrand:
+                        type: string
+                      processorBankName:
+                        type: string
+                      requestAmount:
+                        type: number
+                      responseCode:
+                        type: string
+                      responseText:
+                        type: string
+                      transactionId:
+                        type: string
+                      transactionStatus:
+                        type: string
+                        enum:
+                          - APPROVAL
+                          - DECLINED
+                      transactionType:
+                        type: string
+                      contactDetails:
+                        $ref: ../models/ContactDetails.yaml
+                  ticketNumber:
+                    type: string
+                  transactionReference:
+                    type: string
+              examples:
+                One-click payment:
+                  value:
+                    ticketNumber: '124824724666494118'
+                    transactionReference: c897bafb-c78c-4cde-aa89-d44dd9b26ef7
+                fullResponse v2:
+                  value:
+                    details:
+                      amount:
+                        subtotalIva: 0
+                        subtotalIva0: 900
+                        ice: 0
+                        iva: 0
+                        currency: USD
+                      approvalCode: '000000'
+                      approvedTransactionAmount: 900
+                      binInfo:
+                        bindCard: '445652'
+                        cardCountry: United States of America
+                        lastFourDigits: '9860'
+                        type: credit
+                      created: 1658358061000
+                      merchantId: '20000000108850614000'
+                      merchantName: Tu comercio
+                      paymentBrand: Visa
+                      processorBankName: 0032~BANCO INTERNACIONAL
+                      recap: '739587'
+                      requestAmount: 900
+                      responseCode: '000'
+                      responseText: Transacción aprobada
+                      transactionId: '814170156972641440'
+                      transactionReference: b995c22d-eda3-4212-a677-9b6a85258de1
+                      transactionStatus: APPROVAL
+                      transactionType: SALE
+                      maskedCreditCard: 445652XXXXXX9860
+                    ticketNumber: '028590538321035813'
+          headers: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: '205'
+                    message: Transacción declinada.
+                    details:
+                      processorName: Transbank Processor
+                      metadata:
+                        customerId: '123'
+                      approvedTransactionAmount: 0
+                      ticketNumber: ''
+                      binCard: '545195'
+                      transactionId: '619250255254144886'
+                      paymentBrand: Master Card
+                      responseCode: '205'
+                      responseText: Tipo de moneda no válida
+                      merchantName: Tu comercio CL
+                      cardHolderName: 'Cliente suscripcion '
+                      lastFourDigitsOfCard: '5480'
+                      approvalCode: ''
+                      conciliationId: 26272900493|credit
+                      acquirerBank: Transbank
+                      processorError: K006
+                      processorMessage: Transacción declinada.
+                    processorError: K006
+                required:
+                  - code
+                  - message
+                  - processorError
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  details:
+                    type: object
+                    properties:
+                      processorName:
+                        type: string
+                      metadata:
+                        $ref: ../models/Metadata.yaml
+                      approvedTransactionAmount:
+                        type: integer
+                      ticketNumber:
+                        type: string
+                      binCard:
+                        type: string
+                      transactionId:
+                        type: string
+                      paymentBrand:
+                        type: string
+                      responseCode:
+                        type: string
+                      responseText:
+                        type: string
+                      merchantName:
+                        type: string
+                      cardHolderName:
+                        type: string
+                      lastFourDigitsOfCard:
+                        type: string
+                      approvalCode:
+                        type: string
+                      conciliationId:
+                        type: string
+                      acquirerBank:
+                        type: string
+                      processorError:
+                        type: string
+                      processorMessage:
+                        type: string
+                      isoErrorCode:
+                        type: string
+                        x-stoplight:
+                          id: vapssfzsllpun
+                        minLength: 2
+                        description: '**Only for Kushki acquiring model**. Error response code either from Card franchises (two digits) or processors.'
+                  processorError:
+                    type: string
+              examples:
+                GL - K055 - Tipo de moneda no permitido:
+                  value:
+                    code: K055
+                    message: Tipo de moneda no permitido
+                GL - Declined transaction:
+                  value:
+                    code: '205'
+                    message: Transacción declinada.
+                    details:
+                      processorName: Transbank Processor
+                      metadata:
+                        customerId: '123'
+                      approvedTransactionAmount: 0
+                      ticketNumber: ''
+                      binCard: '545195'
+                      transactionId: '619250255254144886'
+                      paymentBrand: Master Card
+                      responseCode: '205'
+                      responseText: Tipo de moneda no válida
+                      merchantName: Tu comercio CL
+                      cardHolderName: 'Cliente suscripcion '
+                      lastFourDigitsOfCard: '5480'
+                      approvalCode: ''
+                      conciliationId: 26272900493|credit
+                      acquirerBank: Transbank
+                      processorError: K006
+                      processorMessage: Transacción declinada.
+                    processorError: K006
+          headers: {}
+        '500':
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K002
+                  message:
+                    type: string
+                    examples:
+                      - Ha ocurrido un error inesperado
+          headers: {}
+      x-stoplight:
+        id: 3hdea3drxtqk1
+    delete:
+      summary: Cancel a recurring charge
+      deprecated: false
+      description: |-
+        Cancel a recurring charge identified by its `subscriptionId`.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: cancelSubscription
+      tags: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Private-key
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema: {}
+          headers: {}
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+              example:
+                code: K001
+                message: El cuerpo de la petición es inválido
+              examples:
+                K001:
+                  value:
+                    code: K001
+                    message: El cuerpo de la petición es inválido
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+              example:
+                code: K002
+                message: Ha ocurrido un error inesperado
+              examples:
+                K002:
+                  value:
+                    code: K002
+                    message: Ha ocurrido un error inesperado
+          headers: {}
+      security: []
+      x-stoplight:
+        id: 8mpw8sn2b1n4q
+    patch:
+      summary: Update a recurring charge
+      deprecated: false
+      description: |-
+        Update the information of an existing recurring charge identified by its `subscriptionId`. All the body fields are optional, they must be sent if they are meant to be changed. 
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: updateRecurringCharge
+      tags: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Private-key
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+            default: application/json
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../models/SubscriptionUpdate.yaml
+            examples:
+              application/json:
+                value:
+                  planName: Premium
+                  periodicity: monthly
+                  contactDetails:
+                    firstName: John
+                    lastName: Doe
+                    email: user@example.com
+                  amount:
+                    subtotalIva: 10
+                    subtotalIva0: 4.95
+                    ice: 3.5
+                    iva: 1.4
+                    currency: USD
+                  startDate: '2017-01-18'
+                  endDate: '2020-01-18'
+                  language: es
+                  retryConfiguration:
+                    retryType: scheduled
+                    value:
+                      - 10
+      responses:
+        '204':
+          description: ''
+          content:
+            application/json:
+              schema: {}
+          headers: {}
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+              example:
+                code: K001
+                message: El cuerpo de la petición es inválido
+              examples:
+                K001:
+                  value:
+                    code: K001
+                    message: El cuerpo de la petición es inválido
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+              example:
+                code: K002
+                message: Ha ocurrido un error inesperado
+              examples:
+                K002:
+                  value:
+                    code: K002
+                    message: Ha ocurrido un error inesperado
+          headers: {}
+      security: []
+      x-stoplight:
+        id: 3g61n7e638ww9
+    put:
+      summary: Add a temporary charge or discount
+      deprecated: false
+      description: |-
+        Add a temporary charge or discount to a **Recurring charge** identified by its `subscriptionId`. In the request body you have to send the adjustment.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: addTemporaryCharge
+      tags: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Private-key
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: application/json
+          required: true
+          example: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../models/SubscriptionAdjustmentRequest.yaml
+            examples:
+              application/json:
+                value:
+                  amount:
+                    subtotalIva: 0
+                    subtotalIva0: 50
+                    ice: 0
+                    iva: 0
+                    currency: USD
+                  periods: 2
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema: {}
+          headers: {}
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K001
+                  message:
+                    type: string
+                    examples:
+                      - El cuerpo de la petición es inválido
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K002
+                  message:
+                    type: string
+                    examples:
+                      - Ha ocurrido un error inesperado
+          headers: {}
+      security: []
+      x-stoplight:
+        id: f6m6gqjag75i2
+  '/subscriptions/v1/card/{subscriptionId}/authorize':
+    post:
+      summary: Authorize payments
+      deprecated: false
+      description: "<!-- theme: none -->\n> #### This functionality is available for the following models:\n>\n> ☑ Acquirer</br>\n> ☑ Aggregator\n\nUse this endpoint to request an authorization on an existing one-click or scheduled payment, identified by its `subscriptionId`, created in the **Create a recurring** charge endpoint. \n\nYou authorize a card payment when you want to verify that sufficient credit exists on a customer's credit card before processing a sale. The cardholder's credit limit will be reduced by the amount of the authorization until the authorization is captured or expires.\n\n- **In Colombia, Perú, México and Chile**, the authorization will expire after 28 days for credit cards and after 7 days for debit cards from the time of request.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Chile, Colombia, México and Perú.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)\n\n### Do you have your own 3DS authentication engine?*\n\n<!-- theme: none -->\n> #### This functionality is available for the following models:\n>\n> ☑ Acquirer</br>\n> ☐ Aggregator\n\nMake sure you include the `threeDomainSecure` object in your request.\n\n\\* **Applies in Mexico \U0001F1F2\U0001F1FD , Peru \U0001F1F5\U0001F1EA, Colombia \U0001F1E8\U0001F1F4, and Chile \U0001F1E8\U0001F1F1.**"
+      operationId: subscriptions_pre-auth
+      tags: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Private-key
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: application/json
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Idempotency-Key
+          in: header
+          description: 'Unique key to prevent duplicate transactions (valid 24h). [Click here for more information](https://api-docs.kushkipagos.com/docs/online-payments/branches/1.16.1/card#idempotency)'
+          required: false
+          example: ''
+          schema:
+            type: string
+            maxLength: 56
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - name
+                - lastName
+                - email
+              properties:
+                amount:
+                  $ref: ../models/Amount.yaml
+                name:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                orderDetails:
+                  type: object
+                  description: Required for antifraud checks
+                  properties:
+                    siteDomain:
+                      type: string
+                    shippingDetails:
+                      type: object
+                      description: Required for antifraud checks
+                      properties:
+                        name:
+                          type: string
+                        phone:
+                          type: string
+                        address:
+                          type: string
+                        city:
+                          type: string
+                        region:
+                          type: string
+                        country:
+                          type: string
+                        zipCode:
+                          type: string
+                    billingDetails:
+                      type: object
+                      description: Required for antifraud checks
+                      properties:
+                        name:
+                          type: string
+                        phone:
+                          type: string
+                        address:
+                          type: string
+                        city:
+                          type: string
+                        region:
+                          type: string
+                        country:
+                          type: string
+                        zipCode:
+                          type: string
+                months:
+                  type: integer
+                  description: Only available in Perú
+                fullResponse:
+                  type: string
+                  enum:
+                    - v2
+                threeDomainSecure:
+                  $ref: ../models/threeDomainSecure.yaml
+            examples:
+              Authorization:
+                value:
+                  amount:
+                    ice: 0
+                    iva: 0
+                    subtotalIva: 0
+                    subtotalIva0: 600
+                    currency: MXN
+                  name: John
+                  lastName: Doe
+                  email: user@example.com
+                  fullResponse: v2
+              With antifraud check:
+                value:
+                  amount:
+                    ice: 0
+                    iva: 0
+                    subtotalIva: 0
+                    subtotalIva0: 600
+                    currency: MXN
+                  name: John
+                  lastName: Doe
+                  email: user@example.com
+                  orderDetails:
+                    siteDomain: tuebook.com
+                    shippingDetails:
+                      name: John Doe
+                      phone: '+529123456789'
+                      address: Centro 123
+                      city: Monterrey
+                      region: Nuevo León
+                      country: Mexico
+                      zipCode: '64000'
+                    billingDetails:
+                      name: John Doe
+                      phone: '+529123456789'
+                      address: Centro 123
+                      city: Monterrey
+                      region: Nuevo León
+                      country: Mexico
+                      zipCode: '64000'
+                  fullResponse: v2
+              PE-Deferred:
+                value:
+                  amount:
+                    ice: 0
+                    iva: 0
+                    subtotalIva: 0
+                    subtotalIva0: 600
+                    currency: PEN
+                  name: John
+                  lastName: Doe
+                  email: user@example.com
+                  months: 3
+                  fullResponse: v2
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    details:
+                      amount:
+                        ice: 0
+                        iva: 0
+                        subtotalIva: 0
+                        subtotalIva0: 1000
+                        currency: MXN
+                      approvalCode: '000000'
+                      approvedTransactionAmount: 1000
+                      binInfo:
+                        bank: BANCO DE LA PRODUCCION S.A. (PRODUBANCO)
+                        bindCard: '545195'
+                        cardCountry: Ecuador
+                        lastFourDigits: '5480'
+                        type: credit
+                      created: 1658358910000
+                      merchantId: '20000000104111374000'
+                      merchantName: Merchant MX
+                      paymentBrand: Master Card
+                      processorBankName: 0032~BANCO INTERNACIONAL
+                      requestAmount: 1000
+                      responseCode: '000'
+                      responseText: Transacción aprobada
+                      transactionId: '965525029987882758'
+                      transactionReference: 6e595cbe-d59a-4ac5-8356-878124f15877
+                      transactionStatus: APPROVAL
+                      transactionType: PREAUTHORIZATION
+                      maskedCreditCard: 545195XXXXXX5480
+                      token: 4588fa49cfba45c984634f35613aaa70
+                    ticketNumber: '729169956358290082'
+                    subscriptionId: '1658358878997000'
+                properties:
+                  details:
+                    type: object
+                    properties:
+                      amount:
+                        $ref: ../models/Amount.yaml
+                      approvalCode:
+                        type: string
+                      approvedTransactionAmount:
+                        type: number
+                      binInfo:
+                        type: object
+                        properties:
+                          bank:
+                            type: string
+                          bindCard:
+                            type: string
+                          cardCountry:
+                            type: string
+                          lastFourDigits:
+                            type: string
+                          type:
+                            type: string
+                      created:
+                        type: integer
+                      merchantId:
+                        type: string
+                      merchantName:
+                        type: string
+                      paymentBrand:
+                        type: string
+                      processorBankName:
+                        type: string
+                      requestAmount:
+                        type: number
+                      responseCode:
+                        type: string
+                      responseText:
+                        type: string
+                      transactionId:
+                        type: string
+                      transactionStatus:
+                        type: string
+                        enum:
+                          - APPROVAL
+                          - DECLINED
+                      transactionType:
+                        $ref: ../models/transactionType.yaml
+                      maskedCreditCard:
+                        type: string
+                      token:
+                        type: string
+                  ticketNumber:
+                    type: string
+                  subscriptionId:
+                    type: string
+                  transactionReference:
+                    type: string
+                    x-stoplight:
+                      id: c66vfpmabal4z
+              examples:
+                Authorize payments:
+                  value:
+                    ticketNumber: '627388610047090811'
+                    transactionReference: 998ba5fd-e590-4615-a84a-83b734437c57
+                fullResponse v2:
+                  value:
+                    details:
+                      amount:
+                        ice: 0
+                        iva: 0
+                        subtotalIva: 0
+                        subtotalIva0: 1000
+                        currency: MXN
+                      approvalCode: '000000'
+                      approvedTransactionAmount: 1000
+                      binInfo:
+                        bank: BANCO DE LA PRODUCCION S.A. (PRODUBANCO)
+                        bindCard: '545195'
+                        cardCountry: Ecuador
+                        lastFourDigits: '5480'
+                        type: credit
+                      created: 1658358910000
+                      merchantId: '20000000104111374000'
+                      merchantName: Merchant MX
+                      paymentBrand: Master Card
+                      processorBankName: 0032~BANCO INTERNACIONAL
+                      requestAmount: 1000
+                      responseCode: '000'
+                      responseText: Transacción aprobada
+                      transactionId: '965525029987882758'
+                      transactionReference: 6e595cbe-d59a-4ac5-8356-878124f15877
+                      transactionStatus: APPROVAL
+                      transactionType: PREAUTHORIZATION
+                      maskedCreditCard: 545195XXXXXX5480
+                      token: 4588fa49cfba45c984634f35613aaa70
+                    ticketNumber: '729169956358290082'
+                    subscriptionId: '1658358878997000'
+                    transactionReference: 6e595cbe-d59a-4ac5-8356-878124f15877
+          headers: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K001
+                  message:
+                    type: string
+                    examples:
+                      - El cuerpo de la petición es inválido
+              examples:
+                K001:
+                  value:
+                    code: K001
+                    message: El cuerpo de la petición es inválido
+                GL - K055 - Tipo de moneda no permitido:
+                  value:
+                    code: K055
+                    message: Tipo de moneda no permitido
+          headers: {}
+        '500':
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K002
+                  message:
+                    type: string
+                    examples:
+                      - Ha ocurrido un error inesperado
+          headers: {}
+      security: []
+      x-stoplight:
+        id: 46nfblz3powws
+  '/subscriptions/v1/card/{subscriptionId}/capture':
+    post:
+      summary: Capture an authorized payment
+      deprecated: false
+      description: "<!-- theme: none -->\n> #### This functionality is available for the following models:\n>\n> ☑ Acquirer</br>\n> ☑ Aggregator\n\nCapture an authorized card payment, under a recurring charge, using the `ticketNumber` provided as a response of the `authorization` request.\n\n- **In Colombia, Perú, México and Chile**, the authorization will expire after 28 days for credit cards and after 7 days for debit cards from the time of request.\n\n<!-- theme: warning -->\n> #### Service available in the following countries:\n>\n> Chile, Colombia, México and Perú.  \n> Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)\n\n<!-- theme: warning -->\n> #### Product in beta version for Colombia \U0001F510\U0001F468‍\U0001F4BB\n>\n> We are working on our beta version. Stay tuned for its official release! You can also contact your account manager for more information.\n\n> Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)"
+      operationId: subscriptions_capture
+      tags: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Private-key
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: application/json
+          required: true
+          example: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - ticketNumber
+                - amount
+              properties:
+                ticketNumber:
+                  type: string
+                amount:
+                  type: object
+                  required:
+                    - iva
+                    - subtotalIva
+                    - subtotalIva0
+                    - currency
+                  properties:
+                    ice:
+                      type: number
+                      description: Set it to `0` in case the transaction has no ICE (Impuesto a consumos especiales)
+                    iva:
+                      type: number
+                      description: Set it to `0` in case the transaction has no taxes
+                    subtotalIva:
+                      type: number
+                      description: Set it to `0` in case the transaction has no taxes
+                    subtotalIva0:
+                      type: number
+                      description: 'Set the total amount of the transaction here in case it has no taxes. Otherwise, set it to `0`'
+                    extraTaxes:
+                      $ref: ../models/extraTaxes.yaml
+                    currency:
+                      type: string
+                      enum:
+                        - PEN
+                        - CLP
+                        - UF
+                        - MXN
+                fullResponse:
+                  type: string
+                  enum:
+                    - v2
+            examples:
+              application/json:
+                value:
+                  ticketNumber: '319228478889680318'
+                  amount:
+                    currency: MXN
+                    subtotalIva: 0
+                    iva: 0
+                    subtotalIva0: 600
+                    ice: 0
+                  fullResponse: v2
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    details:
+                      approvalCode: '000000'
+                      approvedTransactionAmount: 1000
+                      binInfo:
+                        bank: BANCO DE LA PRODUCCION S.A. (PRODUBANCO)
+                        type: ''
+                        binCard: '545195'
+                        lastFourDigits: '5480'
+                      merchantId: '20000000104111374000'
+                      merchantName: Merchant MX
+                      paymentBrand: Master Card
+                      preauthTransactionReference: ece6bc01-b639-4338-9d40-6e0baa6cd48b
+                      processorBankName: 0032~BANCO INTERNACIONAL
+                      responseCode: '000'
+                      responseText: Transacción aprobada
+                      ticketNumber: '605303508109325273'
+                      transactionReference: ece6bc01-b639-4338-9d40-6e0baa6cd48b
+                      transactionType: CAPTURE
+                      amount:
+                        currency: MXN
+                        subtotalIva: 0
+                        iva: 0
+                        subtotalIva0: 1000
+                        ice: 0
+                      created: 1658358438000
+                      requestAmount: 1000
+                      transactionStatus: APPROVAL
+                    ticketNumber: '605303508109325273'
+                    transactionReference: ece6bc01-b639-4338-9d40-6e0baa6cd48b
+                properties:
+                  details:
+                    type: object
+                    properties:
+                      approvalCode:
+                        type: string
+                      approvedTransactionAmount:
+                        type: number
+                      binInfo:
+                        type: object
+                        properties:
+                          bank:
+                            type: string
+                          type:
+                            type: string
+                          binCard:
+                            type: string
+                          lastFourDigits:
+                            type: string
+                      merchantId:
+                        type: string
+                      merchantName:
+                        type: string
+                      paymentBrand:
+                        type: string
+                      preauthTransactionReference:
+                        type: string
+                      processorBankName:
+                        type: string
+                      responseCode:
+                        type: string
+                      responseText:
+                        type: string
+                      ticketNumber:
+                        type: string
+                      transactionReference:
+                        type: string
+                      transactionType:
+                        $ref: ../models/transactionType.yaml
+                      amount:
+                        $ref: ../models/Amount.yaml
+                      created:
+                        type: integer
+                      requestAmount:
+                        type: number
+                      transactionStatus:
+                        type: string
+                        enum:
+                          - APPROVAL
+                          - DECLINED
+                  ticketNumber:
+                    type: string
+                  transactionReference:
+                    type: string
+              examples:
+                Single response:
+                  value:
+                    ticketNumber: '103836286199869975'
+                    transactionReference: bc477fc9-bfe7-4a4e-aadf-36f0c377e959
+                fullResponse v2:
+                  value:
+                    details:
+                      approvalCode: '000000'
+                      approvedTransactionAmount: 1000
+                      binInfo:
+                        bank: BANCO DE LA PRODUCCION S.A. (PRODUBANCO)
+                        type: ''
+                        binCard: '545195'
+                        lastFourDigits: '5480'
+                      merchantId: '20000000104111374000'
+                      merchantName: Merchant MX
+                      paymentBrand: Master Card
+                      preauthTransactionReference: ece6bc01-b639-4338-9d40-6e0baa6cd48b
+                      processorBankName: 0032~BANCO INTERNACIONAL
+                      responseCode: '000'
+                      responseText: Transacción aprobada
+                      ticketNumber: '605303508109325273'
+                      transactionReference: ece6bc01-b639-4338-9d40-6e0baa6cd48b
+                      transactionType: CAPTURE
+                      amount:
+                        currency: MXN
+                        subtotalIva: 0
+                        iva: 0
+                        subtotalIva0: 1000
+                        ice: 0
+                      created: 1658358438000
+                      requestAmount: 1000
+                      transactionStatus: APPROVAL
+                    ticketNumber: '605303508109325273'
+                    transactionReference: ece6bc01-b639-4338-9d40-6e0baa6cd48b
+          headers: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K001
+                  message:
+                    type: string
+                    examples:
+                      - El cuerpo de la petición es inválido
+              examples:
+                GL - K042 - El código de moneda es diferente al de la transacción inicial:
+                  value:
+                    code: K042
+                    message: El código de moneda es diferente al de la transacción inicial.
+                GL - K001 - El cuerpo de la petición es inválido:
+                  value:
+                    code: K001
+                    message: El cuerpo de la petición es inválido
+                GL - K004 - Id de comercio no válido:
+                  value:
+                    code: K004
+                    message: Id de comercio no válido.
+          headers: {}
+        '500':
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K002
+                  message:
+                    type: string
+                    examples:
+                      - Ha ocurrido un error inesperado
+          headers: {}
+      security: []
+      x-stoplight:
+        id: etxqfpjnmphhk
+  '/subscriptions/v1/card/search/{subscriptionId}':
+    get:
+      summary: Get recurring charge Info
+      deprecated: false
+      description: |-
+        <!-- theme: none -->
+        > #### This functionality is available for the following models:
+        >
+        > ☑ Acquirer</br>
+        > ☑ Aggregator
+
+        Get the information that belongs to a specific recurring charge.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      operationId: subscriptionInfo
+      tags: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+        - name: Private-key
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  amount:
+                    type: object
+                    properties:
+                      subtotalIva0:
+                        type: number
+                      subtotalIva:
+                        type: number
+                      iva:
+                        type: number
+                      ice:
+                        type: number
+                      currency:
+                        type: string
+                  bin:
+                    type: string
+                  cardHolderName:
+                    type: string
+                  cardType:
+                    type: string
+                  contactDetails:
+                    type: object
+                    properties:
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+                      email:
+                        type: string
+                  created:
+                    type: number
+                    description: Timestamp format
+                  lastFourDigits:
+                    type: string
+                  maskedCardNumber:
+                    type: string
+                  merchantId:
+                    type: string
+                  metadata:
+                    type: object
+                    properties:
+                      key0:
+                        type: string
+                      key1:
+                        type: string
+                      key2:
+                        type: string
+                  paymentBrand:
+                    type: string
+                  periodicity:
+                    type: string
+                  planName:
+                    type: string
+                  startDate:
+                    type: number
+                    description: Timestamp format
+                  subscriptionId:
+                    type: string
+              example:
+                amount:
+                  subtotalIva0: 30
+                  ice: 0
+                  currency: USD
+                  iva: 0
+                  subtotalIva: 0
+                bin: '545195'
+                cardHolderName: John Doe
+                cardType: CREDIT
+                contactDetails:
+                  firstName: John
+                  lastName: Doe
+                  email: user@example.com
+                created: 1574693127
+                lastFourDigits: '5480'
+                maskedCardNumber: 545195XXXXXX5480
+                merchantId: '20000000106212540000'
+                metadata:
+                  codeUser: '1'
+                  codeCompra: d93d7a6
+                paymentBrand: MASTERCARD
+                periodicity: yearly
+                planName: Standard
+                startDate: 1574726400
+                subscriptionId: '1574693127852000'
+          headers: {}
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K037
+                  message:
+                    type: string
+                    examples:
+                      - Subscripción no encontrada
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    examples:
+                      - K002
+                  message:
+                    type: string
+                    examples:
+                      - Ha ocurrido un error inesperado
+          headers: {}
+      security: []
+      x-stoplight:
+        id: 0x2gfrpcc7fa9
+webhooks: {}
+components:
+  schemas:
+    'trait:invalidBin:402':
+      type: object
+      properties: {}
+      x-stoplight:
+        id: npgt6wy1w5mot
+    'trait:badRequest:400':
+      type: object
+      properties: {}
+      x-stoplight:
+        id: w9rnnosf4m1pq
+    'trait:fetchedList:200':
+      type: object
+      required:
+        - has_more
+        - data
+      properties:
+        has_more:
+          type: boolean
+          examples:
+            - true
+        data:
+          type: array
+          items:
+            required:
+              - subtotalIVA0
+              - date
+              - lastFourDigitsOfCard
+              - transactionStatus
+              - transactionId
+              - voidedBy
+              - merchantName
+              - cardHolderName
+              - approvedTransactionAmount
+              - numberOfMonths
+              - saleTicketNumber
+              - ivaValue
+              - isDeferred
+              - ticketNumber
+              - id
+              - dateAndTimeTransaction
+              - cardType
+              - subtotalIVA
+              - requestAmount
+              - currencyCode
+              - transactionType
+              - processorName
+              - iceValue
+              - merchantId
+              - processorBankName
+              - approvalCode
+            properties:
+              subtotalIVA0:
+                type: number
+                examples:
+                  - 10
+              date:
+                type: string
+                examples:
+                  - '2017-03-24T18:52:34.000Z'
+              lastFourDigitsOfCard:
+                type: string
+                examples:
+                  - 1234
+              transactionStatus:
+                type: string
+                examples:
+                  - APPROVAL
+              transactionId:
+                type: string
+                examples:
+                  - 1234567890987654
+              voidedBy:
+                type: string
+                examples:
+                  - 10334120439012934
+              merchantName:
+                type: string
+                examples:
+                  - Some_Merchant_Name
+              cardHolderName:
+                type: string
+                examples:
+                  - John Doe
+              approvedTransactionAmount:
+                type: string
+                examples:
+                  - 135.5
+              numberOfMonths:
+                type: string
+                examples:
+                  - 0
+              ExtraTaxes:
+                type: array
+                items:
+                  required:
+                    - tasaAeroportuaria
+                    - agenciaDeViaje
+                    - iac
+                  properties:
+                    tasaAeroportuaria:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          examples:
+                            - '4'
+                        taxAmount:
+                          type: string
+                          examples:
+                            - 2
+                        taxName:
+                          type: string
+                          examples:
+                            - TASA_AERO
+                    iac:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          examples:
+                            - '5'
+                        taxAmount:
+                          type: string
+                          examples:
+                            - 2
+                        taxName:
+                          type: string
+                          examples:
+                            - IAC
+                    agenciaDeViaje:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          examples:
+                            - '6'
+                        taxAmount:
+                          type: string
+                          examples:
+                            - 2
+                        taxName:
+                          type: string
+                          examples:
+                            - TASA_ADMIN_AGEN_COD
+                  type: object
+              saleTicketNumber:
+                type: string
+                examples:
+                  - 1204493249523
+              ivaValue:
+                type: integer
+                examples:
+                  - 15.5
+              isDeferred:
+                type: string
+                examples:
+                  - 'Y'
+              ticketNumber:
+                type: string
+                examples:
+                  - 1234567890987654
+              id:
+                type: string
+                examples:
+                  - '123456'
+              dateAndTimeTransaction:
+                type: string
+                examples:
+                  - 12345012469
+              cardType:
+                type: string
+                examples:
+                  - Master Card
+              subtotalIVA:
+                type: number
+                examples:
+                  - 10
+              requestAmount:
+                type: string
+                examples:
+                  - 130
+              currencyCode:
+                type: string
+                examples:
+                  - USD
+              transactionType:
+                type: string
+                examples:
+                  - SALE
+              processorName:
+                type: string
+                examples:
+                  - Some_Processor_Name
+              iceValue:
+                type: number
+                examples:
+                  - 10
+              merchantId:
+                type: string
+                examples:
+                  - 1200000432450023
+              processorBankName:
+                type: string
+                examples:
+                  - Some_Bank_Name
+              approvalCode:
+                type: string
+                examples:
+                  - 342347
+              Metadata:
+                type: object
+                properties:
+                  key1:
+                    type: string
+                    examples:
+                      - value1
+              subscription_metadata:
+                type: object
+                properties:
+                  key2:
+                    type: string
+                    examples:
+                      - value2
+            type: object
+      x-stoplight:
+        id: kclu4zzgxhzy8
+    'trait:created:201':
+      type: object
+      required:
+        - ticketNumber
+      properties:
+        ticketNumber:
+          type: string
+          examples:
+            - '123456789012345678'
+      x-stoplight:
+        id: wa1rjfmdalpe3
+    'trait:unexpectedError:500':
+      type: object
+      properties: {}
+      x-stoplight:
+        id: nmbatdc9gvy31
+    'trait:tokenCreated:201':
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          examples:
+            - AbCDef123456Z7Ghi8901234jkLMNopQ
+      x-stoplight:
+        id: w4ifelt0nm8oc
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: /
+          scopes: {}
+servers: []
+security: []

@@ -1,0 +1,1246 @@
+swagger: '2.0'
+info:
+  version: 1.1.3
+  title: CHARGEBACKS
+  description: |
+    ## Using the API
+
+    To use the API you must ask for your Kushki Sandbox, composed of a `Public-Merchant-Id` and a `Private-Merchant-Id`.
+
+    * The current version of the Kushki API rests at: `https://api.kushkipagos.com/`
+    * The testing version rests at: `https://api-uat.kushkipagos.com/`
+
+
+    ## Endpoints
+
+    We dispose various endpoints to start your payment flows, find our products available:
+
+    * [List all chargebacks](https://api-docs.kushkipagos.com/docs/online-payments/chargebacks/operations/get-a-chargeback-v-1-transaction-list)
+    * [List all chargebacks by status](https://api-docs.kushkipagos.com/docs/online-payments/chargebacks/operations/create-a-chargeback-v-1-transaction-list-status)
+    * [Upload evidence](https://api-docs.kushkipagos.com/docs/online-payments/chargebacks/operations/create-a-asset-v-1-file)
+    * [Update a chargeback](https://api-docs.kushkipagos.com/docs/online-payments/chargebacks/operations/create-a-chargeback-v-1-multipledoc)
+
+    [Return Home](/)
+
+    > Got a suggestion on this documentation? [Contact Us](mailto:techwriting@kushki.com)
+host: api-uat.kushkipagos.com
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    flow: implicit
+    scopes: {}
+    authorizationUrl: ''
+paths:
+  /chargeback/v1/transaction-list:
+    get:
+      summary: List all chargebacks
+      responses:
+        '200':
+          description: OK
+          schema:
+            description: ''
+            type: object
+            x-examples:
+              example-1:
+                response:
+                  - created: '2022-01-13'
+                    status: INITIALIZED
+                    ticketNumber: '1642088791443384'
+                    transactionReference: 0e44c2bf-b0a4-47df-8a76-51d9577cbdb0
+            properties:
+              response:
+                type: array
+                uniqueItems: true
+                items:
+                  type: object
+                  properties:
+                    created:
+                      type: string
+                    status:
+                      type: string
+                    ticketNumber:
+                      type: string
+                    transactionReference:
+                      type: string
+            required:
+              - response
+          examples:
+            chargebacks available:
+              response:
+                - created: '2022-01-13'
+                  status: INITIALIZED
+                  ticketNumber: '1642088791443384'
+                  transactionReference: 0e44c2bf-b0a4-47df-8a76-51d9577cbdb0
+            chargebacks not available:
+              response: No hay contracargos para ID del comercio
+        '400':
+          description: Bad Request
+          schema:
+            description: ''
+            type: object
+            properties:
+              code:
+                type: string
+                minLength: 1
+              message:
+                type: string
+                minLength: 1
+            required:
+              - code
+              - message
+            x-examples:
+              example-1:
+                code: CCH001
+                message: Cuerpo de la petición inválido.
+          examples:
+            '400':
+              code: CCH001
+              message: Cuerpo de la petición inválido.
+        '403':
+          description: Forbidden
+          schema:
+            description: ''
+            type: object
+            properties:
+              Message:
+                type: string
+                minLength: 1
+            required:
+              - Message
+            x-examples:
+              example-1:
+                Message: User is not authorized to access this resource
+          examples:
+            '403':
+              Message: User is not authorized to access this resource
+      operationId: get-chargeback-v1-transaction-list
+      description: |-
+        <!-- theme: warning -->
+        > #### Deprecated!
+        >
+        > This endpoint has been deprecated. Instead, use the **List all chargebacks by status** endpoint which has the same functionality and adds a filter by status type
+
+        A chargeback is a mechanism created to solve those charges made to a credit or debit card that are not recognized. It is a way to protect the cardholder from charges made without their consent.
+
+        It is generated when the cardholder communicates directly with the issuing bank to notify that he does not recognize a charge made to his credit or debit card by your company. At that time, the cardholder's issuing bank sends the chargeback request to the merchant's bank.
+
+        When a chargeback is received, contacting your customer is always the best first step. In the event that doesn't work, you can submit the necessary evidence to help us resolve the chargeback in your favor.
+
+        This endpoint lists all chargebacks in INITIALIZED [status](https://kushki.zendesk.com/hc/es/articles/1500002081081--Cu%C3%A1l-es-el-flujo-de-un-contracargo-Qu%C3%A9-tiempo-tiene-cada-etapa-)  generated up to 72 hours before the time of the query.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+        - type: string
+          in: header
+          name: Private-Merchant-Id
+          required: true
+        - type: string
+          in: query
+          name: from
+          description: YYYY-MM-DD
+          required: true
+        - type: string
+          in: query
+          name: to
+          description: YYYY-MM-DD
+          required: true
+      x-internal: true
+      deprecated: true
+    parameters: []
+  /chargeback/v1/transaction-list-status:
+    parameters: []
+    post:
+      summary: List all chargebacks by status
+      operationId: post-chargeback-v1-transaction-list-status
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                response:
+                  - created: '2022-12-03'
+                    saleTicketNumber: '120831534017345309'
+                    status: APPROVAL
+                    ticketNumber: '1670029463693141'
+                    transactionReference: d8d1d6b3-4b59-4f0e-b2aa-17509b670f29
+                  - created: '2022-12-03'
+                    saleTicketNumber: '034585187016882431'
+                    status: APPROVAL
+                    ticketNumber: '1670029506874990'
+                    transactionReference: c0f24b4a-221e-4e51-85ea-f178001294fc
+                  - created: '2022-12-04'
+                    saleTicketNumber: '276969465458499690'
+                    status: DECLINED
+                    ticketNumber: '1670190892301127'
+                    transactionReference: 81c15c36-f3d0-45df-9609-69f9bcf6b2e6
+                  - created: '2022-12-05'
+                    saleTicketNumber: '544314664855751386'
+                    status: DECLINED
+                    ticketNumber: '1670212230320944'
+                    transactionReference: 13244d05-594c-4071-8536-d4c73e3e1380
+                  - created: '2022-12-05'
+                    saleTicketNumber: '751921148276380569'
+                    status: DECLINED
+                    ticketNumber: '1670212276582476'
+                    transactionReference: 733b4112-46bd-4d7d-9316-09d3c142c726
+                  - created: '2022-12-05'
+                    saleTicketNumber: '920379604051995175'
+                    status: APPROVAL
+                    ticketNumber: '1670270851921114'
+                    transactionReference: 9181f669-4a29-456a-b5a3-631cc4629904
+                  - created: '2022-12-06'
+                    saleTicketNumber: '827353586599905693'
+                    status: APPROVAL
+                    ticketNumber: '1670360687587627'
+                    transactionReference: d147643f-5ddb-479e-a87b-b9fd920e9d94
+                  - created: '2022-12-06'
+                    saleTicketNumber: '657966714467016685'
+                    status: DECLINED
+                    ticketNumber: '1670360723010702'
+                    transactionReference: 101a71e4-dda1-4d4d-b471-5bb3adec230c
+                  - created: '2022-12-07'
+                    saleTicketNumber: '861246824593895331'
+                    status: DECLINED
+                    ticketNumber: '1670430110666019'
+                    transactionReference: 39ada399-dbaa-45f8-8967-41793f106123
+                  - created: '2022-12-13'
+                    saleTicketNumber: '959631513068193305'
+                    status: APPROVAL
+                    ticketNumber: '1670962188253567'
+                    transactionReference: 45fb42e5-322a-4dfc-b636-f21d385b8bec
+                  - created: '2022-12-13'
+                    saleTicketNumber: '885101306088187891'
+                    status: DECLINED
+                    ticketNumber: '1670962214693915'
+                    transactionReference: cccf49b6-e967-4fde-a623-902fc1dc8152
+                  - created: '2023-03-27'
+                    saleTicketNumber: '179992908150781390'
+                    status: APPROVAL
+                    ticketNumber: '1679937123813385'
+                    transactionReference: b72e87ce-2ae7-4d0e-bd8d-f0d8a33fa6d2
+                  - created: '2023-03-28'
+                    saleTicketNumber: '743006589831739691'
+                    status: APPROVAL
+                    ticketNumber: '1680016650400305'
+                    transactionReference: 8b9fdef2-e267-40f2-be7c-9955c44347c5
+                  - created: '2023-03-28'
+                    saleTicketNumber: '626080834218413266'
+                    status: APPROVAL
+                    ticketNumber: '1680017167965381'
+                    transactionReference: cd25b81b-47cd-4610-8713-85b6f3c35399
+                  - created: '2023-03-28'
+                    saleTicketNumber: '526203150300950423'
+                    status: APPROVAL
+                    ticketNumber: '1680017301812743'
+                    transactionReference: 25d5b13f-f613-4c95-b7c5-f081bd1951fe
+                  - created: '2023-03-28'
+                    saleTicketNumber: '068831821616139594'
+                    status: APPROVAL
+                    ticketNumber: '1680017404595334'
+                    transactionReference: 0212eec0-f6ba-4f8e-b41d-8086263d043d
+                  - created: '2023-03-28'
+                    saleTicketNumber: '290116025851951339'
+                    status: APPROVAL
+                    ticketNumber: '1680039401248283'
+                    transactionReference: 0cba23d4-b557-4b2b-81df-fdaea98e6b39
+                  - created: '2023-03-28'
+                    saleTicketNumber: '576019529974293772'
+                    status: APPROVAL
+                    ticketNumber: '1680040032053198'
+                    transactionReference: 23175737-176a-400b-85dd-cf27978a76d5
+                  - created: '2023-03-28'
+                    saleTicketNumber: '199721381922765429'
+                    status: DECLINED
+                    ticketNumber: '1680040037777687'
+                    transactionReference: 443f5bf1-d22b-4854-92f9-a655df34c5b1
+                  - created: '2023-03-28'
+                    saleTicketNumber: '360294916473906497'
+                    status: APPROVAL
+                    ticketNumber: '1680040841683159'
+                    transactionReference: ca186cb3-2c5d-4b36-9561-36d47c2b1d42
+                  - created: '2023-03-28'
+                    saleTicketNumber: '977449811118815083'
+                    status: DECLINED
+                    ticketNumber: '1680040845189026'
+                    transactionReference: 61433308-3066-4a1f-bb38-44a3637933c8
+                  - created: '2023-04-03'
+                    saleTicketNumber: '853679581082742610'
+                    status: APPROVAL
+                    ticketNumber: '1680555220426302'
+                    transactionReference: 5232a2c3-8605-4053-a3a4-6b6ab6a9a38b
+                  - created: '2023-04-03'
+                    saleTicketNumber: '273001242433958776'
+                    status: DECLINED
+                    ticketNumber: '1680555223479625'
+                    transactionReference: 26ad986b-eed4-4fbc-82a4-c43ac58ab71b
+                  - created: '2023-04-04'
+                    saleTicketNumber: '230982932994877431'
+                    status: DECLINED
+                    ticketNumber: '1680616996349648'
+                    transactionReference: f53b2a81-4e95-4c12-b8c8-292ba1d31074
+                  - created: '2023-04-04'
+                    saleTicketNumber: '767670254872107843'
+                    status: APPROVAL
+                    ticketNumber: '1680616999907354'
+                    transactionReference: f9724dff-9359-402f-b26e-5c14071e560e
+                  - created: '2023-04-06'
+                    saleTicketNumber: '780491976444321431'
+                    status: APPROVAL
+                    ticketNumber: '1680789839687887'
+                    transactionReference: 879a1239-2196-4855-a03b-960f12e745cc
+                  - created: '2023-04-06'
+                    saleTicketNumber: '168432011839604387'
+                    status: DECLINED
+                    ticketNumber: '1680789842223006'
+                    transactionReference: abb7f472-9068-4939-b658-50fde4ffc048
+                  - created: '2023-04-11'
+                    saleTicketNumber: '964171926316123330'
+                    status: DECLINED
+                    ticketNumber: '1681221822766886'
+                    transactionReference: 703d4fa6-3ac4-44df-8c42-05b5e4e94b25
+                  - created: '2023-04-11'
+                    saleTicketNumber: '437494765395167308'
+                    status: APPROVAL
+                    ticketNumber: '1681221824988400'
+                    transactionReference: 5f2e06c6-8518-4039-90da-6ab866f89176
+                  - created: '2023-04-12'
+                    saleTicketNumber: '632064602356028393'
+                    status: APPROVAL
+                    ticketNumber: '1681314400179521'
+                    transactionReference: 668d4f8a-53b0-477f-b7e7-69c65746f780
+                  - created: '2023-04-12'
+                    saleTicketNumber: '396499458151089027'
+                    status: DECLINED
+                    ticketNumber: '1681314403302931'
+                    transactionReference: e5106e8e-bb5f-4481-97cc-8473e48e20ff
+                  - created: '2023-04-18'
+                    saleTicketNumber: '381702415206841252'
+                    status: APPROVAL
+                    ticketNumber: '1681826708784696'
+                    transactionReference: 9a6a3768-48e1-45da-828a-2da5e66dd305
+                  - created: '2023-04-18'
+                    saleTicketNumber: '896848310088224962'
+                    status: DECLINED
+                    ticketNumber: '1681826708820833'
+                    transactionReference: a220de0e-9471-4d6c-8dcb-800fd5512742
+                  - created: '2023-04-20'
+                    saleTicketNumber: '907730364445387746'
+                    status: APPROVAL
+                    ticketNumber: '1681999424582395'
+                    transactionReference: b09b2036-7b86-464c-bb23-751de89b8f06
+                  - created: '2023-04-20'
+                    saleTicketNumber: '967711488547729497'
+                    status: DECLINED
+                    ticketNumber: '1681999429766060'
+                    transactionReference: 4e55f6ec-41fd-43e2-a2f7-ceed8dc6db3e
+                  - created: '2023-04-20'
+                    saleTicketNumber: '583374687850330115'
+                    status: DECLINED
+                    ticketNumber: '1682014367129050'
+                    transactionReference: 16a45480-d6c9-4b82-a440-8f261b8698e0
+                  - created: '2023-04-20'
+                    saleTicketNumber: '070331896213823234'
+                    status: APPROVAL
+                    ticketNumber: '1682014369992935'
+                    transactionReference: cfbd6fdd-72ac-40bc-a57a-98b0c0dd1629
+                  - created: '2023-04-20'
+                    saleTicketNumber: '529595023258301847'
+                    status: APPROVAL
+                    ticketNumber: '1682016015465526'
+                    transactionReference: 22923c79-611f-48ac-a026-21a94f24cdc8
+                  - created: '2023-04-20'
+                    saleTicketNumber: '890425725096988110'
+                    status: DECLINED
+                    ticketNumber: '1682016015755878'
+                    transactionReference: e82af14f-4127-41b6-9d2a-3fb00443a838
+                  - created: '2023-04-21'
+                    saleTicketNumber: '699058859994000026'
+                    status: DECLINED
+                    ticketNumber: '1682085796025623'
+                    transactionReference: 0c40a3c4-3508-4d62-b799-98eec28b8c3a
+                  - created: '2023-04-21'
+                    saleTicketNumber: '964669714405520054'
+                    status: APPROVAL
+                    ticketNumber: '1682085796298573'
+                    transactionReference: 3d5b685a-a861-4f80-8aca-26a2c6f20c00
+                  - created: '2023-05-17'
+                    saleTicketNumber: '140193415871597972'
+                    status: APPROVAL
+                    ticketNumber: '1684332317078733'
+                    transactionReference: f4179018-c347-49e2-9977-68252b41fff0
+                  - created: '2023-05-17'
+                    saleTicketNumber: '137024531800978046'
+                    status: DECLINED
+                    ticketNumber: '1684332317165008'
+                    transactionReference: 5ea95a9e-7e3f-4d31-b005-5da68a56d486
+                  - created: '2023-05-18'
+                    saleTicketNumber: '455670796831083823'
+                    status: APPROVAL
+                    ticketNumber: '1684418630074338'
+                    transactionReference: d1979ed1-7110-4934-aed3-70e3b9bbfb33
+                  - created: '2023-05-18'
+                    saleTicketNumber: '911170270355843958'
+                    status: DECLINED
+                    ticketNumber: '1684418632656598'
+                    transactionReference: 182bc2ca-d790-48c3-832c-972582171715
+                  - created: '2023-05-23'
+                    saleTicketNumber: '336069801021096812'
+                    status: DECLINED
+                    ticketNumber: '1684850695428276'
+                    transactionReference: 2e7d613d-18ad-43ac-9f51-8380c06cc42f
+                  - created: '2023-05-23'
+                    saleTicketNumber: '231215072812257656'
+                    status: APPROVAL
+                    ticketNumber: '1684850695539967'
+                    transactionReference: 5102e89f-6b07-4342-9376-2a18d6469093
+                  - created: '2023-05-23'
+                    saleTicketNumber: '237498650792157861'
+                    status: DECLINED
+                    ticketNumber: '1684867189612745'
+                    transactionReference: 65b16c15-47e8-4204-868c-73b9a97e195d
+                  - created: '2023-05-23'
+                    saleTicketNumber: '056978548497099973'
+                    status: APPROVAL
+                    ticketNumber: '1684867192918727'
+                    transactionReference: 3211ee48-6093-4027-99a0-e932a74e8358
+                  - created: '2023-05-23'
+                    saleTicketNumber: '083229366013680289'
+                    status: DECLINED
+                    ticketNumber: '1684868155232628'
+                    transactionReference: 1a0de838-0801-475b-b8ed-a51e9f4c908e
+                  - created: '2023-05-23'
+                    saleTicketNumber: '024621567891208075'
+                    status: APPROVAL
+                    ticketNumber: '1684868161363154'
+                    transactionReference: e4c68dba-2438-4a5f-b2c3-031706b041d4
+                  - created: '2023-05-23'
+                    saleTicketNumber: '737021792387521002'
+                    status: DECLINED
+                    ticketNumber: '1684869559351845'
+                    transactionReference: 2d5c4eb6-05bd-4414-8f22-6e5b83f1fc1d
+                  - created: '2023-05-23'
+                    saleTicketNumber: '739846212157554096'
+                    status: APPROVAL
+                    ticketNumber: '1684869563872054'
+                    transactionReference: be6d40b0-8d61-4677-9c4c-14469d5cce7e
+            properties:
+              response:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    created:
+                      type: string
+                    saleTicketNumber:
+                      type: string
+                    status:
+                      type: string
+                    ticketNumber:
+                      type: string
+                    transactionReference:
+                      type: string
+          examples:
+            'GL: List all chargebacks':
+              response:
+                - created: '2023-04-03'
+                  saleTicketNumber: '853679581082742610'
+                  status: APPROVAL
+                  ticketNumber: '1680555220426302'
+                  transactionReference: 5232a2c3-8605-4053-a3a4-6b6ab6a9a38b
+                - created: '2023-04-03'
+                  saleTicketNumber: '273001242433958776'
+                  status: DECLINED
+                  ticketNumber: '1680555223479625'
+                  transactionReference: 26ad986b-eed4-4fbc-82a4-c43ac58ab71b
+                - created: '2023-04-04'
+                  saleTicketNumber: '230982932994877431'
+                  status: DECLINED
+                  ticketNumber: '1680616996349648'
+                  transactionReference: f53b2a81-4e95-4c12-b8c8-292ba1d31074
+                - created: '2023-04-04'
+                  saleTicketNumber: '767670254872107843'
+                  status: APPROVAL
+                  ticketNumber: '1680616999907354'
+                  transactionReference: f9724dff-9359-402f-b26e-5c14071e560e
+                - created: '2023-04-06'
+                  saleTicketNumber: '780491976444321431'
+                  status: APPROVAL
+                  ticketNumber: '1680789839687887'
+                  transactionReference: 879a1239-2196-4855-a03b-960f12e745cc
+                - created: '2023-04-06'
+                  saleTicketNumber: '168432011839604387'
+                  status: DECLINED
+                  ticketNumber: '1680789842223006'
+                  transactionReference: abb7f472-9068-4939-b658-50fde4ffc048
+                - created: '2023-04-11'
+                  saleTicketNumber: '964171926316123330'
+                  status: DECLINED
+                  ticketNumber: '1681221822766886'
+                  transactionReference: 703d4fa6-3ac4-44df-8c42-05b5e4e94b25
+                - created: '2023-04-11'
+                  saleTicketNumber: '437494765395167308'
+                  status: APPROVAL
+                  ticketNumber: '1681221824988400'
+                  transactionReference: 5f2e06c6-8518-4039-90da-6ab866f89176
+                - created: '2023-04-12'
+                  saleTicketNumber: '632064602356028393'
+                  status: APPROVAL
+                  ticketNumber: '1681314400179521'
+                  transactionReference: 668d4f8a-53b0-477f-b7e7-69c65746f780
+                - created: '2023-04-12'
+                  saleTicketNumber: '396499458151089027'
+                  status: DECLINED
+                  ticketNumber: '1681314403302931'
+                  transactionReference: e5106e8e-bb5f-4481-97cc-8473e48e20ff
+                - created: '2023-04-18'
+                  saleTicketNumber: '381702415206841252'
+                  status: APPROVAL
+                  ticketNumber: '1681826708784696'
+                  transactionReference: 9a6a3768-48e1-45da-828a-2da5e66dd305
+                - created: '2023-04-18'
+                  saleTicketNumber: '896848310088224962'
+                  status: DECLINED
+                  ticketNumber: '1681826708820833'
+                  transactionReference: a220de0e-9471-4d6c-8dcb-800fd5512742
+                - created: '2023-04-20'
+                  saleTicketNumber: '907730364445387746'
+                  status: APPROVAL
+                  ticketNumber: '1681999424582395'
+                  transactionReference: b09b2036-7b86-464c-bb23-751de89b8f06
+                - created: '2023-04-20'
+                  saleTicketNumber: '967711488547729497'
+                  status: DECLINED
+                  ticketNumber: '1681999429766060'
+                  transactionReference: 4e55f6ec-41fd-43e2-a2f7-ceed8dc6db3e
+                - created: '2023-04-20'
+                  saleTicketNumber: '583374687850330115'
+                  status: DECLINED
+                  ticketNumber: '1682014367129050'
+                  transactionReference: 16a45480-d6c9-4b82-a440-8f261b8698e0
+                - created: '2023-04-20'
+                  saleTicketNumber: '070331896213823234'
+                  status: APPROVAL
+                  ticketNumber: '1682014369992935'
+                  transactionReference: cfbd6fdd-72ac-40bc-a57a-98b0c0dd1629
+                - created: '2023-04-20'
+                  saleTicketNumber: '529595023258301847'
+                  status: APPROVAL
+                  ticketNumber: '1682016015465526'
+                  transactionReference: 22923c79-611f-48ac-a026-21a94f24cdc8
+                - created: '2023-04-20'
+                  saleTicketNumber: '890425725096988110'
+                  status: DECLINED
+                  ticketNumber: '1682016015755878'
+                  transactionReference: e82af14f-4127-41b6-9d2a-3fb00443a838
+                - created: '2023-04-21'
+                  saleTicketNumber: '699058859994000026'
+                  status: DECLINED
+                  ticketNumber: '1682085796025623'
+                  transactionReference: 0c40a3c4-3508-4d62-b799-98eec28b8c3a
+                - created: '2023-04-21'
+                  saleTicketNumber: '964669714405520054'
+                  status: APPROVAL
+                  ticketNumber: '1682085796298573'
+                  transactionReference: 3d5b685a-a861-4f80-8aca-26a2c6f20c00
+            'GL: List all chargebacks by DECLINED status':
+              response:
+                - created: '2023-04-03'
+                  saleTicketNumber: '273001242433958776'
+                  status: DECLINED
+                  ticketNumber: '1680555223479625'
+                  transactionReference: 26ad986b-eed4-4fbc-82a4-c43ac58ab71b
+                - created: '2023-04-04'
+                  saleTicketNumber: '230982932994877431'
+                  status: DECLINED
+                  ticketNumber: '1680616996349648'
+                  transactionReference: f53b2a81-4e95-4c12-b8c8-292ba1d31074
+                - created: '2023-04-06'
+                  saleTicketNumber: '168432011839604387'
+                  status: DECLINED
+                  ticketNumber: '1680789842223006'
+                  transactionReference: abb7f472-9068-4939-b658-50fde4ffc048
+                - created: '2023-04-11'
+                  saleTicketNumber: '964171926316123330'
+                  status: DECLINED
+                  ticketNumber: '1681221822766886'
+                  transactionReference: 703d4fa6-3ac4-44df-8c42-05b5e4e94b25
+                - created: '2023-04-12'
+                  saleTicketNumber: '396499458151089027'
+                  status: DECLINED
+                  ticketNumber: '1681314403302931'
+                  transactionReference: e5106e8e-bb5f-4481-97cc-8473e48e20ff
+                - created: '2023-04-18'
+                  saleTicketNumber: '896848310088224962'
+                  status: DECLINED
+                  ticketNumber: '1681826708820833'
+                  transactionReference: a220de0e-9471-4d6c-8dcb-800fd5512742
+                - created: '2023-04-20'
+                  saleTicketNumber: '967711488547729497'
+                  status: DECLINED
+                  ticketNumber: '1681999429766060'
+                  transactionReference: 4e55f6ec-41fd-43e2-a2f7-ceed8dc6db3e
+                - created: '2023-04-20'
+                  saleTicketNumber: '583374687850330115'
+                  status: DECLINED
+                  ticketNumber: '1682014367129050'
+                  transactionReference: 16a45480-d6c9-4b82-a440-8f261b8698e0
+                - created: '2023-04-20'
+                  saleTicketNumber: '890425725096988110'
+                  status: DECLINED
+                  ticketNumber: '1682016015755878'
+                  transactionReference: e82af14f-4127-41b6-9d2a-3fb00443a838
+                - created: '2023-04-21'
+                  saleTicketNumber: '699058859994000026'
+                  status: DECLINED
+                  ticketNumber: '1682085796025623'
+                  transactionReference: 0c40a3c4-3508-4d62-b799-98eec28b8c3a
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+            x-examples:
+              Example 1:
+                code: CCH010
+                message: Fechas inválidas
+          examples:
+            'GL: CCH010 - Invalid dates':
+              code: CCH010
+              message: Fechas inválidas
+            'GL: CCH001 - Invalid request body':
+              code: CCH001
+              message: Cuerpo de la petición inválido.
+        '403':
+          schema:
+            type: object
+            properties:
+              Message:
+                type: string
+            x-examples:
+              Example 1:
+                Message: User is not authorized to access this resource
+          examples:
+            'GL: User is not authorized to access this resource':
+              Message: User is not authorized to access this resource
+      description: |-
+        A chargeback is a mechanism created to solve those charges made to a credit or debit card that are not recognized. It is a way to protect the cardholder from charges made without their consent.
+
+        It is generated when the cardholder communicates directly with the issuing bank to notify that he does not recognize a charge made to his credit or debit card by your company. At that time, the cardholder's issuing bank sends the chargeback request to the merchant's bank.
+
+        When a chargeback is received, contacting your customer is always the best first step. In the event that doesn't work, you can submit the necessary evidence to help us resolve the chargeback in your favor.
+
+        This endpoint lists all chargebacks in **INITIALIZED, APPROVAL or DECLINED** [status](https://kushki.zendesk.com/hc/es/articles/1500002081081--Cu%C3%A1l-es-el-flujo-de-un-contracargo-Qu%C3%A9-tiempo-tiene-cada-etapa-)  generated up to 72 hours before the time of the query.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+        - type: string
+          in: header
+          name: Private-Merchant-Id
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                from: string
+                to: string
+                status: INITIALIZED
+            properties:
+              from:
+                type: string
+                pattern: YYYY-MM-DD
+              to:
+                type: string
+                pattern: YYYY-MM-DD
+              status:
+                type: array
+                enum:
+                  - INITIALIZED
+                  - APPROVAL
+                  - DECLINED
+                description: Filter chargebacks by status.
+                items:
+                  x-stoplight:
+                    id: 2ouxz2bci05mb
+                  type: string
+            required:
+              - from
+              - to
+          x-examples:
+            'GL: List all chargebacks':
+              from: '2023-04-01'
+              to: '2023-05-01'
+            'GL: List all chargebacks by DECLINED status':
+              from: '2023-04-01'
+              to: '2023-05-01'
+              status:
+                - DECLINED
+      x-internal: true
+  /assets/v1/files:
+    post:
+      summary: Upload evidence
+      responses:
+        '200':
+          description: OK
+          schema:
+            description: ''
+            type: object
+            properties:
+              chargebackFilesId:
+                type: array
+                items:
+                  required: []
+                  properties: {}
+            required:
+              - chargebackFilesId
+            x-examples:
+              example-1:
+                chargebackFilesId:
+                  - 2022_01_01_baa4x1Xczs-LUcctdhMZ41.pdf
+          examples:
+            Upload successful:
+              chargebackFilesId:
+                - 2022_01_01_baa4x1Xczs-LUcctdhMZ41.pdf
+        '400':
+          description: Bad Request
+          schema:
+            description: ''
+            type: object
+            properties:
+              code:
+                type: string
+                minLength: 1
+              message:
+                type: string
+                minLength: 1
+            required:
+              - code
+              - message
+            x-examples:
+              example-1:
+                code: AST001
+                message: Cuerpo de la petición inválido.
+          examples:
+            Wrong file extension:
+              code: AST001
+              message: Cuerpo de la petición inválido.
+      operationId: post-assets-v1-files
+      description: |-
+        You can upload files through this endpoint that serve as evidence to help us resolve the chargeback in your favor. Allowed file extensions are pdf, png, and jpeg. **The size of each file must not exceed 2 MB and the total number of files to be uploaded must not exceed 10 MB.** It should be as clear as possible, with accurate information that helps make the chargeback in favor of your business. The file must be base64 encoded and is limited to one file per request.
+
+        When uploading a file, an id will be returned to you which you can later use to link the corresponding files to a chargeback.
+
+        Specification of supported documents for a chargeback:
+
+        | **Document** | **File extension** | **Size** |
+        |---|:---:|:---:|
+        | Letter | PDF | 2MB |
+        | Bill of sale / Invoice | JPEG, PNG, PDF | 2MB |
+        | Identification of the person who received the product | JPEG, PNG, PDF | 2MB |
+        | Shipping label detailing the delivery address | JPEG, PNG, PDF | 2MB |
+        | Product/service delivery order signed by the owner | JPEG, PNG, PDF | 2MB |
+        | Records of products/services sold | JPEG, PNG, PDF | 2MB |
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      x-internal: true
+      parameters:
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+        - type: string
+          in: header
+          name: Private-Merchant-Id
+          required: true
+        - in: body
+          name: body
+          schema:
+            description: ''
+            type: object
+            x-examples:
+              example-1:
+                file:
+                  buffer: ''
+                  ext: .pdf
+                  fileName: prueba123
+                service: chargeback
+            properties:
+              file:
+                type: object
+                required:
+                  - buffer
+                  - ext
+                  - fileName
+                properties:
+                  buffer:
+                    type: string
+                    description: Base64 encoded file. Maximum 6MB
+                  ext:
+                    type: string
+                    description: 'File extension. Supported formats pdf, jpeg and png.'
+                  fileName:
+                    type: string
+                    description: Encoded file name
+              service:
+                type: string
+                description: The default "chargeback" value must be sent
+            required:
+              - file
+              - service
+          x-examples:
+            Upload pdf file:
+              file:
+                buffer: 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
+                ext: .pdf
+                fileName: kushki
+              service: chargeback
+            Upload png file:
+              file:
+                buffer: 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
+                ext: .png
+                fileName: kushki-chargeback
+              service: chargeback
+            Upload jpeg file:
+              file:
+                buffer: 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5UXWKtppREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlEWT0zqa/6Nv0LVGl7o/brpbnQ9GkskbkKxggg8KSQSlSSClSSQQQSK+muLDvN1WDiWG0mMUklDXRh8TxZzTx/MEHMEWIIBBBAK3i6S9u/RN7tvofVxr3O3ZrvFGXDiOvQX07k7AlKS46heFHIIUn3sq3gqCBJRVrSLSZFcu7V8huJ0U3ObPHn4jbouc1sjTY3uTusc24yIId0rbpsXHZuzXuzaitrN509d4V0t8jd3MuFIQ+y5tUUq2rQSk4UCDg8EEVnBwcLgrSFZRVOHTOpqyN0cjbXa4FrhcXFwbEXBBHcbr21+rGSiKq+pPab6OdL2nW7vqpm53Fl1bCrXaFIlSkuNrShxCwFBDKklRJDqkE7VBOSCK8JKmOPUq+bOcmu0e0zgaenMcZAPOSXYyxBLSLi7wbasa61wTYG60d659qXXvWnvbNj8haXX3KvyNHdDneLRk73ntqVOeschOAgbGztKk7zGTVL5stB2LqLYjkwwnY21T+2qhvfrCLWBys1tyG5ZXzcbuG9undFMVjLZSURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIvbZr3etOXJm86eu8213CPu7mXCkLYeb3JKVbVoIUMpUQcHkEjzr9Di03CxqyipsQhdTVkbZI3Wu1wDmmxuLg3BsQCO8XUm/PZ1l/pb1p/49L/AMSvvnpP4j71B/oZs3/6fB/8Uf8A+V4rz1R6majtr1m1D1E1PdLfI299EmXeQ+y5tUFJ3IWspOFAEZHBAPlX4ZHuFiSsmj2ZwTDpm1NHRxRyNvZzY2NcLixsQARcEg9xsozXwpxKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURKIlESiJREoiURWBF6cW4R2/TpklT+PXLSkhGfYMpJ/wBvzeFXOLZqDcHOuO9xta3lcKpS7Qzb55po3eF73+BULvFtXZ7k/bnHUuFkj10jGQQCDjy4IqrVlKaOd0Dje391ZaSoFXC2YC1/7Lx1irIW2nZP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
+                ext: .jpeg
+                fileName: kushki-chargeback
+              service: chargeback
+  /chargeback/v1/multipledocs:
+    post:
+      summary: Update a chargeback
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            description: ''
+            uniqueItems: true
+            x-examples:
+              example-1:
+                - transactionReference: 98711ee8-52f6-4f77-b232-b98054419fb3
+                  files:
+                    - id: 2022_01_13_dhe9e6Ats-kUsodttUZ90.pdf
+                      type: document
+                    - id: 2022_01_17_XYU1BJbRDqS4fyehhczXw.pdf
+                      type: letter
+            items:
+              type: object
+              properties:
+                transactionReference:
+                  type: string
+                files:
+                  type: array
+                  uniqueItems: true
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                    required:
+                      - id
+                      - type
+              required:
+                - transactionReference
+                - files
+          examples:
+            Updated successfully:
+              - documentation:
+                  docs:
+                    - id: 2022_01_17_XYU1BJbRDqS4fyehhczXw.pdf
+                      isLetter: true
+                      link: 'https://usrv-card-chargeback-uat-documentation.s3.amazonaws.com/20000000100660638000/98711ee8-52f6-4f77-b232-b98054419fb3/2022_01_17_XYU1BJbRDqS4fyehhczXw_letter.pdf?AWSAccessKeyId=ASIAWACG5ZWHJIGEVVEY&Expires=1650214698&Signature=A0TKA3Lqa%2Fm9BqMQMt3dKxk4d%2F4%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEKn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQCis1orOt5jIXlrUqloea8eGmXILU3XjeW%2BwsPb9oY2ygIgOSfSTXacZPC8b52x0s73BBApa3TnPmq65W55n%2FoDOk8qwwIIwv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARACGgw0MTI0NjU2MTQyMjIiDKqpRUMB2BsxHqtCAiqXAo%2FcL%2F9MLLFLaa8PpEmuLb8YT73XRvR5kwnpjEI4r4j8YFylUADkcGj%2FTI9wjYg7uAzl1gjczgf2%2Btz6aQO55Q%2BQfEFnrZ2hjmr1f89hYI4IsVqdXa3nLu5YxuhXRkYhWkFKtSX3%2B3FRSyxTVVu38GgtEltnQgnXRz5ReyuXqxlwo5jgu3cpTU3WF7ASyySJBilvyTgAUxfitmf7N9khyf8HH7ckXj8WBYDMnCluOuVjFseOTYcLsXaFpVCoaQO3bxotE2ej12LsekHRSKIFtp0GCd7ibFQ7ppiuuIVLzWGDfZ2gLkN90fOIZhaaD4K7DtgvF8H%2FPnKaSWQIcBf2zzryKT1e50q8gOk4TNu9JuROyzSC7GhjYzDVupaPBjqaAe8uLhEfJapmr5XmoZ%2FQB2jiMwQhlMBvDTGV7ohmUmq6VGUnnfqRzjQoeHEw4lJ%2B41LRj9zHCwzZkZ21kniU1LlMPuM3L%2B9Mb9Buk0fEaUmgidGvmc31P0UgaE4UvQUDu6eB5Qx6D5GNCY0BAL%2BfVSLrnyCpaqliFnuYZtv2wu09NWJOurt%2BaCRX7TpYjPEwhhvr7hF6fMtt5eM%3D'
+                      name: 2022_01_17_XYU1BJbRDqS4fyehhczXw
+                      type: letter
+                    - id: 2022_01_13_dhe9e6Ats-kUsodttUZ90.pdf
+                      isLetter: false
+                      link: 'https://usrv-card-chargeback-uat-documentation.s3.amazonaws.com/20000000100660638000/98711ee8-52f6-4f77-b232-b98054419fb3/2022_01_13_dhe9e6Ats-kUsodttUZ90_document.pdf?AWSAccessKeyId=ASIAWACG5ZWHJIGEVVEY&Expires=1650214698&Signature=ar8VIpqVlTJobY3oSS6clC6TJAI%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEKn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQCis1orOt5jIXlrUqloea8eGmXILU3XjeW%2BwsPb9oY2ygIgOSfSTXacZPC8b52x0s73BBApa3TnPmq65W55n%2FoDOk8qwwIIwv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARACGgw0MTI0NjU2MTQyMjIiDKqpRUMB2BsxHqtCAiqXAo%2FcL%2F9MLLFLaa8PpEmuLb8YT73XRvR5kwnpjEI4r4j8YFylUADkcGj%2FTI9wjYg7uAzl1gjczgf2%2Btz6aQO55Q%2BQfEFnrZ2hjmr1f89hYI4IsVqdXa3nLu5YxuhXRkYhWkFKtSX3%2B3FRSyxTVVu38GgtEltnQgnXRz5ReyuXqxlwo5jgu3cpTU3WF7ASyySJBilvyTgAUxfitmf7N9khyf8HH7ckXj8WBYDMnCluOuVjFseOTYcLsXaFpVCoaQO3bxotE2ej12LsekHRSKIFtp0GCd7ibFQ7ppiuuIVLzWGDfZ2gLkN90fOIZhaaD4K7DtgvF8H%2FPnKaSWQIcBf2zzryKT1e50q8gOk4TNu9JuROyzSC7GhjYzDVupaPBjqaAe8uLhEfJapmr5XmoZ%2FQB2jiMwQhlMBvDTGV7ohmUmq6VGUnnfqRzjQoeHEw4lJ%2B41LRj9zHCwzZkZ21kniU1LlMPuM3L%2B9Mb9Buk0fEaUmgidGvmc31P0UgaE4UvQUDu6eB5Qx6D5GNCY0BAL%2BfVSLrnyCpaqliFnuYZtv2wu09NWJOurt%2BaCRX7TpYjPEwhhvr7hF6fMtt5eM%3D'
+                      name: 2022_01_13_dhe9e6Ats-kUsodttUZ90
+                      type: document
+            Invalid file format:
+              - documentation:
+                  docs: []
+                error: Formato de archivo no válido.
+            File not found:
+              - documentation:
+                  docs: []
+                error: 'Archivo: chargeback/2022_04_17_XYU1BJbRDqS4fyehhczXw.pdf no encontrado'
+            Transaction not found:
+              - documentation:
+                  docs: []
+                error: Transacción no encontrada.
+      operationId: post-chargeback-v1-multipledocs
+      x-internal: true
+      description: |-
+        Depending on the type of [chargeback](https://kushki.zendesk.com/hc/es/articles/360060696294--Por-qu%C3%A9-ocurren-los-chargebacks-), it will be necessary to update the chargeback with the necessary evidence, uploaded through the [Upload Evidence API](https://api-docs.kushkipagos.com/docs/online-payments/chargebacks/operations/create-a-asset-v-1-file), so that it can be evaluated. **It is necessary to attach at least one letter and one document file**. The total size of the documents must not exceed 10MB and must be a supported document type. When the chargeback is updated with evidence, the chargeback status will change to "Pending" indicating that the evidence was successfully received.
+
+        <!-- theme: warning -->
+        > #### Service available in the following countries:
+        >
+        > Ecuador, Chile, Colombia, México, Perú.  
+        > Check out our full [list of services by country](https://api-docs.kushkipagos.com/docs/online-payments/services-by-country)
+
+        > Got a suggestion on this documentation? [Contact Us.](mailto:techwriting@kushki.com)
+      parameters:
+        - type: string
+          in: header
+          name: Content-Type
+          description: application/json
+          required: true
+        - type: string
+          in: header
+          name: Private-Merchant-Id
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: array
+            description: ''
+            uniqueItems: true
+            x-examples:
+              example-1:
+                - transactionReference: 98711ee8-52f6-4f77-b232-b98054419fb3
+                  files:
+                    - id: 2022_01_13_dhe9e6Ats-kUsodttUZ90.pdf
+                      type: document
+                    - id: 2022_01_12_QMB_5ClIT0GeUqeO5198s.pdf
+                      type: letter
+            items:
+              type: object
+              properties:
+                transactionReference:
+                  type: string
+                files:
+                  type: array
+                  uniqueItems: true
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                        description: 'letter, document'
+                    required:
+                      - id
+                      - type
+              required:
+                - transactionReference
+                - files
+          x-examples:
+            Update with multiple documents:
+              - transactionReference: 98711ee8-52f6-4f77-b232-b98054419fb3
+                files:
+                  - id: 2022_01_01_dhe9e6Ats-kUsodttUZ90.png
+                    type: document
+                  - id: 2022_01_01_baa4x1Xczs-LUcctdhMZ41.pdf
+                    type: letter
+                  - id: 2022_01_01_clp5h0Gjjs-MHlakjoLC62.pdf
+                    type: document
+responses:
+  'trait:invalidBin:402':
+    description: Invalid Bin
+    schema:
+      $ref: '#/definitions/InvalidBinResponse'
+  'trait:badRequest:400':
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/BadRequestResponse'
+  'trait:fetchedList:200':
+    description: Fetch a transactions list
+    schema:
+      type: object
+      required:
+        - has_more
+        - data
+      properties:
+        has_more:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            required:
+              - subtotalIVA0
+              - date
+              - lastFourDigitsOfCard
+              - transactionStatus
+              - transactionId
+              - voidedBy
+              - merchantName
+              - cardHolderName
+              - approvedTransactionAmount
+              - numberOfMonths
+              - extraTaxes
+              - saleTicketNumber
+              - ivaValue
+              - isDeferred
+              - ticketNumber
+              - id
+              - dateAndTimeTransaction
+              - cardType
+              - subtotalIVA
+              - requestAmount
+              - currencyCode
+              - transactionType
+              - processorName
+              - iceValue
+              - merchantId
+              - processorBankName
+              - approvalCode
+            properties:
+              subtotalIVA0:
+                type: number
+                example: 10
+              date:
+                type: string
+                example: '2017-03-24T18:52:34.000Z'
+              lastFourDigitsOfCard:
+                type: string
+                example: 1234
+              transactionStatus:
+                type: string
+                example: APPROVAL
+              transactionId:
+                type: string
+                example: 1234567890987654
+              voidedBy:
+                type: string
+                example: 10334120439012934
+              merchantName:
+                type: string
+                example: Some_Merchant_Name
+              cardHolderName:
+                type: string
+                example: John Doe
+              approvedTransactionAmount:
+                type: string
+                example: 135.5
+              numberOfMonths:
+                type: string
+                example: 0
+              ExtraTaxes:
+                type: array
+                items:
+                  required:
+                    - tasaAeroportuaria
+                    - agenciaDeViaje
+                    - iac
+                  properties:
+                    tasaAeroportuaria:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '4'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_AERO
+                    iac:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '5'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: IAC
+                    agenciaDeViaje:
+                      type: object
+                      properties:
+                        taxid:
+                          type: string
+                          example: '6'
+                        taxAmount:
+                          type: string
+                          example: 2
+                        taxName:
+                          type: string
+                          example: TASA_ADMIN_AGEN_COD
+              saleTicketNumber:
+                type: string
+                example: 1204493249523
+              ivaValue:
+                type: integer
+                example: 15.5
+              isDeferred:
+                type: string
+                example: 'Y'
+              ticketNumber:
+                type: string
+                example: 1234567890987654
+              id:
+                type: string
+                example: '123456'
+              dateAndTimeTransaction:
+                type: string
+                example: 12345012469
+              cardType:
+                type: string
+                example: Master Card
+              subtotalIVA:
+                type: number
+                example: 10
+              requestAmount:
+                type: string
+                example: 130
+              currencyCode:
+                type: string
+                example: USD
+              transactionType:
+                type: string
+                example: SALE
+              processorName:
+                type: string
+                example: Some_Processor_Name
+              iceValue:
+                type: number
+                example: 10
+              merchantId:
+                type: string
+                example: 1200000432450023
+              processorBankName:
+                type: string
+                example: Some_Bank_Name
+              approvalCode:
+                type: string
+                example: 342347
+              Metadata:
+                type: object
+                properties:
+                  key1:
+                    type: string
+                    example: value1
+              subscription_metadata:
+                type: object
+                properties:
+                  key2:
+                    type: string
+                    example: value2
+    examples:
+      example-1:
+        has_more: true
+        data:
+          - subtotalIVA0: 10
+            date: '2017-03-24T18:52:34.000Z'
+            lastFourDigitsOfCard: 1234
+            transactionStatus: APPROVAL
+            transactionId: 1234567890987654
+            voidedBy: 10334120439012934
+            merchantName: Some_Merchant_Name
+            cardHolderName: John Doe
+            approvedTransactionAmount: 135.5
+            numberOfMonths: 0
+            ExtraTaxes:
+              - tasaAeroportuaria:
+                  taxid: '4'
+                  taxAmount: 2
+                  taxName: TASA_AERO
+                iac:
+                  taxid: '5'
+                  taxAmount: 2
+                  taxName: IAC
+                agenciaDeViaje:
+                  taxid: '6'
+                  taxAmount: 2
+                  taxName: TASA_ADMIN_AGEN_COD
+            saleTicketNumber: 1204493249523
+            ivaValue: 15.5
+            isDeferred: 'Y'
+            ticketNumber: 1234567890987654
+            id: '123456'
+            dateAndTimeTransaction: 12345012469
+            cardType: Master Card
+            subtotalIVA: 10
+            requestAmount: 130
+            currencyCode: USD
+            transactionType: SALE
+            processorName: Some_Processor_Name
+            iceValue: 10
+            merchantId: 1200000432450023
+            processorBankName: Some_Bank_Name
+            approvalCode: 342347
+            Metadata:
+              key1: value1
+            subscription_metadata:
+              key2: value2
+  'trait:created:201':
+    description: Created
+    schema:
+      type: object
+      required:
+        - ticketNumber
+      properties:
+        ticketNumber:
+          type: string
+          example: '123456789012345678'
+    examples:
+      example-1:
+        ticketNumber: '123456789012345678'
+  'trait:unexpectedError:500':
+    description: Unexpected Error
+    schema:
+      $ref: '#/definitions/UnexpectedErrorResponse'
+  'trait:tokenCreated:201':
+    description: TokenCreated
+    schema:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: AbCDef123456Z7Ghi8901234jkLMNopQ
+definitions: {}
+x-internal: true

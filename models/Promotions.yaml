@@ -1,0 +1,37 @@
+description: ''
+type: object
+x-examples:
+  example-1:
+    promotionId: string
+    status: string
+    description: string
+    discount:
+      amount: 50
+      currency: USD
+      minimumPurchaseAmount: 349.99
+examples:
+  - promotionId: string
+    status: string
+    description: string
+    discount:
+      amount: 50
+      currency: USD
+      minimumPurchaseAmount: 349.99
+properties:
+  promotionId:
+    type: string
+  status:
+    type: string
+  description:
+    type: string
+  discount:
+    type: object
+    properties:
+      amount:
+        type: number
+        example: 50
+      currency:
+        $ref: ./currency.yaml
+      minimumPurchaseAmount:
+        type: number
+        example: 349.99
