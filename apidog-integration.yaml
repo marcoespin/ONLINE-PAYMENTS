@@ -1,0 +1,446 @@
+openapi: 3.1.0
+info:
+  title: Kushki Online Payments - Complete API Reference
+  version: 1.0.0
+  description: |
+    # Kushki API Reference - Complete Integration
+    
+    This document provides a comprehensive integration of all Kushki payment APIs, including:
+    - Card payments (synchronous and asynchronous)
+    - Transfer operations (in/out)
+    - Cash operations (in/out)
+    - One-click and scheduled payments
+    - Analytics and reporting
+    - Gateway status
+    - Commissions
+    - Payment credentials
+    - Chargebacks
+    - Payment buttons and SmartLinks
+    - Branch offices
+    
+    ## Services by Country
+    For detailed information about available services by country, please refer to the documentation.
+    
+    ## Documentation Structure
+    - **API References**: Complete endpoint documentation for all payment methods
+    - **Schemas**: Reusable data models and components
+    - **Error Catalog**: Comprehensive error codes and troubleshooting
+    - **Release Notes**: Latest updates and changes
+    
+  contact:
+    name: Kushki Support
+    url: https://www.kushkipagos.com
+  license:
+    name: Proprietary
+    url: https://www.kushkipagos.com/terms
+
+servers:
+  - url: https://api.kushkipagos.com
+    description: Production Server
+  - url: https://api-uat.kushkipagos.com
+    description: UAT Server
+
+tags:
+  - name: CARD
+    description: Card payment operations (synchronous)
+    x-displayName: Card Payments
+  - name: ONE-CLICK & SCHEDULED PAYMENTS
+    description: One-click and scheduled payment operations
+    x-displayName: One-Click & Scheduled Payments
+  - name: CARD-OUTS
+    description: Card disbursement operations
+    x-displayName: Card Out
+  - name: TRANSFER-IN
+    description: Transfer collection operations
+    x-displayName: Transfer In
+  - name: TRANSFER-OUT
+    description: Transfer disbursement operations
+    x-displayName: Transfer Out
+  - name: CASH-IN
+    description: Cash collection operations
+    x-displayName: Cash In
+  - name: CASH-OUT
+    description: Cash disbursement operations
+    x-displayName: Cash Out
+  - name: CARD-ASYNC
+    description: Card payment operations (asynchronous)
+    x-displayName: Card Async
+  - name: ASYNC-CARD-RECURRING-CHARGES
+    description: Asynchronous card recurring charge operations
+    x-displayName: Async Card Recurring Charges
+  - name: SMARTLINKS-V2
+    description: SmartLinks V2 operations
+    x-displayName: SmartLinks V2
+  - name: ANALYTICS
+    description: Analytics and reporting operations
+    x-displayName: Analytics
+  - name: GATEWAY-STATUS
+    description: Gateway status operations
+    x-displayName: Gateway Status
+  - name: COMMISSIONS
+    description: Commission management operations
+    x-displayName: Commissions
+  - name: PAYMENT-CREDENTIALS
+    description: Payment credential management
+    x-displayName: Payment Credentials
+  - name: CHARGEBACKS
+    description: Chargeback management operations
+    x-displayName: Chargebacks
+  - name: PAYMENT-BUTTON
+    description: Payment button operations
+    x-displayName: Payment Button
+  - name: BRANCH-OFFICES
+    description: Branch office management
+    x-displayName: Branch Offices
+
+x-tagGroups:
+  - name: Payment Methods
+    tags:
+      - CARD
+      - ONE-CLICK & SCHEDULED PAYMENTS
+      - CARD-ASYNC
+      - ASYNC-CARD-RECURRING-CHARGES
+  - name: Transfers
+    tags:
+      - TRANSFER-IN
+      - TRANSFER-OUT
+  - name: Cash Operations
+    tags:
+      - CASH-IN
+      - CASH-OUT
+  - name: Disbursements
+    tags:
+      - CARD-OUTS
+  - name: Digital Solutions
+    tags:
+      - SMARTLINKS-V2
+      - PAYMENT-BUTTON
+  - name: Management & Reporting
+    tags:
+      - ANALYTICS
+      - GATEWAY-STATUS
+      - COMMISSIONS
+      - CHARGEBACKS
+      - PAYMENT-CREDENTIALS
+      - BRANCH-OFFICES
+
+paths:
+  # Card endpoints will be imported from CARD.yaml
+  /card/v1/tokens:
+    $ref: './reference/CARD.yaml#/paths/~1card~1v1~1tokens'
+  
+  /card/v1/charges:
+    $ref: './reference/CARD.yaml#/paths/~1card~1v1~1charges'
+  
+  # One-Click & Scheduled Payments endpoints
+  /subscriptions/v1/card:
+    $ref: './reference/ONE-CLICK & SCHEDULED PAYMENTS.yaml#/paths/~1subscriptions~1v1~1card'
+  
+  # Card Out endpoints
+  /card-out/v1/tokens:
+    $ref: './reference/CARD-OUTS.yaml#/paths/~1card-out~1v1~1tokens'
+  
+  # Transfer In endpoints
+  /transfer/v1/init:
+    $ref: './reference/TRANSFER-IN.yaml#/paths/~1transfer~1v1~1init'
+  
+  # Transfer Out endpoints
+  /transfer-out/v1/init:
+    $ref: './reference/TRANSFER-OUT.yaml#/paths/~1transfer-out~1v1~1init'
+  
+  # Cash In endpoints
+  /cash/v1/init:
+    $ref: './reference/CASH-IN.yaml#/paths/~1cash~1v1~1init'
+  
+  # Cash Out endpoints
+  /cash-out/v1/init:
+    $ref: './reference/CASH-OUT.yaml#/paths/~1cash-out~1v1~1init'
+  
+  # Card Async endpoints
+  /card-async/v1/charges:
+    $ref: './reference/CARD-ASYNC.yaml#/paths/~1card-async~1v1~1charges'
+  
+  # Async Card Recurring Charges endpoints
+  /recurring/v1/charges:
+    $ref: './reference/ASYNC-CARD-RECURRING-CHARGES.yaml#/paths/~1recurring~1v1~1charges'
+  
+  # SmartLinks V2 endpoints
+  /smartlinks/v2:
+    $ref: './reference/SMARTLINKS-V2.yaml#/paths/~1smartlinks~1v2'
+  
+  # Analytics endpoints
+  /analytics/v1/transactions:
+    $ref: './reference/ANALYTICS.yaml#/paths/~1analytics~1v1~1transactions'
+  
+  # Gateway Status endpoints
+  /gateway/v1/status:
+    $ref: './reference/GATEWAY-STATUS.yaml#/paths/~1gateway~1v1~1status'
+  
+  # Commissions endpoints
+  /commissions/v1:
+    $ref: './reference/COMMISSIONS.yaml#/paths/~1commissions~1v1'
+  
+  # Payment Credentials endpoints
+  /payment-credentials/v1:
+    $ref: './reference/PAYMENT-CREDENTIALS.yaml#/paths/~1payment-credentials~1v1'
+  
+  # Chargebacks endpoints
+  /chargebacks/v1:
+    $ref: './reference/CHARGEBACKS.yaml#/paths/~1chargebacks~1v1'
+  
+  # Payment Button endpoints
+  /payment-button/v1:
+    $ref: './reference/PAYMENT-BUTTON.yaml#/paths/~1payment-button~1v1'
+  
+  # Branch Offices endpoints
+  /branch-offices/v1:
+    $ref: './reference/BRANCH-OFFICES.json#/paths/~1branch-offices~1v1'
+
+components:
+  schemas:
+    # Core Models
+    Amount:
+      $ref: './models/Amount.yaml#/Amount'
+    
+    AmountCashIn:
+      $ref: './models/Amount-cash-in.yaml#/AmountCashIn'
+    
+    AmountCL:
+      $ref: './models/Amount-CL.yaml#/AmountCL'
+    
+    BadRequestResponse:
+      $ref: './models/BadRequestResponse.yaml#/BadRequestResponse'
+    
+    BillingAddress:
+      $ref: './models/Billing-Address.yaml#/BillingAddress'
+    
+    BinInfo:
+      $ref: './models/binInfo.yaml#/BinInfo'
+    
+    Card:
+      $ref: './models/Card.yaml#/Card'
+    
+    Channel:
+      $ref: './models/Channel.yaml#/Channel'
+    
+    ChargesVoidCardResponse:
+      $ref: './models/ChargesVoidCardResponse.yaml#/ChargesVoidCardResponse'
+    
+    CitMit:
+      $ref: './models/citMit.yaml#/CitMit'
+    
+    ContactDetails:
+      $ref: './models/ContactDetails.yaml#/ContactDetails'
+    
+    Country:
+      $ref: './models/Country.yaml#/Country'
+    
+    Currency:
+      $ref: './models/currency.yaml#/Currency'
+    
+    CurrencyCashIn:
+      $ref: './models/currency-cash-in.yaml#/CurrencyCashIn'
+    
+    CurrencyCL:
+      $ref: './models/currency-CL.yaml#/CurrencyCL'
+    
+    Deferred:
+      $ref: './models/Deferred.yaml#/Deferred'
+    
+    DocumentType:
+      $ref: './models/documentType.yaml#/DocumentType'
+    
+    ErrorResponse:
+      $ref: './models/ErrorResponse.yaml#/ErrorResponse'
+    
+    ExtraTaxes:
+      $ref: './models/extraTaxes.yaml#/ExtraTaxes'
+    
+    GetConfigurationRequest:
+      $ref: './models/GetConfigurationRequest.yaml#/GetConfigurationRequest'
+    
+    Headers:
+      $ref: './models/headers.yaml#/Headers'
+    
+    InvalidBinResponse:
+      $ref: './models/InvalidBinResponse.yaml#/InvalidBinResponse'
+    
+    Language:
+      $ref: './models/Language.yaml#/Language'
+    
+    MessageFields:
+      $ref: './models/messageFields.yaml#/MessageFields'
+    
+    Metadata:
+      $ref: './models/Metadata.yaml#/Metadata'
+    
+    NetworkToken:
+      $ref: './models/networkToken.yaml#/NetworkToken'
+    
+    OrderDetails:
+      $ref: './models/orderDetails.yaml#/OrderDetails'
+    
+    PaymentSubmethod:
+      $ref: './models/payment_submethod.yaml#/PaymentSubmethod'
+    
+    PaymentMethod:
+      $ref: './models/paymentMethod.yaml#/PaymentMethod'
+    
+    Product:
+      $ref: './models/product.yaml#/Product'
+    
+    Promotions:
+      $ref: './models/Promotions.yaml#/Promotions'
+    
+    ShippingAddress:
+      $ref: './models/Shipping-Address.yaml#/ShippingAddress'
+    
+    Submerchant:
+      $ref: './models/Submerchant.json#/Submerchant'
+    
+    Subscription:
+      $ref: './models/Subscription.yaml#/Subscription'
+    
+    SubscriptionAdjustmentRequest:
+      $ref: './models/SubscriptionAdjustmentRequest.yaml#/SubscriptionAdjustmentRequest'
+    
+    SubscriptionUpdate:
+      $ref: './models/SubscriptionUpdate.yaml#/SubscriptionUpdate'
+    
+    ThreeDomainSecure:
+      $ref: './models/threeDomainSecure.yaml#/ThreeDomainSecure'
+    
+    TransactionType:
+      $ref: './models/transactionType.yaml#/TransactionType'
+    
+    UnexpectedErrorResponse:
+      $ref: './models/UnexpectedErrorResponse.yaml#/UnexpectedErrorResponse'
+    
+    Webhooks:
+      $ref: './models/webhooks.yaml#/Webhooks'
+    
+    WebhooksChargeback:
+      $ref: './models/webhooksChargeback.yaml#/WebhooksChargeback'
+  
+  securitySchemes:
+    PublicMerchantId:
+      type: apiKey
+      in: header
+      name: Public-Merchant-Id
+      description: Public merchant identifier provided by Kushki
+    
+    PrivateMerchantId:
+      type: apiKey
+      in: header
+      name: Private-Merchant-Id
+      description: Private merchant identifier provided by Kushki (use with caution)
+    
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for authenticated requests
+
+security:
+  - PublicMerchantId: []
+  - PrivateMerchantId: []
+  - BearerAuth: []
+
+x-documentation:
+  services-by-country:
+    description: Information about available services per country
+    file: ./docs/services-by-country.md
+  
+  currencies-by-country:
+    description: Information about supported currencies per country
+    file: ./docs/currencies-by-country.md
+  
+  error-catalog:
+    description: Complete catalog of API errors
+    file: ./docs/error-catalog/Error-Catalog.md
+  
+  iso-error-codes:
+    description: ISO standard error codes
+    file: ./docs/error-catalog/iso-error-codes.md
+  
+  release-notes:
+    description: Latest releases and updates
+    file: ./docs/release-notes/new.md
+
+x-assets:
+  images:
+    path: ./assets/images/
+    description: Image assets for documentation
+
+x-api-references:
+  - name: CARD
+    file: ./reference/CARD.yaml
+    description: Card payment operations (synchronous)
+  
+  - name: ONE-CLICK & SCHEDULED PAYMENTS
+    file: ./reference/ONE-CLICK & SCHEDULED PAYMENTS.yaml
+    description: One-click and scheduled payment operations
+  
+  - name: CARD-OUTS
+    file: ./reference/CARD-OUTS.yaml
+    description: Card disbursement operations
+  
+  - name: TRANSFER-IN
+    file: ./reference/TRANSFER-IN.yaml
+    description: Transfer collection operations
+  
+  - name: TRANSFER-OUT
+    file: ./reference/TRANSFER-OUT.yaml
+    description: Transfer disbursement operations
+  
+  - name: CASH-IN
+    file: ./reference/CASH-IN.yaml
+    description: Cash collection operations
+  
+  - name: CASH-OUT
+    file: ./reference/CASH-OUT.yaml
+    description: Cash disbursement operations
+  
+  - name: CARD-ASYNC
+    file: ./reference/CARD-ASYNC.yaml
+    description: Card payment operations (asynchronous)
+  
+  - name: ASYNC-CARD-RECURRING-CHARGES
+    file: ./reference/ASYNC-CARD-RECURRING-CHARGES.yaml
+    description: Asynchronous card recurring charge operations
+  
+  - name: SMARTLINKS-V2
+    file: ./reference/SMARTLINKS-V2.yaml
+    description: SmartLinks V2 operations
+  
+  - name: SMARTLINKS-V1
+    file: ./reference/SMARTLINKS-V1.yaml
+    description: SmartLinks V1 operations (deprecated)
+  
+  - name: ANALYTICS
+    file: ./reference/ANALYTICS.yaml
+    description: Analytics and reporting operations
+  
+  - name: GATEWAY-STATUS
+    file: ./reference/GATEWAY-STATUS.yaml
+    description: Gateway status operations
+  
+  - name: COMMISSIONS
+    file: ./reference/COMMISSIONS.yaml
+    description: Commission management operations
+  
+  - name: PAYMENT-CREDENTIALS
+    file: ./reference/PAYMENT-CREDENTIALS.yaml
+    description: Payment credential management
+  
+  - name: CHARGEBACKS
+    file: ./reference/CHARGEBACKS.yaml
+    description: Chargeback management operations
+  
+  - name: PAYMENT-BUTTON
+    file: ./reference/PAYMENT-BUTTON.yaml
+    description: Payment button operations
+  
+  - name: BRANCH-OFFICES
+    file: ./reference/BRANCH-OFFICES.json
+    description: Branch office management
